@@ -1,5 +1,6 @@
 "use client";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ScheduleCallForm } from "../components/ScheduleCallForm";
 import { 
@@ -68,7 +69,6 @@ import {
   Users as UsersIcon,
   CheckCircle as CheckCircleIcon
 } from "lucide-react";
-import Link from 'next/link';
 import Image from 'next/image';
 import { projects } from "../lib/projects";
 import { FaLinkedin, FaTwitter, FaGithub, FaInstagram, FaReact, FaNodeJs, FaPython, FaJava, FaDocker, FaAws, FaGoogle, FaMicrosoft, FaVuejs, FaAngular, FaPhp } from 'react-icons/fa';
@@ -2060,14 +2060,15 @@ function Blog() {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <motion.button
-            onClick={() => window.open('/blog', '_blank')}
-            className="bg-gradient-to-r from-lavender to-pink text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            View All Articles
-          </motion.button>
+          <Link href="/articles">
+            <motion.button
+              className="bg-gradient-to-r from-lavender to-pink text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              View All Articles
+            </motion.button>
+          </Link>
         </motion.div>
       </div>
     </motion.section>
@@ -2360,16 +2361,7 @@ function Footer() {
           <div>
             <h3 className="font-bold mb-4">Connect</h3>
             <div className="flex space-x-4 mt-2">
-              <a href="https://linkedin.com/company/shivkara-digitals" target="_blank" rel="noopener noreferrer" className="hover:text-lavender transition-colors text-2xl">
-                <FaLinkedin />
-              </a>
-              <a href="https://twitter.com/shivkaradigital" target="_blank" rel="noopener noreferrer" className="hover:text-lavender transition-colors text-2xl">
-                <FaTwitter />
-              </a>
-              <a href="https://github.com/shivkara-digitals" target="_blank" rel="noopener noreferrer" className="hover:text-lavender transition-colors text-2xl">
-                <FaGithub />
-              </a>
-              <a href="https://instagram.com/shivkaradigitals" target="_blank" rel="noopener noreferrer" className="hover:text-lavender transition-colors text-2xl">
+              <a href="https://instagram.com/shivkaradigital" target="_blank" rel="noopener noreferrer" className="hover:text-lavender transition-colors text-2xl">
                 <FaInstagram />
               </a>
             </div>
