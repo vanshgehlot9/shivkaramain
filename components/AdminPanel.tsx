@@ -38,14 +38,10 @@ interface ContactSubmission {
   message: string;
   service?: string;
   company?: string;
-  type: 'contact' | 'offer_claim' | 'plan_selection' | 'schedule_call';
+  type: 'contact' | 'offer_claim' | 'plan_selection';
   timestamp: Timestamp;
-  status: 'new' | 'read' | 'replied' | 'pending';
+  status: 'new' | 'read' | 'replied';
   
-  // Schedule call specific fields
-  slot?: string;
-  notes?: string;
-
   // Offer claim specific fields
   offerTitle?: string;
   offerPrice?: string;
@@ -61,24 +57,12 @@ interface ContactSubmission {
 export function AdminPanel() {
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'new' | 'read' | 'replied' | 'pending'>('all');
-  const [typeFilter, setTypeFilter] = useState<'all' | 'contact' | 'offer_claim' | 'plan_selection' | 'schedule_call'>('all');
-  const [consultationType, setConsultationType] = useState<'all' | 'quick' | 'project' | 'technical'>('all');
-  const [sortBy, setSortBy] = useState<'date' | 'name' | 'type'>('date');
+  const [filter, setFilter] = useState<'all' | 'new' | 'read' | 'replied'>('all');
+  const [typeFilter, setTypeFilter] = useState<'all' | 'contact' | 'offer_claim' | 'plan_selection'>('all');
   const [selectedSubmission, setSelectedSubmission] = useState<ContactSubmission | null>(null);
   const [isExporting, setIsExporting] = useState(false);
 
-  // Stats calculation
-  const stats = {
-    total: submissions.length,
-    new: submissions.filter(s => s.status === 'new').length,
-    calls: submissions.filter(s => s.type === 'schedule_call').length,
-    contacts: submissions.filter(s => s.type === 'contact').length,
-    pending: submissions.filter(s => s.status === 'pending').length
-  };
-
   useEffect(() => {
-    setLoading(true);
     const q = query(
       collection(db, "submissions"),
       orderBy("timestamp", "desc")
@@ -94,13 +78,10 @@ export function AdminPanel() {
       });
       setSubmissions(submissionData);
       setLoading(false);
-    }, (error) => {
-      console.error("Error fetching submissions:", error);
-      setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [db]);
+  }, []);
 
   const updateStatus = async (id: string, status: 'new' | 'read' | 'replied') => {
     try {
@@ -192,41 +173,17 @@ export function AdminPanel() {
     }
   };
 
-  const getConsultationType = (slot: string) => {
-    if (!slot) return 'other';
-    if (slot.includes('15 min')) return 'quick';
-    if (slot.includes('30 min')) return 'project';
-    if (slot.includes('45 min')) return 'technical';
-    return 'other';
-  };
-
-  const filteredSubmissions = submissions
-    .filter(sub => {
-      const statusMatch = filter === 'all' || sub.status === filter;
-      const typeMatch = typeFilter === 'all' || sub.type === typeFilter;
-      const consultationMatch = 
-        consultationType === 'all' || 
-        sub.type !== 'schedule_call' || 
-        getConsultationType(sub.slot || '') === consultationType;
-      return statusMatch && typeMatch && consultationMatch;
-    })
-    .sort((a, b) => {
-      switch (sortBy) {
-        case 'name':
-          return a.name.localeCompare(b.name);
-        case 'type':
-          return a.type.localeCompare(b.type);
-        default:
-          return b.timestamp.seconds - a.timestamp.seconds;
-      }
-    });
+  const filteredSubmissions = submissions.filter(sub => {
+    const statusMatch = filter === 'all' || sub.status === filter;
+    const typeMatch = typeFilter === 'all' || sub.type === typeFilter;
+    return statusMatch && typeMatch;
+  });
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'new': return 'bg-blue-500 text-white';
-      case 'read': return 'bg-yellow-500 text-white';
-      case 'replied': return 'bg-green-500 text-white';
-      case 'pending': return 'bg-purple-500 text-white';
+      case 'new': return 'bg-blue-100 text-blue-800';
+      case 'read': return 'bg-yellow-100 text-yellow-800';
+      case 'replied': return 'bg-green-100 text-green-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -236,7 +193,6 @@ export function AdminPanel() {
       case 'new': return <Clock className="w-4 h-4" />;
       case 'read': return <MessageSquare className="w-4 h-4" />;
       case 'replied': return <CheckCircle className="w-4 h-4" />;
-      case 'pending': return <Calendar className="w-4 h-4" />;
       default: return <Clock className="w-4 h-4" />;
     }
   };
@@ -246,7 +202,6 @@ export function AdminPanel() {
       case 'contact': return 'bg-gray-100 text-gray-800';
       case 'offer_claim': return 'bg-green-100 text-green-800';
       case 'plan_selection': return 'bg-blue-100 text-blue-800';
-      case 'schedule_call': return 'bg-purple-100 text-purple-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -256,7 +211,6 @@ export function AdminPanel() {
       case 'contact': return <Mail className="w-4 h-4" />;
       case 'offer_claim': return <Gift className="w-4 h-4" />;
       case 'plan_selection': return <CreditCard className="w-4 h-4" />;
-      case 'schedule_call': return <Calendar className="w-4 h-4" />;
       default: return <Mail className="w-4 h-4" />;
     }
   };
@@ -266,48 +220,29 @@ export function AdminPanel() {
       case 'contact': return 'Contact';
       case 'offer_claim': return 'Offer Claim';
       case 'plan_selection': return 'Plan Request';
-      case 'schedule_call': return 'Call Request';
       default: return 'Unknown';
     }
   };
 
-  // Already defined above, removing duplicate function
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-gray-600">Loading dashboard...</p>
-        </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-            <p className="mt-2 text-sm text-gray-600">
-              Manage your submissions, scheduled calls, and inquiries
-            </p>
-          </div>
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={exportToCsv}
-              disabled={isExporting}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              {isExporting ? 'Exporting...' : 'Export Data'}
-            </button>
-          </div>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Panel</h1>
+          <p className="text-gray-600">Manage contact form submissions</p>
         </div>
 
-        {/* Stats Overview */}
-        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-8">
           <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-lg font-medium text-gray-900">Total</h3>
             <p className="text-3xl font-bold text-blue-600">{submissions.length}</p>
@@ -337,20 +272,12 @@ export function AdminPanel() {
             </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-medium text-gray-900">Calls</h3>
-            <p className="text-3xl font-bold text-indigo-600">
-              {stats.calls}
-            </p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-lg font-medium text-gray-900">Replied</h3>
             <p className="text-3xl font-bold text-green-600">
               {submissions.filter(s => s.status === 'replied').length}
             </p>
           </div>
         </div>
-
-        {/* Main Content */}
 
         {/* Controls */}
         <div className="bg-white p-6 rounded-lg shadow mb-6">
@@ -534,25 +461,6 @@ export function AdminPanel() {
                   )}
 
                   {/* Type-specific fields */}
-                  {selectedSubmission.type === 'schedule_call' && (
-                    <>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Consultation Type</label>
-                        <p className="text-gray-900">{getConsultationType(selectedSubmission.slot || '')}</p>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Time Slot</label>
-                        <p className="text-gray-900">{selectedSubmission.slot}</p>
-                      </div>
-                      {selectedSubmission.notes && (
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Additional Notes</label>
-                          <p className="text-gray-900 whitespace-pre-wrap">{selectedSubmission.notes}</p>
-                        </div>
-                      )}
-                    </>
-                  )}
-
                   {selectedSubmission.type === 'contact' && (
                     <>
                       {selectedSubmission.service && (

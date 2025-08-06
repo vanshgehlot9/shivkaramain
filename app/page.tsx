@@ -1,8 +1,6 @@
 "use client";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ScheduleCallForm } from "../components/ScheduleCallForm";
 import { 
   ArrowRight, 
   Sparkles, 
@@ -69,6 +67,7 @@ import {
   Users as UsersIcon,
   CheckCircle as CheckCircleIcon
 } from "lucide-react";
+import Link from 'next/link';
 import Image from 'next/image';
 import { projects } from "../lib/projects";
 import { FaLinkedin, FaTwitter, FaGithub, FaInstagram, FaReact, FaNodeJs, FaPython, FaJava, FaDocker, FaAws, FaGoogle, FaMicrosoft, FaVuejs, FaAngular, FaPhp } from 'react-icons/fa';
@@ -2060,15 +2059,14 @@ function Blog() {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <Link href="/articles">
-            <motion.button
-              className="bg-gradient-to-r from-lavender to-pink text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              View All Articles
-            </motion.button>
-          </Link>
+          <motion.button
+            onClick={() => window.open('/blog', '_blank')}
+            className="bg-gradient-to-r from-lavender to-pink text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            View All Articles
+          </motion.button>
         </motion.div>
       </div>
     </motion.section>
@@ -2361,7 +2359,16 @@ function Footer() {
           <div>
             <h3 className="font-bold mb-4">Connect</h3>
             <div className="flex space-x-4 mt-2">
-              <a href="https://instagram.com/shivkaradigital" target="_blank" rel="noopener noreferrer" className="hover:text-lavender transition-colors text-2xl">
+              <a href="https://linkedin.com/company/shivkara-digitals" target="_blank" rel="noopener noreferrer" className="hover:text-lavender transition-colors text-2xl">
+                <FaLinkedin />
+              </a>
+              <a href="https://twitter.com/shivkaradigital" target="_blank" rel="noopener noreferrer" className="hover:text-lavender transition-colors text-2xl">
+                <FaTwitter />
+              </a>
+              <a href="https://github.com/shivkara-digitals" target="_blank" rel="noopener noreferrer" className="hover:text-lavender transition-colors text-2xl">
+                <FaGithub />
+              </a>
+              <a href="https://instagram.com/shivkaradigitals" target="_blank" rel="noopener noreferrer" className="hover:text-lavender transition-colors text-2xl">
                 <FaInstagram />
               </a>
             </div>
@@ -2603,7 +2610,51 @@ export default function HomePage() {
         title="Schedule a Call"
         size="md"
       >
-        <ScheduleCallForm onSuccess={() => setIsScheduleCallModalOpen(false)} />
+        <div className="space-y-6">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gradient-to-br from-lavender to-pink rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <CalendarIcon className="w-8 h-8 text-white" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">Book a Free Consultation</h3>
+            <p className="text-gray-600">Choose a time that works best for you.</p>
+          </div>
+          
+          <div className="grid gap-4">
+            <div className="p-4 border border-gray-200 rounded-lg hover:border-lavender transition-colors cursor-pointer">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-semibold">Quick Chat (15 min)</h4>
+                  <p className="text-sm text-gray-600">Perfect for initial discussions</p>
+                </div>
+                <ClockIcon className="w-5 h-5 text-gray-400" />
+              </div>
+            </div>
+            
+            <div className="p-4 border border-gray-200 rounded-lg hover:border-lavender transition-colors cursor-pointer">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-semibold">Project Discussion (30 min)</h4>
+                  <p className="text-sm text-gray-600">Detailed project planning</p>
+                </div>
+                <UsersIcon className="w-5 h-5 text-gray-400" />
+              </div>
+            </div>
+            
+            <div className="p-4 border border-gray-200 rounded-lg hover:border-lavender transition-colors cursor-pointer">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-semibold">Technical Review (45 min)</h4>
+                  <p className="text-sm text-gray-600">Deep technical consultation</p>
+                </div>
+                <CheckCircleIcon className="w-5 h-5 text-gray-400" />
+              </div>
+            </div>
+          </div>
+          
+          <button className="w-full py-3 bg-gradient-to-r from-lavender to-pink text-white rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+            Schedule Now
+          </button>
+        </div>
       </Modal>
 
       {/* Custom Quote Modal */}
