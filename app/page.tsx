@@ -355,7 +355,7 @@ const blogPosts = [
     date: "Jan 15, 2025",
     readTime: "5 min read",
     category: "Technology",
-    image: "/placeholder.jpg",
+    image: "/blog/article1.png",
     tags: ["Web Development", "Trends", "2025"]
   },
   {
@@ -365,7 +365,7 @@ const blogPosts = [
     date: "Jan 10, 2025",
     readTime: "8 min read",
     category: "E-commerce",
-    image: "/placeholder.jpg",
+    image: "/blog/article2.png",
     tags: ["E-commerce", "Scalability", "Best Practices"]
   },
   {
@@ -375,7 +375,7 @@ const blogPosts = [
     date: "Jan 5, 2025",
     readTime: "6 min read",
     category: "Mobile Development",
-    image: "/placeholder.jpg",
+    image: "/blog/artcle3.png",
     tags: ["Mobile", "React Native", "Flutter"]
   }
 ];
@@ -539,7 +539,7 @@ function Header({ onGetStarted }: { onGetStarted: () => void }) {
             transition={{ duration: 0.6 }}
           >
             <div className="w-12 h-12 bg-gradient-to-br from-lavender to-pink rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
-              <img src="/logo.jpeg" alt="Shivkara Digital Logo" className="w-8 h-8" />
+              <img src="/logo.jpeg" alt="Shivkara Digitals - Professional Software Development Company Logo" className="w-8 h-8" />
             </div>
             <span className="text-2xl font-bold bg-gradient-to-r from-lavender to-pink bg-clip-text text-transparent">
               Shivkara Digital
@@ -547,7 +547,7 @@ function Header({ onGetStarted }: { onGetStarted: () => void }) {
           </motion.div>
           
           <nav className="hidden md:flex items-center space-x-8">
-            {['Home', 'Services', 'Projects', 'About', 'Contact'].map((item, idx) => (
+            {['Home', 'Services', 'Projects', 'About', 'Location', 'Contact'].map((item, idx) => (
               <motion.a
                 key={item}
                 href={`#${item.toLowerCase()}`}
@@ -1615,6 +1615,242 @@ function Team() {
   );
 }
 
+function Location() {
+  return (
+    <motion.section
+      id="location"
+      className="py-20 bg-gradient-to-br from-slate-50 to-gray-100 relative overflow-hidden"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8 }}
+    >
+      {/* Background elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-r from-purple-400/20 to-pink-400/20 rounded-full blur-3xl" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-lg font-semibold tracking-wider mb-3 block">
+            FIND US
+          </span>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+            Our Location
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Visit our office or get in touch with us. We're here to help you transform your business with innovative digital solutions.
+          </p>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
+          {/* Map Container */}
+          <motion.div
+            className="relative"
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+              {/* Map Header */}
+              <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4">
+                <div className="flex items-center space-x-3">
+                  <div className="flex space-x-1">
+                    <div className="w-3 h-3 bg-red-400 rounded-full"></div>
+                    <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                    <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                  </div>
+                  <h3 className="text-white font-medium">Shivkara Digitals - Location</h3>
+                </div>
+              </div>
+              
+              {/* Embedded Map */}
+              <div className="relative h-96 bg-gray-100">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d115313.17830058996!2d72.4368506!3d26.238947749999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39418c4eaa06ccb9%3A0x8114ea5b0ae1abb8!2sJodhpur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1691741234567!5m2!1sen!2sin"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen={true}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="rounded-b-2xl"
+                  title="Shivkara Digitals Office Location in Jodhpur, Rajasthan"
+                />
+                
+                {/* Map overlay for mobile touch indicator */}
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg">
+                  <MapPin className="w-5 h-5 text-blue-600" />
+                </div>
+              </div>
+            </div>
+
+            {/* Map Controls */}
+            <div className="absolute top-20 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-lg">
+              <div className="flex flex-col space-y-2">
+                <button className="p-2 hover:bg-gray-100 rounded transition-colors">
+                  <Plus className="w-4 h-4 text-gray-600" />
+                </button>
+                <button className="p-2 hover:bg-gray-100 rounded transition-colors">
+                  <Minus className="w-4 h-4 text-gray-600" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Location Info */}
+          <motion.div
+            className="space-y-8"
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            {/* Address Card */}
+            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
+              <div className="flex items-start space-x-4">
+                <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+                  <MapPin className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Office Address</h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    Sardarpura C Road Jodhpur, Rajasthan, India<br />
+                    PIN: 342001
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Info Cards */}
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
+                <div className="flex items-start space-x-4">
+                  <div className="p-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg">
+                    <Phone className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-gray-900 mb-1">Phone</h4>
+                    <p className="text-gray-600 text-sm">+91 9521699090</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
+                <div className="flex items-start space-x-4">
+                  <div className="p-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg">
+                    <Mail className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-gray-900 mb-1">Email</h4>
+                    <p className="text-gray-600 text-sm">hello@shivkaradigital.com</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Business Hours */}
+            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
+              <div className="flex items-start space-x-4">
+                <div className="p-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg">
+                  <Clock className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Business Hours</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Monday - Friday</span>
+                      <span className="text-gray-900 font-medium">9:00 AM - 6:00 PM</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Saturday</span>
+                      <span className="text-gray-900 font-medium">10:00 AM - 4:00 PM</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Sunday</span>
+                      <span className="text-gray-900 font-medium">Closed</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <motion.button
+                className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2"
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => window.open('https://maps.google.com/?q=Jodhpur,Rajasthan,India', '_blank')}
+              >
+                <ExternalLink className="w-4 h-4" />
+                <span>Open in Maps</span>
+              </motion.button>
+              
+              <motion.button
+                className="flex-1 bg-white text-gray-700 px-6 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 border border-gray-200"
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span>Contact Us</span>
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Local Business Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              "name": "Shivkara Digitals",
+              "description": "Professional Software Development Company specializing in custom software solutions, mobile apps, and web development.",
+              "url": "https://shivkaradigitals.com",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Jodhpur",
+                "addressLocality": "Jodhpur",
+                "addressRegion": "Rajasthan",
+                "postalCode": "342001",
+                "addressCountry": "IN"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": "26.2389",
+                "longitude": "73.0243"
+              },
+              "openingHours": [
+                "Mo-Fr 09:00-18:00",
+                "Sa 10:00-16:00"
+              ],
+              "telephone": "+91-XXX-XXX-XXXX",
+              "email": "hello@shivkaradigital.com",
+              "sameAs": [
+                "https://www.facebook.com/shivkaradigital",
+                "https://www.instagram.com/shivkaradigital"
+              ],
+              "priceRange": "₹",
+              "paymentAccepted": "Cash, Credit Card, Bank Transfer, Digital Wallet"
+            })
+          }}
+        />
+      </div>
+    </motion.section>
+  );
+}
+
 function Contact() {
 
   return (
@@ -2025,27 +2261,48 @@ function Blog() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ y: -5, scale: 1.02 }}
             >
-              <div className="h-48 bg-gradient-to-br from-lavender/20 to-pink/20 flex items-center justify-center">
-                <FileText className="w-16 h-16 text-lavender" />
+              <div className="relative h-48 overflow-hidden">
+                <Image
+                  src={post.image}
+                  alt={`${post.title} - ${post.category} article by ${post.author}`}
+                  fill
+                  className="object-cover transition-transform duration-300 hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                <div className="absolute top-4 left-4">
+                  <span className="bg-white/90 backdrop-blur-sm text-sm text-gray-800 font-medium px-3 py-1 rounded-full">
+                    {post.category}
+                  </span>
+                </div>
               </div>
               
               <div className="p-6">
                 <div className="flex items-center space-x-4 mb-4">
-                  <span className="text-sm text-lavender font-medium">{post.category}</span>
                   <span className="text-sm text-gray-500">{post.readTime}</span>
+                  <span className="text-sm text-gray-400">•</span>
+                  <span className="text-sm text-gray-500">{post.date}</span>
                 </div>
                 
-                <h3 className="text-xl font-bold mb-3 text-gray-900 line-clamp-2">{post.title}</h3>
+                <h3 className="text-xl font-bold mb-3 text-gray-900 line-clamp-2 hover:text-blue-600 transition-colors">
+                  {post.title}
+                </h3>
                 <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
                 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-lavender to-pink rounded-full flex items-center justify-center text-white text-sm font-bold">
-                      {post.author.charAt(0)}
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                      {post.author.split(' ').map(n => n[0]).join('')}
                     </div>
                     <span className="text-sm text-gray-600">{post.author}</span>
                   </div>
-                  <span className="text-sm text-gray-500">{post.date}</span>
+                  <div className="flex items-center space-x-1">
+                    {post.tags.slice(0, 2).map((tag, tagIndex) => (
+                      <span key={tagIndex} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
             </motion.article>
@@ -2566,6 +2823,7 @@ export default function HomePage() {
       <Team />
       <Blog />
       <FAQ />
+      <Location />
       <Contact />
       <CallToAction 
         onGetStarted={() => setIsGetStartedModalOpen(true)}
