@@ -2090,7 +2090,7 @@ function Achievements() {
   );
 }
 
-function Features() {
+function Features({ onCustomQuote }: { onCustomQuote: () => void }) {
   const features = [
     {
       icon: <Zap className="w-8 h-8" />,
@@ -3045,7 +3045,7 @@ export default function HomePage() {
       <TechnologyStack />
       <Process />
       <Services />
-      <Features />
+      <Features onCustomQuote={() => setIsCustomQuoteModalOpen(true)} />
       <Achievements />
       <Projects />
       <Testimonials />

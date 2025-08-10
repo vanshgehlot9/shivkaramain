@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://shivkaradigitals.com'),
   title: 'Shivkara Digitals - Professional Software Development Company',
   description: 'Leading software development company in Jodhpur, Rajasthan. We provide custom software solutions, mobile app development, web development, and digital transformation services. ISO 27001 certified with Microsoft, AWS & Google Cloud partnerships.',
   keywords: ['software development', 'mobile app development', 'web development', 'custom software', 'digital transformation', 'Jodhpur', 'Rajasthan', 'India'],
