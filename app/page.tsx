@@ -16,6 +16,8 @@ import {
   MapPin,
   ExternalLink,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   TrendingUp,
   Clock,
   CheckCircle,
@@ -76,6 +78,8 @@ import { usePathname } from 'next/navigation';
 import { Modal } from "../components/ui/modal";
 import { ContactForm } from "../components/ContactForm";
 import { OfferClaimForm, PlanSelectionForm } from "../components/SpecialForms";
+import { LeadCapturePopup, useLeadCapturePopup } from "../components/LeadCapturePopup";
+import { WhatsAppChat, ExitIntentWhatsApp } from "../components/WhatsAppChat";
 import { app } from "../lib/firebase";
 import { ParticleBackground, FloatingElements } from "../components/ui/particles";
 import { EnhancedCard, GradientCard, GlassCard } from "../components/ui/enhanced-card";
@@ -195,33 +199,6 @@ const statistics = [
   { number: "25+", label: "Happy Clients", icon: <Heart className="w-6 h-6" /> },
   { number: "3+", label: "Years Experience", icon: <Award className="w-6 h-6" /> },
   { number: "99%", label: "Client Satisfaction", icon: <Star className="w-6 h-6" /> }
-];
-
-const achievements = [
-  {
-    title: "ISO 27001 Certified",
-    description: "Information Security Management System",
-    icon: <Shield className="w-8 h-8" />,
-    color: "from-blue-500 to-cyan-500"
-  },
-  {
-    title: "Microsoft Partner",
-    description: "Official Microsoft Development Partner",
-    icon: <FaMicrosoft className="w-8 h-8" />,
-    color: "from-blue-600 to-blue-800"
-  },
-  {
-    title: "AWS Partner",
-    description: "Amazon Web Services Partner Network",
-    icon: <FaAws className="w-8 h-8" />,
-    color: "from-orange-500 to-yellow-500"
-  },
-  {
-    title: "Google Cloud Partner",
-    description: "Google Cloud Platform Partner",
-    icon: <FaGoogle className="w-8 h-8" />,
-    color: "from-blue-500 to-green-500"
-  }
 ];
 
 const testimonials = [
@@ -989,7 +966,7 @@ function Hero({ onContact }: { onContact: () => void }) {
 function TrustSignals() {
   return (
     <motion.section 
-      className="py-12 bg-white border-y border-gray-100"
+      className="py-8 bg-white border-y border-gray-100"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -1001,10 +978,10 @@ function TrustSignals() {
           <p className="text-gray-600">Our certified partnerships and proven track record</p>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center">
+  <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-8 items-center">
           {/* Microsoft Partner */}
           <motion.div 
-            className="flex flex-col items-center space-y-2 p-4 rounded-lg hover:bg-gray-50 transition-colors"
+            className="flex flex-col items-center space-y-1 p-2 md:p-4 rounded-lg hover:bg-gray-50 transition-colors"
             whileHover={{ scale: 1.05 }}
           >
             <FaMicrosoft className="w-12 h-12 text-blue-600" />
@@ -1053,7 +1030,7 @@ function TrustSignals() {
         </div>
 
         {/* Trust Features */}
-        <div className="mt-8 flex flex-wrap justify-center items-center gap-6 text-sm text-gray-600">
+  <div className="mt-4 flex flex-wrap justify-center items-center gap-3 md:gap-6 text-xs md:text-sm text-gray-600">
           <div className="flex items-center space-x-2">
             <CheckCircle className="w-4 h-4 text-green-500" />
             <span>Free Consultation</span>
@@ -1195,7 +1172,7 @@ function Process() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-5 gap-8">
+  <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-8">
           {processSteps.map((step, index) => (
             <motion.div
               key={step.step}
@@ -1217,7 +1194,7 @@ function Process() {
               >
                 <div className="text-center">
                   <motion.div 
-                    className={`w-16 h-16 bg-gradient-to-br ${step.color} rounded-xl flex items-center justify-center text-white mb-6 mx-auto`}
+                    className={`w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br ${step.color} rounded-xl flex items-center justify-center text-white mb-3 md:mb-6 mx-auto`}
                     whileHover={{ 
                       scale: 1.1,
                       rotate: 360,
@@ -1226,10 +1203,9 @@ function Process() {
                   >
                   {step.icon}
                   </motion.div>
-                
-                  <div className="text-sm font-bold text-lavender mb-2">{step.step}</div>
-                  <h3 className="text-xl font-bold mb-4 text-gray-900">{step.title}</h3>
-                  <p className="text-gray-600">{step.description}</p>
+                  <div className="text-xs md:text-sm font-bold text-lavender mb-1 md:mb-2">{step.step}</div>
+                  <h3 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-gray-900">{step.title}</h3>
+                  <p className="text-xs md:text-sm text-gray-600">{step.description}</p>
                 </div>
               </GradientCard>
             </motion.div>
@@ -1266,7 +1242,7 @@ function Services() {
           </p>
         </motion.div>
 
-        <div className="grid-professional">
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
           {services.map((service, index) => (
             <motion.div
               key={service.title}
@@ -1277,7 +1253,7 @@ function Services() {
               transition={{ delay: index * 0.1, duration: 0.6 }}
               whileHover={{ y: -8 }}
             >
-              <div className={`w-16 h-16 bg-gradient-to-br ${service.color} rounded-xl flex items-center justify-center text-white mb-6`}>
+              <div className={`w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br ${service.color} rounded-xl flex items-center justify-center text-white mb-3 md:mb-6`}>
                 <motion.div
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.6 }}
@@ -1286,8 +1262,8 @@ function Services() {
                 </motion.div>
               </div>
               
-              <h3 className="text-xl font-bold mb-4 text-gray-900">{service.title}</h3>
-              <p className="text-gray-600 mb-6">{service.description}</p>
+              <h3 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-gray-900">{service.title}</h3>
+              <p className="text-xs md:text-sm text-gray-600 mb-2 md:mb-6">{service.description}</p>
               
               <ul className="space-y-2">
                 {service.features.map((feature, featureIndex) => (
@@ -1596,54 +1572,38 @@ function Testimonials() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <EnhancedCard
-              key={testimonial.name}
-              hoverEffect="scale"
-              delay={index * 0.2}
-              className="relative"
-            >
-              <div className="flex items-center mb-6">
-                <motion.div 
-                  className="w-12 h-12 bg-gradient-to-br from-lavender to-pink rounded-full flex items-center justify-center text-white font-bold mr-4"
-                  whileHover={{ 
-                    scale: 1.2,
-                    rotate: 360,
-                    transition: { duration: 0.6 }
-                  }}
-                >
-                  {testimonial.name.charAt(0)}
-                </motion.div>
-                <div>
-                  <h4 className="font-bold text-gray-900">{testimonial.name}</h4>
-                  <p className="text-gray-600 text-sm">{testimonial.role}</p>
-                </div>
-              </div>
-              
-              <motion.p 
-                className="text-gray-700 mb-6 italic"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
-                "{testimonial.content}"
-              </motion.p>
-              
-              <div className="flex items-center">
-                {[...Array(testimonial.rating)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: i * 0.1 }}
-                  >
-                    <Star className="w-5 h-5 text-yellow-400 fill-current" />
+        <div className="overflow-x-auto pb-2">
+          <div className="flex space-x-6 md:space-x-8 min-w-[320px]" style={{scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch'}}>
+            {testimonials.map((testimonial, index) => (
+              <EnhancedCard
+                key={testimonial.name}
+                hoverEffect="scale"
+                delay={index * 0.2}
+                className="relative min-w-[300px] md:min-w-[350px] max-w-xs md:max-w-sm flex-shrink-0 scroll-snap-align-start">
+                <div className="flex items-center mb-6">
+                  <motion.div 
+                    className="w-12 h-12 bg-gradient-to-br from-lavender to-pink rounded-full flex items-center justify-center text-white font-bold mr-4"
+                    whileHover={{ scale: 1.2, rotate: 360, transition: { duration: 0.6 } }}>
+                    {testimonial.name.charAt(0)}
                   </motion.div>
-                ))}
-              </div>
-            </EnhancedCard>
-          ))}
+                  <div>
+                    <h4 className="font-bold text-gray-900">{testimonial.name}</h4>
+                    <p className="text-gray-600 text-sm">{testimonial.role}</p>
+                  </div>
+                </div>
+                <motion.p className="text-gray-700 mb-6 italic" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.3 }}>
+                  "{testimonial.content}"
+                </motion.p>
+                <div className="flex items-center">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <motion.div key={i} initial={{ opacity: 0, scale: 0 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.1 }}>
+                      <Star className="w-5 h-5 text-yellow-400 fill-current" />
+                    </motion.div>
+                  ))}
+                </div>
+              </EnhancedCard>
+            ))}
+          </div>
         </div>
       </div>
     </motion.section>
@@ -2040,56 +2000,6 @@ function Contact() {
   );
 }
 
-function Achievements() {
-  return (
-    <motion.section
-      className="py-20 bg-gradient-to-br from-gray-50 to-white"
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.8 }}
-    >
-      <div className="max-w-7xl mx-auto px-6">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Our <span className="bg-gradient-to-r from-lavender to-pink bg-clip-text text-transparent">Certifications</span>
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            We maintain the highest standards in security, quality, and partnerships with leading technology providers.
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {achievements.map((achievement, index) => (
-            <motion.div
-              key={achievement.title}
-              className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 text-center"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ y: -5, scale: 1.02 }}
-            >
-              <div className={`w-16 h-16 bg-gradient-to-br ${achievement.color} rounded-xl flex items-center justify-center text-white mb-6 mx-auto group-hover:scale-110 transition-transform duration-300`}>
-                {achievement.icon}
-              </div>
-              
-              <h3 className="text-xl font-bold mb-3 text-gray-900">{achievement.title}</h3>
-              <p className="text-gray-600 text-sm">{achievement.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </motion.section>
-  );
-}
-
 function Features({ onCustomQuote }: { onCustomQuote: () => void }) {
   const features = [
     {
@@ -2154,29 +2064,6 @@ function Features({ onCustomQuote }: { onCustomQuote: () => void }) {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <GlassCard
-              key={feature.title}
-              delay={index * 0.1}
-              className="group"
-            >
-              <motion.div 
-                className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center text-white mb-6`}
-                whileHover={{ 
-                  scale: 1.1,
-                  rotate: 360,
-                  transition: { duration: 0.6 }
-                }}
-              >
-                {feature.icon}
-              </motion.div>
-              
-              <h3 className="text-xl font-bold mb-4 text-gray-900">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
-            </GlassCard>
-          ))}
-        </div>
 
         {/* Performance Comparison */}
         <motion.div 
@@ -2186,28 +2073,28 @@ function Features({ onCustomQuote }: { onCustomQuote: () => void }) {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <h3 className="text-2xl font-bold text-center mb-8">Why Choose Shivkara Digitals?</h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <TrendingUp className="w-8 h-8 text-green-600" />
+          <h3 className="text-xl md:text-2xl font-bold text-center mb-4 md:mb-8">Why Choose Shivkara Digitals?</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
+            <div className="text-center p-2 md:p-4">
+              <div className="w-10 h-10 md:w-16 md:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2 md:mb-4">
+                <TrendingUp className="w-6 h-6 md:w-8 md:h-8 text-green-600" />
               </div>
-              <h4 className="font-bold text-gray-900 mb-2">50% Faster Delivery</h4>
-              <p className="text-gray-600">Our streamlined process ensures projects are delivered 50% faster than industry average.</p>
+              <h4 className="font-bold text-gray-900 mb-1 md:mb-2 text-sm md:text-base">50% Faster Delivery</h4>
+              <p className="text-xs md:text-sm text-gray-600">Our streamlined process ensures projects are delivered 50% faster than industry average.</p>
             </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <DollarSign className="w-8 h-8 text-blue-600" />
+            <div className="text-center p-2 md:p-4">
+              <div className="w-10 h-10 md:w-16 md:h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2 md:mb-4">
+                <DollarSign className="w-6 h-6 md:w-8 md:h-8 text-blue-600" />
               </div>
-              <h4 className="font-bold text-gray-900 mb-2">30% Cost Savings</h4>
-              <p className="text-gray-600">Local development team means significant cost savings without compromising quality.</p>
+              <h4 className="font-bold text-gray-900 mb-1 md:mb-2 text-sm md:text-base">30% Cost Savings</h4>
+              <p className="text-xs md:text-sm text-gray-600">Local development team means significant cost savings without compromising quality.</p>
             </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Award className="w-8 h-8 text-purple-600" />
+            <div className="text-center p-2 md:p-4">
+              <div className="w-10 h-10 md:w-16 md:h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2 md:mb-4">
+                <Award className="w-6 h-6 md:w-8 md:h-8 text-purple-600" />
               </div>
-              <h4 className="font-bold text-gray-900 mb-2">100% Success Rate</h4>
-              <p className="text-gray-600">Every project delivered on time with complete client satisfaction guaranteed.</p>
+              <h4 className="font-bold text-gray-900 mb-1 md:mb-2 text-sm md:text-base">100% Success Rate</h4>
+              <p className="text-xs md:text-sm text-gray-600">Every project delivered on time with complete client satisfaction guaranteed.</p>
             </div>
           </div>
         </motion.div>
@@ -2274,60 +2161,75 @@ function SpecialOffers({ onClaimOffer }: { onClaimOffer: (offer: any) => void })
           {specialOffers.map((offer, index) => (
             <motion.div
               key={offer.title}
-              className="relative bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-lavender/20 overflow-hidden"
+              className="group relative bg-white backdrop-blur-xl rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-500 border border-gray-100 overflow-hidden"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ y: -5, scale: 1.02 }}
+              whileHover={{ y: -8 }}
             >
+              {/* Glass effect background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-lavender/5 to-pink/10 group-hover:opacity-100 opacity-0 transition-opacity duration-500" />
+              
+              {/* Animated decorative elements */}
+              <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-lavender to-pink rounded-full opacity-20 blur-2xl group-hover:scale-150 transition-transform duration-700" />
+              <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full opacity-20 blur-2xl group-hover:scale-150 transition-transform duration-700" />
+              
               {/* Offer Badge */}
-              <div className="absolute -top-4 -right-4 bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg transform rotate-12">
+              <div className="absolute -top-4 -right-4 bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg transform rotate-12 group-hover:rotate-6 transition-transform duration-300">
                 LIMITED TIME
               </div>
 
-              {/* Price Section */}
-              <div className="text-center mb-8">
-                <h3 className="text-3xl font-bold mb-2 text-gray-900">{offer.title}</h3>
-                <p className="text-gray-600 mb-4">{offer.description}</p>
-                
-                <div className="flex items-center justify-center space-x-4 mb-4">
-                  <span className="text-2xl text-gray-400 line-through">{offer.originalPrice}</span>
-                  <span className="text-4xl font-bold bg-gradient-to-r from-lavender to-pink bg-clip-text text-transparent">
-                    {offer.offerPrice}
+              {/* Content wrapper with relative positioning */}
+              <div className="relative">
+                {/* Price Section */}
+                <div className="text-center mb-8">
+                  <h3 className="text-3xl font-bold mb-2 text-gray-900 group-hover:text-lavender transition-colors duration-300">{offer.title}</h3>
+                  <p className="text-gray-600 mb-6">{offer.description}</p>
+                  
+                  <div className="flex items-center justify-center space-x-4 mb-4">
+                    <span className="text-2xl text-gray-400 line-through">{offer.originalPrice}</span>
+                    <span className="text-5xl font-bold bg-gradient-to-r from-lavender to-pink bg-clip-text text-transparent">
+                      {offer.offerPrice}
+                    </span>
+                  </div>
+                  
+                  <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-5 py-2 rounded-full text-sm font-semibold inline-block shadow-lg">
+                    Save {offer.savings}
+                  </div>
+                </div>
+
+                {/* Features */}
+                <ul className="space-y-4 mb-8">
+                  {offer.features.map((feature) => (
+                    <li key={feature} className="flex items-center space-x-3">
+                      <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-lavender/10 group-hover:bg-lavender/20 transition-colors duration-300">
+                        <Check className="w-4 h-4 text-lavender" />
+                      </div>
+                      <span className="text-gray-700">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Valid Until */}
+                <div className="text-center mb-6">
+                  <p className="text-sm font-medium inline-flex items-center px-3 py-1.5 rounded-full bg-red-50 text-red-600 group-hover:bg-red-100 transition-colors duration-300">
+                    <Clock className="w-4 h-4 mr-1" /> Valid until: <span className="font-bold ml-1">{offer.validUntil}</span>
+                  </p>
+                </div>
+
+                <motion.button
+                  onClick={() => onClaimOffer(offer)}
+                  className="w-full py-4 bg-gradient-to-r from-lavender to-pink text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-pink to-lavender opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
+                  <span className="relative flex items-center justify-center">
+                    Claim This Offer <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                   </span>
-                </div>
-                
-                <div className="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold inline-block">
-                  Save {offer.savings}
-                </div>
+                </motion.button>
               </div>
-
-              {/* Features */}
-              <ul className="space-y-3 mb-8">
-                {offer.features.map((feature) => (
-                  <li key={feature} className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span className="text-gray-700">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* Valid Until */}
-              <div className="text-center mb-6">
-                <p className="text-sm text-gray-500">
-                  Valid until: <span className="font-semibold text-red-500">{offer.validUntil}</span>
-                </p>
-              </div>
-
-              <motion.button
-                onClick={() => onClaimOffer(offer)}
-                className="w-full py-4 bg-gradient-to-r from-lavender to-pink text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                Claim This Offer
-              </motion.button>
             </motion.div>
           ))}
         </div>
@@ -2341,7 +2243,7 @@ function Pricing({ onCustomQuote, onGetStarted }: { onCustomQuote: () => void; o
 
   return (
     <motion.section
-      className="py-20 bg-very-light-pink"
+      className="py-20 bg-gradient-to-br from-slate-50 to-indigo-50"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -2367,77 +2269,93 @@ function Pricing({ onCustomQuote, onGetStarted }: { onCustomQuote: () => void; o
           {pricingPlans.map((plan, index) => (
             <motion.div
               key={plan.name}
-              className={`relative bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border-2 ${
+              className={`group relative bg-white rounded-2xl overflow-hidden transition-all duration-500 ${
                 plan.popular 
-                  ? 'border-lavender scale-105' 
-                  : 'border-gray-100'
+                  ? 'md:scale-105 shadow-2xl z-10' 
+                  : 'shadow-xl hover:shadow-2xl'
               }`}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ y: -5, scale: 1.02 }}
+              whileHover={{ y: -8 }}
             >
+              {/* Background gradient effect */}
+              <div className={`absolute inset-0 ${plan.popular ? 'opacity-10' : 'opacity-0 group-hover:opacity-5'} transition-opacity duration-500 bg-gradient-to-br from-lavender to-pink`}></div>
+              
+              {/* Top accent bar */}
+              <div className={`h-2 w-full ${
+                plan.popular
+                  ? 'bg-gradient-to-r from-lavender to-pink'
+                  : 'bg-gradient-to-r from-gray-200 to-gray-300 group-hover:from-lavender/30 group-hover:to-pink/30'
+              } transition-colors duration-500`}></div>
+              
               {plan.badge && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-gradient-to-r from-lavender to-pink text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                <div className="absolute top-6 right-6">
+                  <span className="bg-gradient-to-r from-lavender to-pink text-white px-4 py-1.5 rounded-full text-xs font-medium shadow-lg">
                     {plan.badge}
                   </span>
                 </div>
               )}
 
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold mb-4 text-gray-900">{plan.name}</h3>
-                <div className="mb-2">
-                  <span className="text-4xl font-bold text-gray-900">{plan.price}</span>
-                  <span className="text-gray-600">/{plan.period}</span>
+              <div className="p-8">
+                <div className="text-center mb-8">
+                  <h3 className={`text-2xl font-bold mb-4 ${plan.popular ? 'text-lavender' : 'text-gray-900 group-hover:text-lavender transition-colors duration-300'}`}>{plan.name}</h3>
+                  <div className="mb-3">
+                    <span className="text-5xl font-bold bg-gradient-to-r from-lavender to-pink bg-clip-text text-transparent">{plan.price}</span>
+                    <span className="text-gray-600">/{plan.period}</span>
+                  </div>
+                  {plan.originalPrice && (
+                    <div className="mb-3">
+                      <span className="text-lg text-gray-400 line-through">{plan.originalPrice}</span>
+                      <span className="ml-2 text-green-600 font-bold">{plan.savings}</span>
+                    </div>
+                  )}
+                  <p className="text-gray-600 mb-6">{plan.description}</p>
+                  
+                  {/* Plan highlights */}
+                  <div className="flex flex-col gap-3 mb-6">
+                    <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-full bg-blue-50 text-blue-700">
+                      <Clock className="w-4 h-4" />
+                      <span className="font-medium">{plan.deliveryTime}</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-full bg-green-50 text-green-700">
+                      <CheckCircle className="w-4 h-4" />
+                      <span className="font-medium">{plan.revisions}</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-full bg-purple-50 text-purple-700">
+                      <Shield className="w-4 h-4" />
+                      <span className="font-medium">{plan.support}</span>
+                    </div>
+                  </div>
                 </div>
-                {plan.originalPrice && (
-                  <div className="mb-2">
-                    <span className="text-lg text-gray-400 line-through">{plan.originalPrice}</span>
-                    <span className="ml-2 text-green-600 font-semibold">{plan.savings}</span>
-                  </div>
-                )}
-                <p className="text-gray-600 mb-4">{plan.description}</p>
-                
-                {/* Plan highlights */}
-                <div className="flex flex-col gap-2 text-sm text-gray-600">
-                  <div className="flex items-center justify-center gap-2">
-                    <Clock className="w-4 h-4" />
-                    <span>{plan.deliveryTime}</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <CheckCircle className="w-4 h-4" />
-                    <span>{plan.revisions}</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <Shield className="w-4 h-4" />
-                    <span>{plan.support}</span>
-                  </div>
+
+                <div className="space-y-4 mb-8">
+                  {plan.features.map((feature) => (
+                    <div key={feature} className="flex items-center space-x-3 group">
+                      <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-lavender/10 group-hover:bg-lavender/20 transition-colors duration-300">
+                        <Check className="w-4 h-4 text-lavender" />
+                      </div>
+                      <span className="text-gray-700">{feature}</span>
+                    </div>
+                  ))}
                 </div>
+
+                <motion.button
+                  onClick={() => onGetStarted(plan)}
+                  className={`w-full py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center relative overflow-hidden ${
+                    plan.popular
+                      ? 'bg-gradient-to-r from-lavender to-pink text-white shadow-lg hover:shadow-xl'
+                      : 'bg-gray-100 text-gray-700 hover:bg-lavender/20'
+                  }`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <span className="relative flex items-center">
+                    Get Started <ArrowRight className="ml-2 w-5 h-5 transition-transform duration-300" />
+                  </span>
+                </motion.button>
               </div>
-
-              <ul className="space-y-4 mb-8">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span className="text-gray-700">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <motion.button
-                onClick={() => onGetStarted(plan)}
-                className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 ${
-                  plan.popular
-                    ? 'bg-gradient-to-r from-lavender to-pink text-white hover:shadow-lg'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                Get Started
-              </motion.button>
             </motion.div>
           ))}
         </div>
@@ -2465,9 +2383,55 @@ function Pricing({ onCustomQuote, onGetStarted }: { onCustomQuote: () => void; o
 }
 
 function Blog() {
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  // Scroll to next or previous item
+  const scrollToItem = (direction: 'next' | 'prev') => {
+    if (carouselRef.current) {
+      const cardWidth = carouselRef.current.querySelector('article')?.offsetWidth || 0;
+      const gap = 32; // 8rem gap
+      const scrollAmount = cardWidth + gap;
+      
+      if (direction === 'next') {
+        carouselRef.current.scrollLeft += scrollAmount;
+        if (currentIndex < blogPosts.length - 1) setCurrentIndex(prev => prev + 1);
+      } else {
+        carouselRef.current.scrollLeft -= scrollAmount;
+        if (currentIndex > 0) setCurrentIndex(prev => prev - 1);
+      }
+    }
+  };
+
+  // Mouse events for drag scrolling
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setStartX(e.pageX - carouselRef.current!.offsetLeft);
+    setScrollLeft(carouselRef.current!.scrollLeft);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - carouselRef.current!.offsetLeft;
+    const walk = (x - startX) * 2; // Scroll speed multiplier
+    carouselRef.current!.scrollLeft = scrollLeft - walk;
+  };
+
   return (
     <motion.section
-      className="py-20 bg-white"
+      className="py-20 bg-white overflow-hidden"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -2488,64 +2452,115 @@ function Blog() {
             Stay updated with the latest trends, tips, and insights from our development team.
           </p>
         </motion.div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {blogPosts.map((post, index) => (
-            <motion.article
-              key={post.title}
-              className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ y: -5, scale: 1.02 }}
+        
+        <div className="relative">
+          {/* Navigation buttons */}
+          <div className="hidden md:block">
+            <button 
+              onClick={() => scrollToItem('prev')} 
+              disabled={currentIndex === 0}
+              className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-md shadow-lg ${currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white hover:scale-110'} transition-all duration-300`}
+              aria-label="Previous article"
             >
-              <div className="relative h-48 overflow-hidden">
-                <Image
-                  src={post.image}
-                  alt={`${post.title} - ${post.category} article by ${post.author}`}
-                  fill
-                  className="object-cover transition-transform duration-300 hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                <div className="absolute top-4 left-4">
-                  <span className="bg-white/90 backdrop-blur-sm text-sm text-gray-800 font-medium px-3 py-1 rounded-full">
-                    {post.category}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="p-6">
-                <div className="flex items-center space-x-4 mb-4">
-                  <span className="text-sm text-gray-500">{post.readTime}</span>
-                  <span className="text-sm text-gray-400">•</span>
-                  <span className="text-sm text-gray-500">{post.date}</span>
+              <ChevronLeft className="w-6 h-6 text-gray-700" />
+            </button>
+            
+            <button 
+              onClick={() => scrollToItem('next')} 
+              disabled={currentIndex === blogPosts.length - 1}
+              className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-md shadow-lg ${currentIndex === blogPosts.length - 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white hover:scale-110'} transition-all duration-300`}
+              aria-label="Next article"
+            >
+              <ChevronRight className="w-6 h-6 text-gray-700" />
+            </button>
+          </div>
+          
+          {/* Carousel container */}
+          <div 
+            ref={carouselRef}
+            className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-6 -mx-4 px-4"
+            style={{ scrollBehavior: 'smooth' }}
+            onMouseDown={handleMouseDown}
+            onMouseLeave={handleMouseLeave}
+            onMouseUp={handleMouseUp}
+            onMouseMove={handleMouseMove}
+          >
+            {blogPosts.map((post, index) => (
+              <motion.article
+                key={post.title}
+                className="flex-shrink-0 snap-center w-full md:w-[calc(33.333%-1.33rem)] mx-2 bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                whileHover={{ y: -5, scale: 1.02 }}
+              >
+                <div className="relative h-48 overflow-hidden">
+                  <Image
+                    src={post.image}
+                    alt={`${post.title} - ${post.category} article by ${post.author}`}
+                    fill
+                    className="object-cover transition-transform duration-500 hover:scale-110"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                  <div className="absolute top-4 left-4">
+                    <span className="bg-white/90 backdrop-blur-sm text-sm text-gray-800 font-medium px-3 py-1 rounded-full">
+                      {post.category}
+                    </span>
+                  </div>
                 </div>
                 
-                <h3 className="text-xl font-bold mb-3 text-gray-900 line-clamp-2 hover:text-blue-600 transition-colors">
-                  {post.title}
-                </h3>
-                <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                      {post.author.split(' ').map(n => n[0]).join('')}
+                <div className="p-6">
+                  <div className="flex items-center space-x-4 mb-4">
+                    <span className="text-sm text-gray-500">{post.readTime}</span>
+                    <span className="text-sm text-gray-400">•</span>
+                    <span className="text-sm text-gray-500">{post.date}</span>
+                  </div>
+                  
+                  <h3 className="text-xl font-bold mb-3 text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                    {post.title}
+                  </h3>
+                  <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 bg-gradient-to-br from-lavender to-pink rounded-full flex items-center justify-center text-white text-sm font-bold">
+                        {post.author.split(' ').map(n => n[0]).join('')}
+                      </div>
+                      <span className="text-sm text-gray-600">{post.author}</span>
                     </div>
-                    <span className="text-sm text-gray-600">{post.author}</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    {post.tags.slice(0, 2).map((tag, tagIndex) => (
-                      <span key={tagIndex} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                        {tag}
-                      </span>
-                    ))}
+                    <div className="flex items-center space-x-1">
+                      {post.tags.slice(0, 2).map((tag, tagIndex) => (
+                        <span key={tagIndex} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.article>
-          ))}
+              </motion.article>
+            ))}
+          </div>
+          
+          {/* Dots indicator */}
+          <div className="flex justify-center space-x-2 mt-6">
+            {blogPosts.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  if (carouselRef.current) {
+                    const cardWidth = carouselRef.current.querySelector('article')?.offsetWidth || 0;
+                    const gap = 32;
+                    carouselRef.current.scrollLeft = index * (cardWidth + gap);
+                    setCurrentIndex(index);
+                  }
+                }}
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${index === currentIndex ? 'bg-lavender w-6' : 'bg-gray-300'}`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
         </div>
 
         <motion.div
@@ -2855,16 +2870,7 @@ function Footer() {
           <div>
             <h3 className="font-bold mb-4">Connect</h3>
             <div className="flex space-x-4 mt-2">
-              <a href="https://linkedin.com/company/shivkara-digitals" target="_blank" rel="noopener noreferrer" className="hover:text-lavender transition-colors text-2xl">
-                <FaLinkedin />
-              </a>
-              <a href="https://twitter.com/shivkaradigital" target="_blank" rel="noopener noreferrer" className="hover:text-lavender transition-colors text-2xl">
-                <FaTwitter />
-              </a>
-              <a href="https://github.com/shivkara-digitals" target="_blank" rel="noopener noreferrer" className="hover:text-lavender transition-colors text-2xl">
-                <FaGithub />
-              </a>
-              <a href="https://instagram.com/shivkaradigitals" target="_blank" rel="noopener noreferrer" className="hover:text-lavender transition-colors text-2xl">
+              <a href="https://instagram.com/shivkaradigital" target="_blank" rel="noopener noreferrer" className="hover:text-lavender transition-colors text-2xl">
                 <FaInstagram />
               </a>
             </div>
@@ -3029,6 +3035,9 @@ export default function HomePage() {
   const [selectedOffer, setSelectedOffer] = useState<any>(null);
   const [selectedPlan, setSelectedPlan] = useState<any>(null);
 
+  // Lead Capture Popup Hook
+  const { isPopupOpen, closePopup, handleSubmit } = useLeadCapturePopup();
+
   return (
     <div className="min-h-screen relative">
 
@@ -3036,19 +3045,25 @@ export default function HomePage() {
       <ParticleBackground />
       <FloatingElements />
       
+      {/* WhatsApp Chat Widget */}
+      <WhatsAppChat phoneNumber="919521699090" />
+      
+      {/* Exit Intent WhatsApp */}
+      <ExitIntentWhatsApp />
+      
       <AnimatePresence>
         <LoadingScreen key="loading" />
       </AnimatePresence>
       <Header onGetStarted={() => setIsGetStartedModalOpen(true)} />
-      <Hero onContact={() => setIsContactModalOpen(true)} />
-      <TrustSignals />
-      <TechnologyStack />
-      <Process />
-      <Services />
-      <Features onCustomQuote={() => setIsCustomQuoteModalOpen(true)} />
-      <Achievements />
-      <Projects />
-      <Testimonials />
+      <div className="mt-24">{/* Prevent header overlap */}
+        <Hero onContact={() => setIsContactModalOpen(true)} />
+        <TrustSignals />
+        <TechnologyStack />
+        <Process />
+        <Services />
+        <Features onCustomQuote={() => setIsCustomQuoteModalOpen(true)} />
+        <Projects />
+        <Testimonials />
         <SpecialOffers onClaimOffer={(offer) => {
           setSelectedOffer(offer);
           setIsClaimOfferModalOpen(true);
@@ -3060,17 +3075,19 @@ export default function HomePage() {
             setIsPlanSelectionModalOpen(true);
           }}
         />
-      <Team />
-      <Blog />
-      <FAQ />
-      <Location />
-      <Contact />
-      <CallToAction 
-        onGetStarted={() => setIsGetStartedModalOpen(true)}
-        onScheduleCall={() => setIsScheduleCallModalOpen(true)}
-      />
-      <Footer />
-      <FloatingActionButton />
+        <Team />
+        <Blog />
+        <FAQ />
+        <Location />
+        <Contact />
+        <CallToAction 
+          onGetStarted={() => setIsGetStartedModalOpen(true)}
+          onScheduleCall={() => setIsScheduleCallModalOpen(true)}
+        />
+        <Footer />
+        <FloatingActionButton />
+      </div>
+  <FloatingActionButton />
 
       {/* Contact Modal */}
       <Modal
@@ -3220,6 +3237,13 @@ export default function HomePage() {
           }}
         />
       </Modal>
+
+      {/* Lead Capture Popup */}
+      <LeadCapturePopup
+        isOpen={isPopupOpen}
+        onClose={closePopup}
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 }

@@ -297,12 +297,6 @@ Secondary: "View Our Work" (White outline)
 - BBB rating
 - SSL certificate indicator
 
-### **Certifications Section**:
-- Team member certifications
-- Company registrations
-- Industry memberships
-- Awards and recognitions
-
 ### **Security & Compliance**:
 - GDPR compliant badge
 - SOC 2 compliance
@@ -391,7 +385,7 @@ Latest Articles | Industry Insights | Technical Guides
 Interactive Jodhpur Office Location
 
 [FOOTER]
-Company Info | Services | Contact | Certifications | Social Links
+Company Info | Services | Contact | Social Links
 ```
 
 ### **Visual Design Principles**:

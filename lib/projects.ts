@@ -9,7 +9,7 @@ export const projects = [
     tech: ["React", "Node.js", "MongoDB", "Payment Gateway"],
     features: [
       "Room booking and management",
-      "Guest services integration",
+      "Guest services integration", 
       "Inventory and payment processing",
       "Admin dashboard"
     ],
@@ -20,19 +20,47 @@ export const projects = [
     demoLink: "#",
     repoLink: "#",
     link: "/projects/jeerihaveli-hotel-management-system",
-    category: "web"
+    category: "web",
+    // Enhanced data for case studies
+    client: {
+      name: "Royal Heritage Group",
+      company: "JeeriHaveli Heritage Hotel",
+      location: "Jodhpur, Rajasthan",
+      industry: "Hospitality & Tourism"
+    },
+    timeline: "10 weeks",
+    budget: "₹4,50,000",
+    results: {
+      bookingIncrease: "320%",
+      internationalGuests: "150%", 
+      averageStay: "2.5 days",
+      revenueGrowth: "280%",
+      websiteTraffic: "400%"
+    },
+    testimonial: "The heritage hotel website perfectly captures our royal essence while providing modern booking functionality. International bookings increased by 320% after launch!",
+    beforeAfter: {
+      before: "/project/jeerihaveli-before.png",
+      after: "/project/jeerihaveli.png"
+    },
+    techStack: [
+      { name: "Frontend", tech: "React.js, Redux, Material-UI" },
+      { name: "Backend", tech: "Node.js, Express.js, JWT Authentication" },
+      { name: "Database", tech: "MongoDB, Redis Cache" },
+      { name: "Payment", tech: "Razorpay, Stripe integration" },
+      { name: "Hosting", tech: "AWS EC2, CloudFront CDN" }
+    ]
   },
   {
-    name: "Tree Nuts - E-Commerce Platform",
+    name: "Tree Nuts - E-Commerce Platform", 
     slug: "tree-nuts-ecommerce-platform",
     type: "E-Commerce Solution",
     description: "Full-featured e-commerce platform with advanced inventory management, multi-vendor support, and analytics dashboard.",
     image: "/project/treenut.png",
-    screenshots: ["/project/treenut1.png", "/project/treenut2.png"],
+    screenshots: ["/project/treenut1.png"],
     tech: ["Next.js", "Node.js", "PostgreSQL", "Stripe"],
     features: [
       "Multi-vendor support",
-      "Advanced inventory management",
+      "Advanced inventory management", 
       "Analytics dashboard",
       "Secure payment integration"
     ],
@@ -40,10 +68,38 @@ export const projects = [
       "Handling high traffic during sales",
       "Real-time inventory sync"
     ],
-    demoLink: "#",
+    demoLink: "#", 
     repoLink: "#",
     link: "/projects/tree-nuts-ecommerce-platform",
-    category: "web"
+    category: "web",
+    // Enhanced data
+    client: {
+      name: "Himanshu Jain",
+      company: "Tree Nuts",
+      location: "Jodhpur, Rajasthan", 
+      industry: "Agriculture & Food"
+    },
+    timeline: "8 weeks",
+    budget: "₹2,50,000",
+    results: {
+      salesIncrease: "300%",
+      trafficGrowth: "250%",
+      conversionRate: "4.5%",
+      mobileTraffic: "65%",
+      customerSatisfaction: "4.8/5"
+    },
+    testimonial: "Shivkara Digitals completely transformed our agricultural business. The e-commerce platform they built increased our sales by 300% within 6 months. Their team's dedication and technical expertise are unmatched in Jodhpur.",
+    beforeAfter: {
+      before: "/project/treenut-before.png", 
+      after: "/project/treenut.png"
+    },
+    techStack: [
+      { name: "Frontend", tech: "Next.js, TypeScript, Tailwind CSS" },
+      { name: "Backend", tech: "Node.js, Express.js, PostgreSQL" },
+      { name: "Database", tech: "PostgreSQL, Redis for caching" },
+      { name: "Payment", tech: "Stripe, Razorpay integration" },
+      { name: "Hosting", tech: "Vercel, AWS RDS" }
+    ]
   },
   {
     name: "Jodhpur Bombay Roadway Carrier",

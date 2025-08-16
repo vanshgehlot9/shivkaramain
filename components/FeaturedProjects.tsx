@@ -172,12 +172,11 @@ export default function FeaturedProjects() {
 
   return (
     <motion.section
-      className="py-20 bg-gray-50"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
-      variants={fadeIn}
-      custom={0}
+      className="py-10 md:py-20 bg-gray-50"
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 40 }}
+      transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
     >
       <motion.p
         className="text-center text-sm font-semibold text-blue-600 tracking-widest mb-2"
@@ -200,15 +199,19 @@ export default function FeaturedProjects() {
       >
         See how we transformed concepts into engaging digital experiences for our clients.
       </motion.p>
-      <div className="space-y-16 max-w-4xl mx-auto">
+      <div className="space-y-8 md:space-y-16 max-w-2xl md:max-w-4xl mx-auto">
         {projects.map((project, idx) => (
-          <div
+          <motion.div
             key={project.name}
             className="flex flex-col md:flex-row items-center md:items-stretch bg-white rounded-2xl shadow-lg overflow-hidden"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6, delay: idx * 0.1 }}
           >
             {/* Left Panel */}
             <motion.div
-              className="flex-1 p-8 flex flex-col justify-center"
+              className="flex-1 p-4 md:p-8 flex flex-col justify-center"
               variants={slideInLeft}
               initial="hidden"
               whileInView="visible"
@@ -216,10 +219,10 @@ export default function FeaturedProjects() {
               custom={0.45}
             >
               <span className="text-xs uppercase text-gray-400 font-bold tracking-wider mb-1">{project.label}</span>
-              <h3 className="text-2xl font-semibold mb-2">{project.name}</h3>
-              <span className="text-blue-600 font-medium text-sm mb-2 block">{project.type}</span>
-              <p className="text-gray-600 mb-4">{project.description}</p>
-              <ul className="mb-6 space-y-2">
+              <h3 className="text-lg md:text-2xl font-semibold mb-1 md:mb-2">{project.name}</h3>
+              <span className="text-blue-600 font-medium text-xs md:text-sm mb-1 md:mb-2 block">{project.type}</span>
+              <p className="text-gray-600 mb-2 md:mb-4 text-xs md:text-base">{project.description}</p>
+              <ul className="mb-4 md:mb-6 space-y-1 md:space-y-2">
                 {project.features.map((feature, i) => (
                   <motion.li
                     key={feature}
@@ -236,7 +239,7 @@ export default function FeaturedProjects() {
               </ul>
               <motion.button
                 onClick={() => openProjectModal(project)}
-                className="inline-block bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-200"
+                className="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-200 text-xs md:text-base"
                 variants={zoomIn}
                 initial="hidden"
                 whileInView="visible"
@@ -249,7 +252,7 @@ export default function FeaturedProjects() {
             </motion.div>
             {/* Right Panel */}
             <motion.div
-              className="flex-1 min-h-[220px] relative"
+              className="flex-1 min-h-[180px] md:min-h-[220px] relative"
               variants={slideInRight}
               initial="hidden"
               whileInView="visible"
@@ -268,7 +271,7 @@ export default function FeaturedProjects() {
                 onClick={() => openProjectModal(project)}
               />
             </motion.div>
-          </div>
+          </motion.div>
         ))}
       </div>
 
@@ -276,36 +279,38 @@ export default function FeaturedProjects() {
       <AnimatePresence>
         {selectedProject && (
           <motion.div
-            className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-2 md:p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
             onClick={closeProjectModal}
           >
             <motion.div
-              className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+              className="bg-white rounded-2xl max-w-md md:max-w-4xl w-full max-h-[90vh] overflow-hidden"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.5 }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="flex items-center justify-between p-6 border-b">
+              <div className="flex items-center justify-between p-3 md:p-6 border-b">
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900">{selectedProject.name}</h3>
-                  <p className="text-gray-600">{selectedProject.type}</p>
+                  <h3 className="text-lg md:text-2xl font-bold text-gray-900">{selectedProject.name}</h3>
+                  <p className="text-xs md:text-base text-gray-600">{selectedProject.type}</p>
                 </div>
                 <button
                   onClick={closeProjectModal}
                   className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5 md:w-6 md:h-6" />
                 </button>
               </div>
 
               {/* Image Gallery */}
               <div className="relative">
-                <div className="relative h-96">
+                <div className="relative h-56 md:h-96">
                   {(() => {
                     const allImages = [selectedProject.image, ...selectedProject.screenshots];
                     const currentImage = allImages[currentImageIndex];
@@ -315,7 +320,7 @@ export default function FeaturedProjects() {
                         alt={`${selectedProject.name} - Image ${currentImageIndex + 1}`}
                         fill
                         style={{ objectFit: "contain" }}
-                        className="p-4"
+                        className="p-2 md:p-4"
                       />
                     );
                   })()}
@@ -329,13 +334,13 @@ export default function FeaturedProjects() {
                       <>
                         <button
                           onClick={prevImage}
-                          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-lg transition-all"
+                          className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white p-1 md:p-2 rounded-full shadow-lg transition-all"
                         >
                           ←
                         </button>
                         <button
                           onClick={nextImage}
-                          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-lg transition-all"
+                          className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white p-1 md:p-2 rounded-full shadow-lg transition-all"
                         >
                           →
                         </button>
@@ -350,7 +355,7 @@ export default function FeaturedProjects() {
                   const allImages = [selectedProject.image, ...selectedProject.screenshots];
                   if (allImages.length > 1) {
                     return (
-                      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                      <div className="absolute bottom-2 md:bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-2 md:px-3 py-0.5 md:py-1 rounded-full text-xs md:text-sm">
                         {currentImageIndex + 1} / {allImages.length}
                       </div>
                     );
@@ -360,13 +365,13 @@ export default function FeaturedProjects() {
               </div>
 
               {/* Project Info */}
-              <div className="p-6">
-                <p className="text-gray-700 mb-4">{selectedProject.description}</p>
-                <div className="flex flex-wrap gap-2">
+              <div className="p-3 md:p-6">
+                <p className="text-xs md:text-base text-gray-700 mb-2 md:mb-4">{selectedProject.description}</p>
+                <div className="flex flex-wrap gap-1 md:gap-2">
                   {selectedProject.features.map((feature: string, index: number) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+                      className="px-2 md:px-3 py-0.5 md:py-1 bg-blue-100 text-blue-800 rounded-full text-xs md:text-sm"
                     >
                       {feature}
                     </span>
