@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Phone, Clock, CheckCircle, Zap } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
+import { trackCTAClick } from '../lib/analytics';
 
 interface WhatsAppChatProps {
   phoneNumber?: string;
@@ -63,23 +64,31 @@ export function WhatsAppChat({
     <>
       {/* WhatsApp Chat Button */}
       <motion.div
-        className="fixed bottom-6 right-6 z-50"
+        className="fixed bottom-6 right-6 z-[999]"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 2, type: "spring", stiffness: 300 }}
       >
         <motion.button
           onClick={() => setIsOpen(!isOpen)}
-          className="relative bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transition-all duration-300"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          className="relative bg-gradient-to-r from-emerald-600 to-green-600 text-white p-4 rounded-full shadow-xl transition-all duration-300 animate-floating"
+          animate={{
+            y: [0, -8, 0],
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(16, 185, 129, 0.4)" }}
+          whileTap={{ scale: 0.95 }}
         >
           <FaWhatsapp className="w-8 h-8" />
           
           {/* Online Status Indicator */}
           {isOnline && (
             <motion.div
-              className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full"
+              className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 border-2 border-white rounded-full"
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ repeat: Infinity, duration: 2 }}
             />
@@ -126,16 +135,16 @@ export function WhatsAppChat({
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
             {/* Header */}
-            <div className="bg-green-500 text-white p-4">
+            <div className="bg-gradient-to-r from-emerald-600 to-green-600 text-white p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg">
                     <FaWhatsapp className="w-6 h-6" />
                   </div>
                   <div>
                     <h3 className="font-semibold">Shivkara Digitals</h3>
-                    <div className="flex items-center gap-1 text-green-100 text-sm">
-                      <div className="w-2 h-2 bg-green-300 rounded-full"></div>
+                    <div className="flex items-center gap-1 text-emerald-100 text-sm">
+                      <div className="w-2 h-2 bg-emerald-300 rounded-full"></div>
                       <span>{isOnline ? "Online" : "Usually replies within 1 hour"}</span>
                     </div>
                   </div>
@@ -173,13 +182,13 @@ export function WhatsAppChat({
                   <motion.button
                     key={msg.id}
                     onClick={() => handleMessageClick(msg.action)}
-                    className="w-full text-left bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg p-3 transition-colors group"
-                    whileHover={{ scale: 1.02 }}
+                    className="w-full text-left bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg p-3 transition-colors group"
+                    whileHover={{ scale: 1.02, boxShadow: "0 3px 10px rgba(16, 185, 129, 0.1)" }}
                     whileTap={{ scale: 0.98 }}
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-800">{msg.text}</span>
-                      <Zap className="w-4 h-4 text-green-600 group-hover:text-green-700" />
+                      <Zap className="w-4 h-4 text-emerald-600 group-hover:text-emerald-700" />
                     </div>
                   </motion.button>
                 ))}
@@ -187,8 +196,8 @@ export function WhatsAppChat({
                 {/* Custom Message Button */}
                 <motion.button
                   onClick={() => handleMessageClick("Hi! I have a custom requirement. Can we discuss?")}
-                  className="w-full bg-green-500 hover:bg-green-600 text-white rounded-lg p-3 font-medium transition-colors"
-                  whileHover={{ scale: 1.02 }}
+                  className="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white rounded-lg p-3 font-medium transition-colors shadow-md"
+                  whileHover={{ scale: 1.02, boxShadow: "0 5px 15px rgba(16, 185, 129, 0.3)" }}
                   whileTap={{ scale: 0.98 }}
                 >
                   💬 Send Custom Message
@@ -240,25 +249,49 @@ export function WhatsAppChat({
 }
 
 // Auto-trigger component for exit intent
-export function ExitIntentWhatsApp() {
+export function ExitIntentWhatsApp({ 
+  enabled = true,
+  delay = 0,
+  phoneNumber = "919521699090"
+}: { 
+  enabled?: boolean, 
+  delay?: number,
+  phoneNumber?: string
+}) {
   const [showExitIntent, setShowExitIntent] = useState(false);
+  const [hasShownOnce, setHasShownOnce] = useState(false);
 
   React.useEffect(() => {
+    if (!enabled) return;
+    
+    // Add delay if specified
+    let timeoutId: NodeJS.Timeout | null = null;
+    if (delay > 0) {
+      timeoutId = setTimeout(() => {
+        setHasShownOnce(false); // Reset after delay
+      }, delay * 1000);
+    }
+    
     const handleMouseLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0) {
+      if (e.clientY <= 0 && !hasShownOnce) {
         setShowExitIntent(true);
+        setHasShownOnce(true); // Only show once per session
       }
     };
 
     document.addEventListener('mouseleave', handleMouseLeave);
-    return () => document.removeEventListener('mouseleave', handleMouseLeave);
-  }, []);
+    
+    return () => {
+      document.removeEventListener('mouseleave', handleMouseLeave);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [enabled, delay, hasShownOnce]);
 
   if (!showExitIntent) return null;
 
   return (
     <motion.div
-      className="fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50 max-w-sm"
+      className="fixed top-24 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50 max-w-sm"
       initial={{ opacity: 0, x: 300 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 300 }}
@@ -274,6 +307,26 @@ export function ExitIntentWhatsApp() {
           className="ml-auto p-1 hover:bg-white/20 rounded"
         >
           <X className="w-4 h-4" />
+        </button>
+      </div>
+      <div className="mt-3 flex justify-between">
+        <a 
+          href={`https://wa.me/${phoneNumber}?text=Hi, I'm interested in getting a quote for my project.`} 
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-white text-green-500 hover:bg-green-100 transition-colors font-medium px-4 py-2 rounded-md flex-grow text-center"
+          onClick={() => {
+            setShowExitIntent(false);
+            trackCTAClick("WhatsApp Chat", "exit_intent");
+          }}
+        >
+          Chat Now
+        </a>
+        <button
+          onClick={() => setShowExitIntent(false)} 
+          className="ml-2 text-xs text-green-100 hover:text-white"
+        >
+          Maybe Later
         </button>
       </div>
     </motion.div>

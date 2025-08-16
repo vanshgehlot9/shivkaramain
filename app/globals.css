@@ -2,6 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+@import './animations.css';
+
+:root {
+  /* Professional color palette - corporate blue indigo theme */
+  --color-primary: 30, 64, 175; /* blue-800 - strong corporate blue */
+  --color-primary-light: 37, 99, 235; /* blue-600 - lighter corporate blue */
+  --color-primary-dark: 30, 58, 138; /* blue-900 - darker corporate blue */
+  
+  --color-secondary: 67, 56, 202; /* indigo-700 - professional accent */
+  --color-secondary-light: 99, 102, 241; /* indigo-500 - lighter accent */
+  --color-secondary-dark: 55, 48, 163; /* indigo-800 - darker accent */
+  
+  --color-accent: 5, 150, 105; /* emerald-600 - professional green accent */
+  --color-accent-light: 16, 185, 129; /* emerald-500 - lighter accent */
+  
+  --color-success: 22, 163, 74; /* green-600 */
+  --color-warning: 217, 119, 6; /* amber-600 */
+  --color-error: 220, 38, 38; /* red-600 */
+  
+  --color-dark: 17, 24, 39; /* gray-900 - for dark elements */
+  --color-dark-secondary: 31, 41, 55; /* gray-800 */
+  --color-light: 248, 250, 252; /* slate-50 - for light backgrounds */
+  --color-light-secondary: 241, 245, 249; /* slate-100 */
+}
+
 /* Hide scrollbar but maintain functionality */
 @layer utilities {
   .scrollbar-hide {
@@ -10,6 +35,22 @@
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;  /* Chrome, Safari and Opera */
+  }
+  
+  /* Modern grid pattern */
+  .bg-grid-pattern {
+    background-image: 
+      linear-gradient(to right, rgba(209, 213, 219, 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(209, 213, 219, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  /* Glass morphism effect */
+  .glass-morphism {
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.17);
+    border: 1px solid rgba(255, 255, 255, 0.18);
   }
 }
 

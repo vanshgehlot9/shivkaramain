@@ -1,6 +1,7 @@
 "use client";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { ThreeDBackground, ThreeDGlobe, FloatingTechCube } from "../components/ui/3d-background";
 import { 
   ArrowRight, 
   Sparkles, 
@@ -69,9 +70,10 @@ import {
   Users as UsersIcon,
   CheckCircle as CheckCircleIcon
 } from "lucide-react";
-import Link from 'next/link';
 import Image from 'next/image';
 import { projects } from "../lib/projects";
+import TrackableLink from '../components/TrackableLink';
+import { trackCTAClick } from "../lib/analytics";
 import { FaLinkedin, FaTwitter, FaGithub, FaInstagram, FaReact, FaNodeJs, FaPython, FaJava, FaDocker, FaAws, FaGoogle, FaMicrosoft, FaVuejs, FaAngular, FaPhp } from 'react-icons/fa';
 import { SiTypescript, SiJavascript, SiMongodb, SiPostgresql, SiRedis, SiKubernetes, SiTerraform, SiJenkins, SiGithub, SiGitlab, SiSlack, SiJira, SiConfluence, SiFigma, SiAdobe, SiSketch, SiNextdotjs, SiLaravel, SiDjango, SiMysql, SiAmazon, SiFlutter, SiIonic } from 'react-icons/si';
 import { usePathname } from 'next/navigation';
@@ -79,12 +81,16 @@ import { Modal } from "../components/ui/modal";
 import { ContactForm } from "../components/ContactForm";
 import { OfferClaimForm, PlanSelectionForm } from "../components/SpecialForms";
 import { LeadCapturePopup, useLeadCapturePopup } from "../components/LeadCapturePopup";
-import { WhatsAppChat, ExitIntentWhatsApp } from "../components/WhatsAppChat";
+import { WhatsAppChat } from "../components/WhatsAppChat";
 import { app } from "../lib/firebase";
 import { ParticleBackground, FloatingElements } from "../components/ui/particles";
 import { EnhancedCard, GradientCard, GlassCard } from "../components/ui/enhanced-card";
 import { TechSlider } from "../components/ui/tech-slider";
 import FeaturedProjects from "../components/FeaturedProjects";
+import { ScrollRevealSection, ScrollRevealItem } from "../components/ui/scroll-reveal";
+import { ImmediateDisplay } from "../components/ui/immediate-display";
+import { TypedTextAnimation, WordFadeIn, AnimatedGradientText, HighlightText } from "../components/ui/text-animations";
+import { ParallaxSection, ParallaxBackgroundLayers, AnimatedBackgroundSection } from "../components/ui/parallax-effects";
 
 const services = [
   {
@@ -195,9 +201,9 @@ const processSteps = [
 ];
 
 const statistics = [
-  { number: "50+", label: "Projects Completed", icon: <CheckCircle className="w-6 h-6" /> },
-  { number: "25+", label: "Happy Clients", icon: <Heart className="w-6 h-6" /> },
-  { number: "3+", label: "Years Experience", icon: <Award className="w-6 h-6" /> },
+  { number: "75+", label: "Projects Completed", icon: <CheckCircle className="w-6 h-6" /> },
+  { number: "40+", label: "Happy Clients", icon: <Heart className="w-6 h-6" /> },
+  { number: "5+", label: "Years Experience", icon: <Award className="w-6 h-6" /> },
   { number: "99%", label: "Client Satisfaction", icon: <Star className="w-6 h-6" /> }
 ];
 
@@ -563,19 +569,19 @@ function Header({ onGetStarted }: { onGetStarted: () => void }) {
     <motion.header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 nav-professional ${
         isScrolled
-          ? 'bg-white/95 backdrop-blur-xl shadow-professional-lg border-b border-gray-200' 
-          : 'bg-white/80 backdrop-blur-lg'
+          ? 'bg-white/95 backdrop-blur-xl shadow-xl border-b border-gray-100' 
+          : 'bg-transparent'
       }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       style={{ 
         boxShadow: isScrolled 
-          ? '0 8px 32px 0 rgba(102, 126, 234, 0.15), 0 4px 16px 0 rgba(0, 0, 0, 0.1)' 
-          : '0 4px 20px 0 rgba(0, 0, 0, 0.05)'
+          ? '0 10px 40px rgba(0, 0, 0, 0.08)' 
+          : 'none'
       }}
     >
-      <div className="max-w-7xl mx-auto px-6 py-4">
+      <div className={`max-w-7xl mx-auto ${isScrolled ? 'px-6 py-4' : 'px-8 py-5'}`}>
         <div className="flex items-center justify-between">
           <motion.div 
             className="flex items-center space-x-3"
@@ -584,31 +590,42 @@ function Header({ onGetStarted }: { onGetStarted: () => void }) {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="w-12 h-12 bg-gradient-to-br from-lavender to-pink rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
-              <img src="/logo.jpeg" alt="Shivkara Digitals - Professional Software Development Company Logo" className="w-8 h-8" />
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-700 to-indigo-700 rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
+              <img src="/logo.jpeg" alt="Shivkara Digitals - Professional Software Development Company Logo" className="w-7 h-7 md:w-8 md:h-8" />
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-lavender to-pink bg-clip-text text-transparent">
+            <span className="text-xl md:text-2xl font-extrabold bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-800 bg-clip-text text-transparent">
               Shivkara Digital
             </span>
           </motion.div>
           
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-6">
             {['Home', 'Services', 'Projects', 'About', 'Location', 'Contact'].map((item, idx) => (
               <motion.a
                 key={item}
                 href={`#${item.toLowerCase()}`}
-                className={`text-professional font-medium transition-all duration-300 px-4 py-2 rounded-lg focus-professional ${
+                className={`relative text-sm font-medium tracking-wide transition-all duration-300 px-4 py-2 rounded-full ${
                   activeSection === item.toLowerCase()
-                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-professional'
-                    : 'hover:text-indigo-600 hover:bg-gray-50'
+                    ? 'text-white bg-gradient-to-r from-blue-700 to-indigo-600 shadow-md shadow-indigo-500/20'
+                    : 'text-gray-700 hover:text-indigo-700'
                 }`}
-                whileHover={{ y: -2, scale: 1.05 }}
+                whileHover={activeSection !== item.toLowerCase() ? { 
+                  scale: 1.05,
+                  backgroundColor: "rgba(243, 244, 246, 1)" // gray-100
+                } : { scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 * idx, duration: 0.5 }}
               >
                 {item}
+                {activeSection !== item.toLowerCase() && (
+                  <motion.span 
+                    className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-600 transform -translate-x-1/2"
+                    initial={{ width: 0 }}
+                    whileHover={{ width: "60%" }}
+                    transition={{ duration: 0.3 }}
+                  />
+                )}
               </motion.a>
             ))}
           </nav>
@@ -616,14 +633,23 @@ function Header({ onGetStarted }: { onGetStarted: () => void }) {
           <div className="flex items-center space-x-4">
             <motion.button
               onClick={onGetStarted}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
+              className="group bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-800 text-white px-7 py-3 rounded-full font-medium relative overflow-hidden shadow-lg shadow-indigo-500/20"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
             >
-              Get Started
+              <span className="relative z-10 flex items-center">
+                Get Started
+                <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+              </span>
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-r from-indigo-800 via-blue-700 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                initial={{ scale: 0, opacity: 0 }}
+                whileHover={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.6 }}
+              />
             </motion.button>
             
             {/* Mobile menu button */}
@@ -685,8 +711,14 @@ function Hero({ onContact }: { onContact: () => void }) {
   // Animated counter for statistics
   const [counts, setCounts] = useState({ projects: 0, clients: 0, experience: 0, satisfaction: 0 });
   const [hasAnimated, setHasAnimated] = useState(false);
-
+  
+  // Auto-start animations immediately without waiting for scroll
   useEffect(() => {
+    // Start animations immediately when component mounts
+    setHasAnimated(true);
+    animateCounts();
+    
+    // This will run the original observer logic as a backup
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !hasAnimated) {
@@ -694,7 +726,7 @@ function Hero({ onContact }: { onContact: () => void }) {
           animateCounts();
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.1 } // Lower threshold to trigger earlier
     );
 
     if (containerRef.current) {
@@ -702,10 +734,10 @@ function Hero({ onContact }: { onContact: () => void }) {
     }
 
     return () => observer.disconnect();
-  }, [hasAnimated]);
+  }, []);
 
-  const animateCounts = () => {
-    const targets = { projects: 50, clients: 25, experience: 3, satisfaction: 99 };
+    const animateCounts = () => {
+    const targets = { projects: 75, clients: 40, experience: 5, satisfaction: 99 };
     const duration = 2000;
     const steps = 60;
     const stepDuration = duration / steps;
@@ -721,9 +753,7 @@ function Hero({ onContact }: { onContact: () => void }) {
         clients: Math.floor(targets.clients * easeOut),
         experience: Math.floor(targets.experience * easeOut),
         satisfaction: Math.floor(targets.satisfaction * easeOut)
-      });
-
-      if (step >= steps) {
+      });      if (step >= steps) {
         clearInterval(timer);
         setCounts(targets);
       }
@@ -731,235 +761,354 @@ function Hero({ onContact }: { onContact: () => void }) {
   };
 
   return (
-    <motion.section
+    <div
       ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50"
-      style={{ opacity }}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 to-white"
     >
-      {/* Enhanced Animated Background Elements */}
+      {/* 3D Hero Elements - Immediately visible */}
       <motion.div
-        className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-60"
-        animate={{
-          scale: [1, 2, 2, 1, 1],
-          rotate: [0, 90, 180, 270, 360],
-        }}
-        transition={{
-          duration: 20,
-          ease: "easeInOut",
-          repeat: Infinity,
-          repeatType: "reverse"
-        }}
-      />
-      <motion.div
-        className="absolute top-40 right-20 w-72 h-72 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-60"
-        animate={{
-          scale: [2, 1, 1, 2, 2],
-          rotate: [360, 270, 180, 90, 0],
-        }}
-        transition={{
-          duration: 25,
-          ease: "easeInOut",
-          repeat: Infinity,
-          repeatType: "reverse"
-        }}
-      />
-      <motion.div
-        className="absolute -bottom-8 left-20 w-72 h-72 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full mix-blend-multiply filter blur-xl opacity-60"
-        animate={{
-          scale: [1, 2, 2, 1, 1],
-          rotate: [0, 90, 180, 270, 360],
-        }}
-        transition={{
-          duration: 30,
-          ease: "easeInOut",
-          repeat: Infinity,
-          repeatType: "reverse"
-        }}
-      />
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0 }}
+        className="absolute inset-0 w-full h-full overflow-hidden"
+      >
+        {/* 3D Particle Background */}
+        <ThreeDBackground 
+          intensity={0.6} 
+          density={30} 
+          speed={0.05}
+          color1="#3b82f6" 
+          color2="#4f46e5" 
+          className="!z-0"
+        />
+        
+        {/* Radial gradient overlay for depth */}
+        <div className="absolute inset-0 w-full h-full bg-[radial-gradient(ellipse_at_center,rgba(var(--color-primary),0.08),transparent_70%)] z-[-1]" />
+        
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-[0.01] z-[-1]" />
+        
+        {/* 3D Floating Globe */}
+        <ThreeDGlobe 
+          size="600px"
+          position="bottom-0 right-0 translate-x-1/4 translate-y-1/4"
+          opacity={0.25}
+          color1="#3b82f6"
+          color2="#4f46e5"
+        />
+        
+        {/* Animated 3D Cube */}
+        <FloatingTechCube 
+          position="top-20 left-20"
+          className="z-0"
+          size="120px"
+          colors={['#3b82f6', '#6366f1', '#8b5cf6']}
+        />
+        
+        {/* Small floating tech cube with immediate animation */}
+        <FloatingTechCube 
+          position="bottom-40 left-1/3" 
+          size="80px"
+          colors={['#06b6d4', '#3b82f6', '#4f46e5']}
+        />
+        
+        {/* Additional 3D elements from hero-3d-elements.tsx - Immediately visible */}
+        <motion.div
+          initial={{ opacity: 1, y: 0 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0 }}
+          className="absolute z-10"
+        >
+          <div className="Hero3DCube absolute top-40 right-20 z-10" style={{ width: '100px', height: '100px', perspective: '1000px' }}>
+            <motion.div 
+              className="relative w-full h-full preserve-3d pointer-events-none"
+              animate={{
+                rotateX: [0, 360],
+                rotateY: [0, 360],
+                rotateZ: [0, 360]
+              }}
+              transition={{
+                duration: 20,
+                ease: "linear",
+                repeat: Infinity
+              }}
+            >
+              {/* Front face */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-indigo-600 opacity-60" 
+                   style={{ transform: 'translateZ(50px)' }} />
+              {/* Back face */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-indigo-600 to-purple-600 opacity-60" 
+                   style={{ transform: 'rotateY(180deg) translateZ(50px)' }} />
+              {/* Side faces */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-600 opacity-60" 
+                   style={{ transform: 'rotateY(-90deg) translateZ(50px)' }} />
+              <div className="absolute inset-0 bg-gradient-to-l from-indigo-600 to-blue-600 opacity-60" 
+                   style={{ transform: 'rotateY(90deg) translateZ(50px)' }} />
+              <div className="absolute inset-0 bg-gradient-to-b from-blue-600 to-indigo-600 opacity-60" 
+                   style={{ transform: 'rotateX(90deg) translateZ(50px)' }} />
+              <div className="absolute inset-0 bg-gradient-to-t from-indigo-600 to-purple-600 opacity-60" 
+                   style={{ transform: 'rotateX(-90deg) translateZ(50px)' }} />
+            </motion.div>
+          </div>
 
-      {/* Floating elements */}
-      <motion.div
-        className="absolute top-1/4 left-1/4 w-4 h-4 bg-lavender/30 rounded-full"
-        animate={{
-          y: [0, -20, 0],
-          opacity: [0.3, 0.8, 0.3],
-        }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-      />
-      <motion.div
-        className="absolute top-1/3 right-1/3 w-6 h-6 bg-pink/30 rounded-full"
-        animate={{
-          y: [0, -30, 0],
-          opacity: [0.3, 0.8, 0.3],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 1
-        }}
-      />
+          {/* Animated 3D Sphere */}
+          <div className="absolute bottom-40 left-20 z-10" style={{ width: '80px', height: '80px' }}>
+            <motion.div
+              className="w-full h-full rounded-full pointer-events-none"
+              animate={{
+                y: [0, -15, 0],
+                x: [0, 10, 0],
+                scale: [1, 1.05, 1],
+              }}
+              transition={{
+                duration: 8,
+                ease: "easeInOut",
+                repeat: Infinity
+              }}
+            >
+              <div className="relative w-full h-full">
+                {/* Sphere with gradient */}
+                <div className="absolute inset-0 rounded-full bg-gradient-radial from-blue-300/40 to-blue-700/70 opacity-60" />
+                {/* Highlight */}
+                <div className="absolute top-1/4 left-1/4 w-1/4 h-1/4 rounded-full bg-white opacity-30" />
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+      </motion.div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="mb-8"
-        >
+        {/* Removed ScrollRevealSection to ensure content is visible immediately */}
+        <div className="mb-8 relative z-20">
           <motion.div
-            className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg border border-gray-200 mb-8"
-            initial={{ opacity: 0, scale: 0.8 }}
+            className="inline-flex items-center space-x-2 bg-white/90 backdrop-blur-sm px-6 py-3 rounded-full shadow-md border border-gray-100 mb-8 animate-float"
+            initial={{ opacity: 1, scale: 1 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
+            transition={{ duration: 0 }}
             whileHover={{ 
-              scale: 1.05,
-              boxShadow: "0 10px 30px rgba(156, 137, 184, 0.3)"
+              scale: 1.03,
+              boxShadow: "0 10px 30px rgba(79, 70, 229, 0.15)"
             }}
           >
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          >
-            <Sparkles className="w-5 h-5 text-teal" />
-            </motion.div>
-            <span className="text-gray-700 font-medium">Transforming Businesses Digitally</span>
+            <div className="bg-indigo-50 p-1 rounded-full">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              >
+                <Sparkles className="w-4 h-4 text-indigo-600" />
+              </motion.div>
+            </div>
+            <TypedTextAnimation 
+              text="ENTERPRISE-GRADE DIGITAL SOLUTIONS"
+              className="text-gray-800 font-medium text-sm tracking-wide"
+              typingSpeed={0.03}
+              cursorColor="#4f46e5"
+              startDelay={0.5}
+            />
           </motion.div>
-        </motion.div>
+        </div>
 
-        <motion.h1
-          className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
+        <ImmediateDisplay
+          className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tight"
         >
-          <span className="text-gray-900">Transform Your Business with</span>
-          <br />
-          <span className="gradient-text-animated">
-            Custom Software
-          </span>
-          <br />
-          <span className="text-gray-900">That Actually Works</span>
-        </motion.h1>
+          <ScrollRevealItem>
+            <WordFadeIn 
+              text="Transform Your Business with" 
+              className="text-gray-900"
+              staggerDelay={0.05}
+            />
+          </ScrollRevealItem>
+          
+          <ScrollRevealItem className="relative inline-block mt-2 mb-3">
+            <AnimatedGradientText
+              text="Custom Software"
+              className="font-extrabold"
+              gradientFrom="from-blue-700"
+              gradientVia="via-indigo-600"
+              gradientTo="to-blue-800"
+            />
+            <motion.div 
+              className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-800 rounded-full"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ delay: 1.2, duration: 0.8, ease: "easeOut" }}
+              style={{ transformOrigin: 'left' }}
+            />
+          </ScrollRevealItem>
+          
+          <ScrollRevealItem>
+            <WordFadeIn 
+              text="That Actually Works" 
+              className="text-gray-900 block"
+              delay={0.8}
+              staggerDelay={0.05}
+            />
+          </ScrollRevealItem>
+        </ImmediateDisplay>
 
-        <motion.p
-          className="text-xl md:text-2xl text-gray-600 mb-10 max-w-4xl mx-auto leading-relaxed"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
+        <ImmediateDisplay
+          className="text-lg md:text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed"
         >
-          We build <strong className="text-gray-900">enterprise-grade software</strong> and mobile apps that scale your business. 
-          From ₹7,000 websites to complex enterprise solutions - delivered in Jodhpur with global standards.
-        </motion.p>
+          <p>
+            We build <HighlightText 
+                      text="enterprise-grade software" 
+                      highlightWords={["enterprise-grade"]} 
+                      highlightColor="bg-indigo-100" 
+                      highlightTextColor="text-indigo-800 font-semibold"
+                    /> and mobile apps that scale with your business. 
+            From custom websites to complex enterprise solutions—delivered with global standards.
+          </p>
+        </ImmediateDisplay>
 
-        <motion.div
+        <div
           className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.8 }}
         >
           <motion.button
-            onClick={onContact}
-            className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-xl hover:shadow-cyan-500/25 transition-all duration-300 flex items-center space-x-2"
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              trackCTAClick("Get Free Quote in 24hrs", "hero");
+              onContact();
+            }}
+            className="group relative bg-indigo-700 text-white px-8 py-4 rounded-xl font-semibold text-base shadow-lg shadow-indigo-600/20 overflow-hidden flex items-center space-x-2 depth-effect"
+            whileHover={{ 
+              scale: 1.03,
+              boxShadow: "0 15px 30px rgba(79, 70, 229, 0.3)"
+            }}
+            whileTap={{ scale: 0.97 }}
           >
-            <Zap className="w-5 h-5" />
-            <span>Get Free Quote in 24hrs</span>
+            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-800 to-indigo-700 transition-transform duration-300 ease-out transform translate-x-full group-hover:translate-x-0"></span>
+            <motion.div
+              animate={{ rotate: [0, 360] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+              className="relative z-10 mr-1"
+            >
+              <Zap className="w-5 h-5" />
+            </motion.div>
+            <span className="relative z-10">Get Free Quote in 24hrs</span>
           </motion.button>
           
           <motion.button
-            onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-            className="bg-white text-gray-700 px-8 py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 border border-gray-200"
-            whileHover={{ scale: 1.05, y: -2 }}
+            onClick={() => {
+              trackCTAClick("View Our Work", "hero");
+              document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="bg-white text-gray-700 px-8 py-4 rounded-full font-semibold text-lg shadow-lg transition-all duration-300 flex items-center space-x-2 border border-gray-200 backdrop-blur-sm bg-white/80"
+            whileHover={{ 
+              scale: 1.05, 
+              y: -2,
+              boxShadow: "0 10px 25px rgba(59, 130, 246, 0.15)"
+            }}
             whileTap={{ scale: 0.95 }}
           >
             <Eye className="w-5 h-5" />
             <span>View Our Work</span>
           </motion.button>
-        </motion.div>
+        </div>
 
         {/* Statistics */}
-        <motion.div
+        <ScrollRevealSection
           className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.8 }}
+          delay={1.2}
+          duration={0.8}
+          staggerChildren={true}
+          staggerDelay={0.1}
         >
-          <motion.div
-            className="text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.6 }}
-          >
-            <div className="flex justify-center mb-2">
-              <div className="w-12 h-12 bg-gradient-to-br from-lavender to-pink rounded-full flex items-center justify-center text-white">
-                <CheckCircle className="w-6 h-6" />
+          <ScrollRevealItem>
+            <motion.div
+              className="text-center"
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            >
+              <div className="flex justify-center mb-2">
+                <motion.div 
+                  className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-blue-600/20"
+                  animate={{ 
+                    boxShadow: ['0 10px 15px rgba(59, 130, 246, 0.2)', '0 15px 25px rgba(59, 130, 246, 0.4)', '0 10px 15px rgba(59, 130, 246, 0.2)']
+                  }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <CheckCircle className="w-6 h-6" />
+                </motion.div>
               </div>
-            </div>
-            <div className="counter text-3xl md:text-4xl font-bold text-gray-900 mb-1">{counts.projects}+</div>
-            <div className="text-sm text-gray-600">Projects Completed</div>
-          </motion.div>
+              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-indigo-700 mb-1">{counts.projects}+</div>
+              <div className="text-sm text-gray-600">Projects Completed</div>
+            </motion.div>
+          </ScrollRevealItem>
           
-          <motion.div
-            className="text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.3, duration: 0.6 }}
-          >
-            <div className="flex justify-center mb-2">
-              <div className="w-12 h-12 bg-gradient-to-br from-lavender to-pink rounded-full flex items-center justify-center text-white">
-                <Heart className="w-6 h-6" />
+          <ScrollRevealItem>
+            <motion.div
+              className="text-center"
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            >
+              <div className="flex justify-center mb-2">
+                <motion.div 
+                  className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-indigo-600/20"
+                  animate={{ 
+                    boxShadow: ['0 10px 15px rgba(99, 102, 241, 0.2)', '0 15px 25px rgba(99, 102, 241, 0.4)', '0 10px 15px rgba(99, 102, 241, 0.2)']
+                  }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <Heart className="w-6 h-6" />
+                </motion.div>
               </div>
-            </div>
-            <div className="counter text-3xl md:text-4xl font-bold text-gray-900 mb-1">{counts.clients}+</div>
-            <div className="text-sm text-gray-600">Happy Clients</div>
-          </motion.div>
+              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 mb-1">{counts.clients}+</div>
+              <div className="text-sm text-gray-600">Happy Clients</div>
+            </motion.div>
+          </ScrollRevealItem>
           
-          <motion.div
-            className="text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.4, duration: 0.6 }}
-          >
-            <div className="flex justify-center mb-2">
-              <div className="w-12 h-12 bg-gradient-to-br from-lavender to-pink rounded-full flex items-center justify-center text-white">
-                <Award className="w-6 h-6" />
+          <ScrollRevealItem>
+            <motion.div
+              className="text-center"
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            >
+              <div className="flex justify-center mb-2">
+                <motion.div 
+                  className="w-12 h-12 bg-gradient-to-br from-blue-700 to-cyan-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-blue-700/20"
+                  animate={{ 
+                    boxShadow: ['0 10px 15px rgba(29, 78, 216, 0.2)', '0 15px 25px rgba(29, 78, 216, 0.4)', '0 10px 15px rgba(29, 78, 216, 0.2)']
+                  }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <Award className="w-6 h-6" />
+                </motion.div>
               </div>
-            </div>
-            <div className="counter text-3xl md:text-4xl font-bold text-gray-900 mb-1">{counts.experience}+</div>
-            <div className="text-sm text-gray-600">Years Experience</div>
-          </motion.div>
+              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-cyan-600 mb-1">{counts.experience}+</div>
+              <div className="text-sm text-gray-600">Years Experience</div>
+            </motion.div>
+          </ScrollRevealItem>
           
-          <motion.div
-            className="text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5, duration: 0.6 }}
-          >
-            <div className="flex justify-center mb-2">
-              <div className="w-12 h-12 bg-gradient-to-br from-lavender to-pink rounded-full flex items-center justify-center text-white">
-                <Star className="w-6 h-6" />
+          <ScrollRevealItem>
+            <motion.div
+              className="text-center"
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            >
+              <div className="flex justify-center mb-2">
+                <motion.div 
+                  className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-amber-500/20"
+                  animate={{ 
+                    boxShadow: ['0 10px 15px rgba(245, 158, 11, 0.2)', '0 15px 25px rgba(245, 158, 11, 0.4)', '0 10px 15px rgba(245, 158, 11, 0.2)']
+                  }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <Star className="w-6 h-6" />
+                </motion.div>
               </div>
-            </div>
-            <div className="counter text-3xl md:text-4xl font-bold text-gray-900 mb-1">{counts.satisfaction}%</div>
-            <div className="text-sm text-gray-600">Client Satisfaction</div>
-          </motion.div>
-        </motion.div>
+              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-orange-500 mb-1">{counts.satisfaction}%</div>
+              <div className="text-sm text-gray-600">Client Satisfaction</div>
+            </motion.div>
+          </ScrollRevealItem>
+        </ScrollRevealSection>
       </div>
 
       <motion.div
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
+        whileHover={{ scale: 1.2 }}
       >
-        <ChevronDown className="w-6 h-6 text-gray-400" />
+        <div className="p-2 bg-white/30 backdrop-blur-sm rounded-full">
+          <ChevronDown className="w-6 h-6 text-indigo-600" />
+        </div>
       </motion.div>
-    </motion.section>
+    </div>
   );
 }
 
@@ -1220,7 +1369,7 @@ function Services() {
   return (
     <motion.section
       id="services"
-      className="py-16 bg-gradient-to-br from-slate-50 to-blue-50"
+      className="py-24 bg-white"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -1228,32 +1377,38 @@ function Services() {
     >
       <div className="max-w-7xl mx-auto px-6">
         <motion.div
-          className="section-header"
+          className="section-header text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="heading-professional text-4xl md:text-5xl font-bold mb-6">
-            Our <span className="gradient-text-animated">Services</span>
+          <div className="inline-flex items-center justify-center space-x-2 bg-indigo-50 px-4 py-2 rounded-full mb-4">
+            <div className="w-2 h-2 bg-indigo-700 rounded-full"></div>
+            <span className="text-indigo-700 text-sm font-semibold tracking-wide">OUR SERVICES</span>
+            <div className="w-2 h-2 bg-indigo-700 rounded-full"></div>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">
+            Comprehensive <span className="text-indigo-700">Solutions</span> for Your Business
           </h2>
-          <p className="text-professional text-xl text-gray-600 max-w-3xl mx-auto">
-            We offer comprehensive software solutions tailored to meet your business needs and drive digital transformation.
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            We offer end-to-end software solutions tailored to meet your specific business requirements and drive meaningful digital transformation.
           </p>
         </motion.div>
 
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
             <motion.div
               key={service.title}
-              className="card-professional group tilt-card morphing-shape"
+              className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 group overflow-hidden relative"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1, duration: 0.6 }}
-              whileHover={{ y: -8 }}
+              whileHover={{ y: -5 }}
             >
-              <div className={`w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br ${service.color} rounded-xl flex items-center justify-center text-white mb-3 md:mb-6`}>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full -translate-y-1/2 translate-x-1/2 opacity-20 group-hover:scale-150 transition-transform duration-700"></div>
+              <div className={`w-14 h-14 bg-gradient-to-br ${service.color} rounded-xl flex items-center justify-center text-white mb-6 shadow-lg relative`}>
                 <motion.div
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.6 }}
@@ -1262,26 +1417,28 @@ function Services() {
                 </motion.div>
               </div>
               
-              <h3 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-gray-900">{service.title}</h3>
-              <p className="text-xs md:text-sm text-gray-600 mb-2 md:mb-6">{service.description}</p>
+              <h3 className="text-xl font-bold mb-4 text-gray-900">{service.title}</h3>
+              <p className="text-gray-600 mb-6 leading-relaxed">{service.description}</p>
               
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {service.features.map((feature, featureIndex) => (
                   <motion.li 
                     key={feature} 
-                    className="flex items-center space-x-2"
+                    className="flex items-start space-x-3"
                     initial={{ opacity: 0, x: -10 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: featureIndex * 0.1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.1 * featureIndex, duration: 0.5 }}
                   >
-                    <motion.div 
-                      className="w-2 h-2 bg-lavender rounded-full"
-                      whileHover={{ scale: 1.5 }}
-                    />
-                    <span className="text-gray-700">{feature}</span>
+                    <div className="bg-indigo-50 rounded-full p-1 mt-0.5">
+                      <CheckCircle className="w-3.5 h-3.5 text-indigo-700 flex-shrink-0" />
+                    </div>
+                    <span className="text-sm text-gray-600">{feature}</span>
                   </motion.li>
                 ))}
               </ul>
+              
+              <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-700 to-indigo-600 w-0 group-hover:w-full transition-all duration-700 ease-out"></div>
             </motion.div>
           ))}
         </div>
@@ -2342,7 +2499,10 @@ function Pricing({ onCustomQuote, onGetStarted }: { onCustomQuote: () => void; o
                 </div>
 
                 <motion.button
-                  onClick={() => onGetStarted(plan)}
+                  onClick={() => {
+                    trackCTAClick(`Select ${plan.name} Plan`, "pricing");
+                    onGetStarted(plan);
+                  }}
                   className={`w-full py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center relative overflow-hidden ${
                     plan.popular
                       ? 'bg-gradient-to-r from-lavender to-pink text-white shadow-lg hover:shadow-xl'
@@ -2570,14 +2730,15 @@ function Blog() {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <motion.button
-            onClick={() => window.open('/blog', '_blank')}
-            className="bg-gradient-to-r from-lavender to-pink text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <TrackableLink
+            href="/blog"
+            text="View All Articles"
+            category="blog"
+            target="_blank"
+            className="bg-gradient-to-r from-lavender to-pink text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 inline-flex items-center justify-center"
           >
             View All Articles
-          </motion.button>
+          </TrackableLink>
         </motion.div>
       </div>
     </motion.section>
@@ -2776,24 +2937,32 @@ function Footer() {
   };
 
   return (
-    <footer className="bg-gray-900 text-white py-12">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid md:grid-cols-4 gap-8">
-          <div>
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-lavender to-pink rounded-xl flex items-center justify-center">
+    <footer className="bg-gradient-to-br from-gray-900 via-gray-850 to-gray-800 text-white py-20 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-800"></div>
+      <div className="absolute top-0 right-0 w-72 h-72 bg-indigo-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-700/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+      
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-16">
+          <div className="md:col-span-1">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-700 to-indigo-700 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-700/30">
                 <span className="text-white font-bold">SD</span>
               </div>
-              <span className="text-xl font-bold">Shivkara Digitals</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-500 to-indigo-400 bg-clip-text text-transparent">Shivkara Digitals</span>
             </div>
-            <p className="text-gray-400">
+            <p className="text-gray-400 leading-relaxed">
               Your trusted partner for custom software development, digital transformation, and business solutions that drive growth and efficiency.
             </p>
           </div>
           
           <div>
-            <h3 className="font-bold mb-4">Services</h3>
-            <ul className="space-y-2 text-gray-400">
+            <h3 className="font-semibold mb-5 text-lg flex items-center">
+              <span className="w-6 h-px bg-indigo-600 mr-3"></span>
+              Services
+            </h3>
+            <ul className="space-y-3 text-gray-400">
               <li>
                 <button 
                   onClick={() => scrollToSection('services')}
@@ -2813,16 +2982,18 @@ function Footer() {
               <li>
                 <button 
                   onClick={() => scrollToSection('services')}
-                  className="hover:text-lavender transition-colors cursor-pointer"
+                  className="hover:text-blue-400 transition-colors cursor-pointer group flex items-center"
                 >
+                  <span className="w-0 h-px bg-blue-400 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-2"></span>
                   Web Design & Development
                 </button>
               </li>
               <li>
                 <button 
                   onClick={() => scrollToSection('services')}
-                  className="hover:text-lavender transition-colors cursor-pointer"
+                  className="hover:text-blue-400 transition-colors cursor-pointer group flex items-center"
                 >
+                  <span className="w-0 h-px bg-blue-400 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-2"></span>
                   Digital Transformation
                 </button>
               </li>
@@ -2830,37 +3001,44 @@ function Footer() {
           </div>
           
           <div>
-            <h3 className="font-bold mb-4">Company</h3>
-            <ul className="space-y-2 text-gray-400">
+            <h3 className="font-semibold mb-5 text-lg flex items-center">
+              <span className="w-6 h-px bg-blue-500 mr-3"></span>
+              Company
+            </h3>
+            <ul className="space-y-3 text-gray-400">
               <li>
                 <button 
                   onClick={() => scrollToSection('about')}
-                  className="hover:text-lavender transition-colors cursor-pointer"
+                  className="hover:text-blue-400 transition-colors cursor-pointer group flex items-center"
                 >
+                  <span className="w-0 h-px bg-blue-400 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-2"></span>
                   About Us
                 </button>
               </li>
               <li>
                 <button 
                   onClick={() => scrollToSection('about')}
-                  className="hover:text-lavender transition-colors cursor-pointer"
+                  className="hover:text-blue-400 transition-colors cursor-pointer group flex items-center"
                 >
+                  <span className="w-0 h-px bg-blue-400 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-2"></span>
                   Our Team
                 </button>
               </li>
               <li>
                 <a 
-                  href="mailto:shivkaradigitals@gmail.com?subject=Career%20Opportunity"
-                  className="hover:text-lavender transition-colors cursor-pointer"
+                  href="mailto:info@shivkaradigital.com?subject=Career%20Opportunity"
+                  className="hover:text-blue-400 transition-colors cursor-pointer group flex items-center"
                 >
+                  <span className="w-0 h-px bg-blue-400 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-2"></span>
                   Careers
                 </a>
               </li>
               <li>
                 <button 
                   onClick={() => scrollToSection('contact')}
-                  className="hover:text-lavender transition-colors cursor-pointer"
+                  className="hover:text-blue-400 transition-colors cursor-pointer group flex items-center"
                 >
+                  <span className="w-0 h-px bg-blue-400 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-2"></span>
                   Contact
                 </button>
               </li>
@@ -2868,18 +3046,37 @@ function Footer() {
           </div>
           
           <div>
-            <h3 className="font-bold mb-4">Connect</h3>
+            <h3 className="font-semibold mb-5 text-lg flex items-center">
+              <span className="w-6 h-px bg-blue-500 mr-3"></span>
+              Connect
+            </h3>
             <div className="flex space-x-4 mt-2">
-              <a href="https://instagram.com/shivkaradigital" target="_blank" rel="noopener noreferrer" className="hover:text-lavender transition-colors text-2xl">
-                <FaInstagram />
+              <a href="https://instagram.com/shivkaradigital" target="_blank" rel="noopener noreferrer" 
+                 className="w-10 h-10 bg-gray-800 hover:bg-gradient-to-br hover:from-blue-600 hover:to-purple-600 rounded-full flex items-center justify-center transition-all duration-300 group">
+                <FaInstagram className="text-gray-400 group-hover:text-white" />
               </a>
+
+            </div>
+            <div className="mt-6">
+              <div className="flex items-center space-x-2">
+                <Mail className="w-4 h-4 text-blue-400" />
+                <a href="mailto:info@shivkaradigital.com" className="text-gray-400 hover:text-blue-400 transition-colors">
+                  info@shivkaradigital.com
+                </a>
+              </div>
             </div>
           </div>
         </div>
         
-        <motion.div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 0.2 }}>
-          <p>&copy; 2025 Shivkara Digitals. All rights reserved.</p>
-        </motion.div>
+        <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <motion.p className="text-gray-500 text-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 0.2 }}>
+            &copy; 2025 Shivkara Digitals. All rights reserved.
+          </motion.p>
+          <div className="flex space-x-6 mt-4 md:mt-0">
+            <a href="#privacy" className="text-gray-500 hover:text-blue-400 text-sm transition-colors">Privacy Policy</a>
+            <a href="#terms" className="text-gray-500 hover:text-blue-400 text-sm transition-colors">Terms of Service</a>
+          </div>
+        </div>
       </div>
     </footer>
   );
@@ -3047,9 +3244,6 @@ export default function HomePage() {
       
       {/* WhatsApp Chat Widget */}
       <WhatsAppChat phoneNumber="919521699090" />
-      
-      {/* Exit Intent WhatsApp */}
-      <ExitIntentWhatsApp />
       
       <AnimatePresence>
         <LoadingScreen key="loading" />

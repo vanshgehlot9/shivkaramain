@@ -115,7 +115,7 @@ export default function AnimatedFeaturedProject() {
       {projects.map((project, idx) => (
         <section
           key={project.name}
-          ref={el => (sectionRefs.current[idx] = el)}
+          ref={el => { sectionRefs.current[idx] = el as HTMLDivElement | null }}
           className="relative z-10 px-4 py-24 min-h-screen flex items-center justify-center snap-start opacity-0 transition-opacity duration-700"
         >
           <div className="max-w-4xl w-full mx-auto bg-background-card bg-gradient-glass border border-border rounded-3xl overflow-hidden shadow-glass p-10 md:p-16 backdrop-blur-xl">

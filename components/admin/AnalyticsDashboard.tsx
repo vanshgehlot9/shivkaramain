@@ -11,7 +11,13 @@ import {
   Calendar,
   BarChart3,
   PieChart,
-  Activity
+  Activity,
+  Eye,
+  Globe,
+  Smartphone,
+  Monitor,
+  MousePointer,
+  ExternalLink
 } from "lucide-react";
 import { 
   Chart as ChartJS, 
@@ -25,7 +31,8 @@ import {
   Tooltip, 
   Legend 
 } from 'chart.js';
-import { Line, Pie, Bar } from 'react-chartjs-2';
+import { Line, Pie, Bar, Doughnut } from 'react-chartjs-2';
+import { getVisitorStatistics } from "../../lib/analytics";
 
 ChartJS.register(
   CategoryScale, 
@@ -47,6 +54,19 @@ interface AnalyticsData {
   monthlyOrders: number[];
   expensesByCategory: { [key: string]: number };
   recentActivity: any[];
+  // Visitor analytics
+  totalVisitors: number;
+  totalPageViews: number;
+  dailyVisitors: number[];
+  visitorDates: string[];
+  deviceBreakdown: {
+    mobile: number;
+    desktop: number;
+  };
+  topPages: Array<{
+    path: string;
+    count: number;
+  }>;
 }
 
 export function AnalyticsDashboard() {
@@ -57,7 +77,17 @@ export function AnalyticsDashboard() {
     monthlyRevenue: [],
     monthlyOrders: [],
     expensesByCategory: {},
-    recentActivity: []
+    recentActivity: [],
+    // Initialize visitor analytics
+    totalVisitors: 0,
+    totalPageViews: 0,
+    dailyVisitors: [],
+    visitorDates: [],
+    deviceBreakdown: {
+      mobile: 0,
+      desktop: 0
+    },
+    topPages: []
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -111,6 +141,31 @@ export function AnalyticsDashboard() {
         const category = expense.category || 'Other';
         expensesByCategory[category] = (expensesByCategory[category] || 0) + (expense.amount || 0);
       });
+      
+      // Get visitor statistics based on time range
+      let visitorTimeRange = 30;
+      if (timeRange === '7d') visitorTimeRange = 7;
+      if (timeRange === '90d') visitorTimeRange = 90;
+      if (timeRange === '1y') visitorTimeRange = 365;
+      
+      const visitorStats = await getVisitorStatistics(visitorTimeRange);
+      
+      // Process visitor data for charts
+      const dailyVisitors: number[] = [];
+      const visitorDates: string[] = [];
+      
+      // Sort stats by date
+      const sortedStats = [...(visitorStats.dailyStats || [])].sort((a, b) => {
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      });
+      
+      sortedStats.forEach((day: any) => {
+        dailyVisitors.push(day.visitors || 0);
+        // Format date as 'DD/MM'
+        const dateObj = new Date(day.date);
+        const formattedDate = `${dateObj.getDate()}/${dateObj.getMonth() + 1}`;
+        visitorDates.push(formattedDate);
+      });
 
       setData({
         totalRevenue,
@@ -125,7 +180,14 @@ export function AnalyticsDashboard() {
             const bDate = b.date || b.createdAt;
             return bDate - aDate;
           })
-          .slice(0, 10)
+          .slice(0, 10),
+        // Set visitor analytics
+        totalVisitors: visitorStats.totalVisitors || 0,
+        totalPageViews: visitorStats.totalPageViews || 0,
+        dailyVisitors,
+        visitorDates,
+        deviceBreakdown: visitorStats.deviceBreakdown || { mobile: 0, desktop: 0 },
+        topPages: visitorStats.topPages || []
       });
 
     } catch (err) {
@@ -283,6 +345,32 @@ export function AnalyticsDashboard() {
           </CardContent>
         </Card>
         
+        <Card className="bg-gradient-to-r from-purple-50 to-purple-100 border-purple-200">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-purple-600 text-sm font-medium">Total Visitors</p>
+                <p className="text-2xl font-bold text-purple-900">{data.totalVisitors.toLocaleString()}</p>
+                <p className="text-xs text-purple-600 mt-1">Unique website visitors</p>
+              </div>
+              <Users className="w-10 h-10 text-purple-600" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-gradient-to-r from-indigo-50 to-indigo-100 border-indigo-200">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-indigo-600 text-sm font-medium">Page Views</p>
+                <p className="text-2xl font-bold text-indigo-900">{data.totalPageViews.toLocaleString()}</p>
+                <p className="text-xs text-indigo-600 mt-1">Total page impressions</p>
+              </div>
+              <Eye className="w-10 h-10 text-indigo-600" />
+            </div>
+          </CardContent>
+        </Card>
+        
         <Card className="bg-gradient-to-r from-orange-50 to-orange-100 border-orange-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -428,6 +516,151 @@ export function AnalyticsDashboard() {
                     No recent activity
                   </div>
                 )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Visitor Analytics Section */}
+      <div className="mt-10">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Visitor Analytics</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Daily Visitors Chart */}
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-gray-900">
+                <Users className="w-5 h-5" />
+                Website Traffic
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <div className="flex items-center justify-center h-64">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                </div>
+              ) : data.dailyVisitors.length > 0 ? (
+                <div className="h-64">
+                  <Line 
+                    data={{
+                      labels: data.visitorDates,
+                      datasets: [
+                        {
+                          label: 'Daily Visitors',
+                          data: data.dailyVisitors,
+                          borderColor: 'rgb(124, 58, 237)',
+                          backgroundColor: 'rgba(124, 58, 237, 0.1)',
+                          borderWidth: 3,
+                          fill: true,
+                          tension: 0.4,
+                        }
+                      ],
+                    }} 
+                    options={chartOptions} 
+                  />
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-64 text-gray-500">
+                  No visitor data available
+                </div>
+              )}
+            </CardContent>
+          </Card>
+          
+          {/* Device Breakdown */}
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-gray-900">
+                <Smartphone className="w-5 h-5" />
+                Device Breakdown
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <div className="flex items-center justify-center h-64">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                </div>
+              ) : (data.deviceBreakdown.mobile > 0 || data.deviceBreakdown.desktop > 0) ? (
+                <div className="h-64">
+                  <Doughnut 
+                    data={{
+                      labels: ['Mobile', 'Desktop'],
+                      datasets: [
+                        {
+                          data: [data.deviceBreakdown.mobile, data.deviceBreakdown.desktop],
+                          backgroundColor: [
+                            'rgba(124, 58, 237, 0.8)',
+                            'rgba(59, 130, 246, 0.8)',
+                          ],
+                          borderColor: [
+                            'rgb(124, 58, 237)',
+                            'rgb(59, 130, 246)',
+                          ],
+                          borderWidth: 1,
+                        }
+                      ],
+                    }}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: {
+                          position: 'right',
+                        },
+                      },
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-64 text-gray-500">
+                  No device data available
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+        
+        {/* Top Pages Section */}
+        <Card className="shadow-lg mt-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-gray-900">
+              <Globe className="w-5 h-5" />
+              Most Visited Pages
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            {isLoading ? (
+              <div className="flex items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              </div>
+            ) : data.topPages.length > 0 ? (
+              <div className="divide-y divide-gray-100">
+                {data.topPages.map((page, index) => (
+                  <div key={index} className="p-4 hover:bg-gray-50">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                          <p className="font-medium text-blue-700">{index + 1}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">{page.path}</p>
+                          <p className="text-xs text-gray-500">
+                            {page.path === '/' ? 'Homepage' : page.path.split('/').filter(Boolean).join(' › ')}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        <div className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                          {page.count} views
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-64 text-gray-500">
+                No page view data available
               </div>
             )}
           </CardContent>

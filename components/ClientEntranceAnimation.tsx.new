@@ -1,0 +1,56 @@
+"use client";
+import dynamic from 'next/dynamic';
+import { useEffect } from 'react';
+
+// Preload the animation to ensure it loads immediately with a loading fallback
+const EntranceAnimation = dynamic(() => import('./ui/entrance-animation'), {
+  ssr: false,
+  loading: () => (
+    <div className="fixed inset-0 z-[9999] bg-black flex items-center justify-center">
+      <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  )
+});
+
+export default function ClientEntranceAnimation() {
+  // Force the animation to be visible on first load
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    // Prevent scrolling and ensure animation shows at top
+    document.body.style.overflow = 'hidden';
+    window.scrollTo(0, 0);
+    
+    // Check if this is the first visit
+    const hasSeenAnimation = localStorage.getItem('hasSeenEntryAnimation');
+    
+    // If first visit, keep scroll locked until animation completes
+    if (!hasSeenAnimation) {
+      const timer = setTimeout(() => {
+        document.body.style.overflow = '';
+      }, 4000); // Animation duration
+      
+      return () => {
+        clearTimeout(timer);
+        document.body.style.overflow = '';
+      };
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, []);
+  
+  return (
+    <div 
+      className="fixed inset-0 z-[9999]" 
+      style={{ 
+        height: '100vh', 
+        width: '100vw', 
+        position: 'fixed', 
+        top: 0, 
+        left: 0 
+      }}
+    >
+      <EntranceAnimation />
+    </div>
+  );
+}
