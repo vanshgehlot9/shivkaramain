@@ -83,6 +83,8 @@ import { OfferClaimForm, PlanSelectionForm } from "../components/SpecialForms";
 import { LeadCapturePopup, useLeadCapturePopup } from "../components/LeadCapturePopup";
 import { WhatsAppChat } from "../components/WhatsAppChat";
 import { app } from "../lib/firebase";
+import { db } from "../lib/firebase";
+import { collection, getDocs } from "firebase/firestore";
 import { ParticleBackground, FloatingElements } from "../components/ui/particles";
 import { EnhancedCard, GradientCard, GlassCard } from "../components/ui/enhanced-card";
 import { TechSlider } from "../components/ui/tech-slider";
@@ -91,6 +93,32 @@ import { ScrollRevealSection, ScrollRevealItem } from "../components/ui/scroll-r
 import { ImmediateDisplay } from "../components/ui/immediate-display";
 import { TypedTextAnimation, WordFadeIn, AnimatedGradientText, HighlightText } from "../components/ui/text-animations";
 import { ParallaxSection, ParallaxBackgroundLayers, AnimatedBackgroundSection } from "../components/ui/parallax-effects";
+import Footer from "../components/Footer";
+import FloatingActionButton from "../components/FloatingActionButton";
+
+// Import our advanced 3D components
+import { 
+  TechyHero3D, 
+  FloatingCodeBlocks, 
+  HolographicGrid, 
+  FloatingTechIcons, 
+  QuantumOrb 
+} from "../components/ui/techy-hero-3d";
+
+import { 
+  DataStreamVisualization, 
+  AIBrainVisualization, 
+  CloudInfrastructure, 
+  DigitalDNA 
+} from "../components/ui/modern-tech-elements";
+
+import { 
+  CyberpunkGlitch, 
+  HackerMatrix, 
+  QuantumField, 
+  TechnoGrid, 
+  DigitalRain 
+} from "../components/ui/cyberpunk-effects";
 
 const services = [
   {
@@ -138,28 +166,28 @@ const services = [
 ];
 
 const technologies = [
-  { name: "React", icon: <FaReact className="w-8 h-8" />, category: "Frontend" },
-  { name: "TypeScript", icon: <SiTypescript className="w-8 h-8" />, category: "Frontend" },
-  { name: "Node.js", icon: <FaNodeJs className="w-8 h-8" />, category: "Backend" },
-  { name: "Python", icon: <FaPython className="w-8 h-8" />, category: "Backend" },
-  { name: "Java", icon: <FaJava className="w-8 h-8" />, category: "Backend" },
-  { name: "MongoDB", icon: <SiMongodb className="w-8 h-8" />, category: "Database" },
-  { name: "PostgreSQL", icon: <SiPostgresql className="w-8 h-8" />, category: "Database" },
-  { name: "Redis", icon: <SiRedis className="w-8 h-8" />, category: "Database" },
-  { name: "Docker", icon: <FaDocker className="w-8 h-8" />, category: "DevOps" },
-  { name: "Kubernetes", icon: <SiKubernetes className="w-8 h-8" />, category: "DevOps" },
-  { name: "AWS", icon: <FaAws className="w-8 h-8" />, category: "Cloud" },
-  { name: "Google Cloud", icon: <FaGoogle className="w-8 h-8" />, category: "Cloud" },
-  { name: "Azure", icon: <FaMicrosoft className="w-8 h-8" />, category: "Cloud" },
-  { name: "Terraform", icon: <SiTerraform className="w-8 h-8" />, category: "DevOps" },
-  { name: "Jenkins", icon: <SiJenkins className="w-8 h-8" />, category: "DevOps" },
-  { name: "GitHub", icon: <SiGithub className="w-8 h-8" />, category: "Tools" },
-  { name: "GitLab", icon: <SiGitlab className="w-8 h-8" />, category: "Tools" },
-  { name: "Slack", icon: <SiSlack className="w-8 h-8" />, category: "Tools" },
-  { name: "Jira", icon: <SiJira className="w-8 h-8" />, category: "Tools" },
-  { name: "Figma", icon: <SiFigma className="w-8 h-8" />, category: "Design" },
-  { name: "Adobe", icon: <SiAdobe className="w-8 h-8" />, category: "Design" },
-  { name: "Sketch", icon: <SiSketch className="w-8 h-8" />, category: "Design" }
+  { name: "React", icon: <FaReact className="w-8 h-8" />, category: "Frontend", color: "from-blue-500 to-cyan-500" },
+  { name: "TypeScript", icon: <SiTypescript className="w-8 h-8" />, category: "Frontend", color: "from-blue-400 to-blue-700" },
+  { name: "Node.js", icon: <FaNodeJs className="w-8 h-8" />, category: "Backend", color: "from-green-500 to-emerald-500" },
+  { name: "Python", icon: <FaPython className="w-8 h-8" />, category: "Backend", color: "from-yellow-400 to-orange-400" },
+  { name: "Java", icon: <FaJava className="w-8 h-8" />, category: "Backend", color: "from-red-500 to-orange-500" },
+  { name: "MongoDB", icon: <SiMongodb className="w-8 h-8" />, category: "Database", color: "from-green-600 to-green-400" },
+  { name: "PostgreSQL", icon: <SiPostgresql className="w-8 h-8" />, category: "Database", color: "from-blue-700 to-blue-400" },
+  { name: "Redis", icon: <SiRedis className="w-8 h-8" />, category: "Database", color: "from-red-500 to-pink-500" },
+  { name: "Docker", icon: <FaDocker className="w-8 h-8" />, category: "DevOps", color: "from-blue-400 to-cyan-400" },
+  { name: "Kubernetes", icon: <SiKubernetes className="w-8 h-8" />, category: "DevOps", color: "from-blue-500 to-blue-800" },
+  { name: "AWS", icon: <FaAws className="w-8 h-8" />, category: "Cloud", color: "from-yellow-400 to-orange-500" },
+  { name: "Google Cloud", icon: <FaGoogle className="w-8 h-8" />, category: "Cloud", color: "from-blue-400 to-green-400" },
+  { name: "Azure", icon: <FaMicrosoft className="w-8 h-8" />, category: "Cloud", color: "from-blue-700 to-indigo-700" },
+  { name: "Terraform", icon: <SiTerraform className="w-8 h-8" />, category: "DevOps", color: "from-purple-500 to-indigo-500" },
+  { name: "Jenkins", icon: <SiJenkins className="w-8 h-8" />, category: "DevOps", color: "from-red-400 to-orange-400" },
+  { name: "GitHub", icon: <SiGithub className="w-8 h-8" />, category: "Tools", color: "from-gray-700 to-gray-900" },
+  { name: "GitLab", icon: <SiGitlab className="w-8 h-8" />, category: "Tools", color: "from-orange-500 to-pink-500" },
+  { name: "Slack", icon: <SiSlack className="w-8 h-8" />, category: "Tools", color: "from-purple-400 to-blue-400" },
+  { name: "Jira", icon: <SiJira className="w-8 h-8" />, category: "Tools", color: "from-blue-400 to-indigo-400" },
+  { name: "Figma", icon: <SiFigma className="w-8 h-8" />, category: "Design", color: "from-pink-400 to-yellow-400" },
+  { name: "Adobe", icon: <SiAdobe className="w-8 h-8" />, category: "Design", color: "from-red-400 to-orange-400" },
+  { name: "Sketch", icon: <SiSketch className="w-8 h-8" />, category: "Design", color: "from-yellow-400 to-pink-400" }
 ];
 
 const processSteps = [
@@ -599,10 +627,10 @@ function Header({ onGetStarted }: { onGetStarted: () => void }) {
           </motion.div>
           
           <nav className="hidden md:flex items-center space-x-6">
-            {['Home', 'Services', 'Projects', 'About', 'Location', 'Contact'].map((item, idx) => (
+            {['Home', 'Services', 'Projects', 'About', 'Articles', 'Location', 'Contact'].map((item, idx) => (
               <motion.a
                 key={item}
-                href={`#${item.toLowerCase()}`}
+                href={item === 'Articles' ? '/articles' : `#${item.toLowerCase()}`}
                 className={`relative text-sm font-medium tracking-wide transition-all duration-300 px-4 py-2 rounded-full ${
                   activeSection === item.toLowerCase()
                     ? 'text-white bg-gradient-to-r from-blue-700 to-indigo-600 shadow-md shadow-indigo-500/20'
@@ -676,10 +704,10 @@ function Header({ onGetStarted }: { onGetStarted: () => void }) {
             transition={{ duration: 0.3 }}
           >
             <div className="flex flex-col space-y-4">
-              {['Home', 'Services', 'Projects', 'About', 'Contact'].map((item) => (
+              {['Home', 'Services', 'Projects', 'About', 'Articles', 'Contact'].map((item) => (
                 <a
                   key={item}
-                  href={`#${item.toLowerCase()}`}
+                  href={item === 'Articles' ? '/articles' : `#${item.toLowerCase()}`}
                   className={`text-gray-700 font-medium transition-colors px-2 py-1 rounded-lg ${
                     activeSection === item.toLowerCase()
                       ? 'bg-gradient-to-r from-lavender to-pink text-white'
@@ -763,183 +791,114 @@ function Hero({ onContact }: { onContact: () => void }) {
   return (
     <div
       ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 to-white"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black"
     >
-      {/* 3D Hero Elements - Immediately visible */}
+      {/* Advanced 3D Hero Background - Immediately visible */}
       <motion.div
         initial={{ opacity: 1 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0 }}
         className="absolute inset-0 w-full h-full overflow-hidden"
       >
-        {/* 3D Particle Background */}
-        <ThreeDBackground 
-          intensity={0.6} 
-          density={30} 
-          speed={0.05}
-          color1="#3b82f6" 
-          color2="#4f46e5" 
-          className="!z-0"
-        />
+        {/* Base quantum field and grid */}
+        <QuantumField />
+        <TechnoGrid />
+        
+        {/* Main particle system */}
+        <TechyHero3D />
+        
+        {/* Holographic grid overlay */}
+        <HolographicGrid />
+        
+        {/* Digital DNA in center background */}
+        <DigitalDNA />
+        
+        {/* Data visualizations */}
+        <DataStreamVisualization />
+        <AIBrainVisualization />
+        <CloudInfrastructure />
+        
+        {/* Cyberpunk elements */}
+        <CyberpunkGlitch />
+        <HackerMatrix />
+        <DigitalRain />
+        
+        {/* Floating tech elements */}
+        <FloatingCodeBlocks />
+        <FloatingTechIcons />
+        
+        {/* Central quantum orb */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ zIndex: 1 }}>
+          <QuantumOrb />
+        </div>
         
         {/* Radial gradient overlay for depth */}
-        <div className="absolute inset-0 w-full h-full bg-[radial-gradient(ellipse_at_center,rgba(var(--color-primary),0.08),transparent_70%)] z-[-1]" />
-        
-        {/* Subtle grid pattern */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.01] z-[-1]" />
-        
-        {/* 3D Floating Globe */}
-        <ThreeDGlobe 
-          size="600px"
-          position="bottom-0 right-0 translate-x-1/4 translate-y-1/4"
-          opacity={0.25}
-          color1="#3b82f6"
-          color2="#4f46e5"
-        />
-        
-        {/* Animated 3D Cube */}
-        <FloatingTechCube 
-          position="top-20 left-20"
-          className="z-0"
-          size="120px"
-          colors={['#3b82f6', '#6366f1', '#8b5cf6']}
-        />
-        
-        {/* Small floating tech cube with immediate animation */}
-        <FloatingTechCube 
-          position="bottom-40 left-1/3" 
-          size="80px"
-          colors={['#06b6d4', '#3b82f6', '#4f46e5']}
-        />
-        
-        {/* Additional 3D elements from hero-3d-elements.tsx - Immediately visible */}
-        <motion.div
-          initial={{ opacity: 1, y: 0 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0 }}
-          className="absolute z-10"
-        >
-          <div className="Hero3DCube absolute top-40 right-20 z-10" style={{ width: '100px', height: '100px', perspective: '1000px' }}>
-            <motion.div 
-              className="relative w-full h-full preserve-3d pointer-events-none"
-              animate={{
-                rotateX: [0, 360],
-                rotateY: [0, 360],
-                rotateZ: [0, 360]
-              }}
-              transition={{
-                duration: 20,
-                ease: "linear",
-                repeat: Infinity
-              }}
-            >
-              {/* Front face */}
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-indigo-600 opacity-60" 
-                   style={{ transform: 'translateZ(50px)' }} />
-              {/* Back face */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-indigo-600 to-purple-600 opacity-60" 
-                   style={{ transform: 'rotateY(180deg) translateZ(50px)' }} />
-              {/* Side faces */}
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-600 opacity-60" 
-                   style={{ transform: 'rotateY(-90deg) translateZ(50px)' }} />
-              <div className="absolute inset-0 bg-gradient-to-l from-indigo-600 to-blue-600 opacity-60" 
-                   style={{ transform: 'rotateY(90deg) translateZ(50px)' }} />
-              <div className="absolute inset-0 bg-gradient-to-b from-blue-600 to-indigo-600 opacity-60" 
-                   style={{ transform: 'rotateX(90deg) translateZ(50px)' }} />
-              <div className="absolute inset-0 bg-gradient-to-t from-indigo-600 to-purple-600 opacity-60" 
-                   style={{ transform: 'rotateX(-90deg) translateZ(50px)' }} />
-            </motion.div>
-          </div>
-
-          {/* Animated 3D Sphere */}
-          <div className="absolute bottom-40 left-20 z-10" style={{ width: '80px', height: '80px' }}>
-            <motion.div
-              className="w-full h-full rounded-full pointer-events-none"
-              animate={{
-                y: [0, -15, 0],
-                x: [0, 10, 0],
-                scale: [1, 1.05, 1],
-              }}
-              transition={{
-                duration: 8,
-                ease: "easeInOut",
-                repeat: Infinity
-              }}
-            >
-              <div className="relative w-full h-full">
-                {/* Sphere with gradient */}
-                <div className="absolute inset-0 rounded-full bg-gradient-radial from-blue-300/40 to-blue-700/70 opacity-60" />
-                {/* Highlight */}
-                <div className="absolute top-1/4 left-1/4 w-1/4 h-1/4 rounded-full bg-white opacity-30" />
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
+        <div className="absolute inset-0 w-full h-full bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.05),transparent_70%)] z-10" />
       </motion.div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
+  <div className="relative z-20 max-w-6xl mx-auto px-6 text-center pt-10 pb-8 md:pt-20 md:pb-16">
         {/* Removed ScrollRevealSection to ensure content is visible immediately */}
-        <div className="mb-8 relative z-20">
+  <div className="mb-8 relative z-30">
           <motion.div
-            className="inline-flex items-center space-x-2 bg-white/90 backdrop-blur-sm px-6 py-3 rounded-full shadow-md border border-gray-100 mb-8 animate-float"
+            className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md px-6 py-3 rounded-full shadow-lg border border-white/20 mb-8 animate-float"
             initial={{ opacity: 1, scale: 1 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0 }}
             whileHover={{ 
               scale: 1.03,
-              boxShadow: "0 10px 30px rgba(79, 70, 229, 0.15)"
+              boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)"
             }}
           >
-            <div className="bg-indigo-50 p-1 rounded-full">
+            <div className="bg-blue-500/20 p-1 rounded-full">
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
               >
-                <Sparkles className="w-4 h-4 text-indigo-600" />
+                <Sparkles className="w-4 h-4 text-cyan-400" />
               </motion.div>
             </div>
             <TypedTextAnimation 
               text="ENTERPRISE-GRADE DIGITAL SOLUTIONS"
-              className="text-gray-800 font-medium text-sm tracking-wide"
+              className="text-white font-medium text-sm tracking-wide"
               typingSpeed={0.03}
-              cursorColor="#4f46e5"
+              cursorColor="#06b6d4"
               startDelay={0.5}
             />
           </motion.div>
         </div>
 
         <ImmediateDisplay
-          className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tight"
+          className="text-4xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tight space-y-4"
         >
           <ScrollRevealItem>
             <WordFadeIn 
               text="Transform Your Business with" 
-              className="text-gray-900"
+              className="text-white mb-2 block"
               staggerDelay={0.05}
             />
           </ScrollRevealItem>
-          
+
           <ScrollRevealItem className="relative inline-block mt-2 mb-3">
             <AnimatedGradientText
               text="Custom Software"
-              className="font-extrabold"
-              gradientFrom="from-blue-700"
-              gradientVia="via-indigo-600"
-              gradientTo="to-blue-800"
+              className="font-extrabold mb-2 block"
+              gradientFrom="from-cyan-400"
+              gradientVia="via-blue-500"
+              gradientTo="to-purple-600"
             />
             <motion.div 
-              className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-800 rounded-full"
+              className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-full"
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ delay: 1.2, duration: 0.8, ease: "easeOut" }}
               style={{ transformOrigin: 'left' }}
             />
           </ScrollRevealItem>
-          
+
           <ScrollRevealItem>
             <WordFadeIn 
               text="That Actually Works" 
-              className="text-gray-900 block"
+              className="text-white block mb-2"
               delay={0.8}
               staggerDelay={0.05}
             />
@@ -947,35 +906,37 @@ function Hero({ onContact }: { onContact: () => void }) {
         </ImmediateDisplay>
 
         <ImmediateDisplay
-          className="text-lg md:text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed"
+          className="text-base md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed"
         >
-          <p>
+          <p className="mb-2">
             We build <HighlightText 
                       text="enterprise-grade software" 
                       highlightWords={["enterprise-grade"]} 
-                      highlightColor="bg-indigo-100" 
-                      highlightTextColor="text-indigo-800 font-semibold"
-                    /> and mobile apps that scale with your business. 
+                      highlightColor="bg-blue-600/30" 
+                      highlightTextColor="text-cyan-400 font-semibold"
+                    /> and mobile apps that scale with your business.
+          </p>
+          <p>
             From custom websites to complex enterprise solutions—delivered with global standards.
           </p>
         </ImmediateDisplay>
 
         <div
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 mt-4"
         >
           <motion.button
             onClick={() => {
               trackCTAClick("Get Free Quote in 24hrs", "hero");
               onContact();
             }}
-            className="group relative bg-indigo-700 text-white px-8 py-4 rounded-xl font-semibold text-base shadow-lg shadow-indigo-600/20 overflow-hidden flex items-center space-x-2 depth-effect"
+            className="group relative bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-base shadow-lg shadow-cyan-500/30 overflow-hidden flex items-center space-x-2 depth-effect"
             whileHover={{ 
               scale: 1.03,
-              boxShadow: "0 15px 30px rgba(79, 70, 229, 0.3)"
+              boxShadow: "0 15px 30px rgba(6, 182, 212, 0.4)"
             }}
             whileTap={{ scale: 0.97 }}
           >
-            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-800 to-indigo-700 transition-transform duration-300 ease-out transform translate-x-full group-hover:translate-x-0"></span>
+            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-600 to-purple-700 transition-transform duration-300 ease-out transform translate-x-full group-hover:translate-x-0"></span>
             <motion.div
               animate={{ rotate: [0, 360] }}
               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
@@ -991,11 +952,12 @@ function Hero({ onContact }: { onContact: () => void }) {
               trackCTAClick("View Our Work", "hero");
               document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="bg-white text-gray-700 px-8 py-4 rounded-full font-semibold text-lg shadow-lg transition-all duration-300 flex items-center space-x-2 border border-gray-200 backdrop-blur-sm bg-white/80"
+            className="bg-white/10 backdrop-blur-md text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg transition-all duration-300 flex items-center space-x-2 border border-white/20"
             whileHover={{ 
               scale: 1.05, 
               y: -2,
-              boxShadow: "0 10px 25px rgba(59, 130, 246, 0.15)"
+              boxShadow: "0 10px 25px rgba(255, 255, 255, 0.1)",
+              backgroundColor: "rgba(255, 255, 255, 0.15)"
             }}
             whileTap={{ scale: 0.95 }}
           >
@@ -1028,8 +990,8 @@ function Hero({ onContact }: { onContact: () => void }) {
                   <CheckCircle className="w-6 h-6" />
                 </motion.div>
               </div>
-              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-indigo-700 mb-1">{counts.projects}+</div>
-              <div className="text-sm text-gray-600">Projects Completed</div>
+              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500 mb-1">{counts.projects}+</div>
+              <div className="text-sm text-gray-400">Projects Completed</div>
             </motion.div>
           </ScrollRevealItem>
           
@@ -1049,8 +1011,8 @@ function Hero({ onContact }: { onContact: () => void }) {
                   <Heart className="w-6 h-6" />
                 </motion.div>
               </div>
-              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 mb-1">{counts.clients}+</div>
-              <div className="text-sm text-gray-600">Happy Clients</div>
+              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-500 mb-1">{counts.clients}+</div>
+              <div className="text-sm text-gray-400">Happy Clients</div>
             </motion.div>
           </ScrollRevealItem>
           
@@ -1070,8 +1032,8 @@ function Hero({ onContact }: { onContact: () => void }) {
                   <Award className="w-6 h-6" />
                 </motion.div>
               </div>
-              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-cyan-600 mb-1">{counts.experience}+</div>
-              <div className="text-sm text-gray-600">Years Experience</div>
+              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-500 mb-1">{counts.experience}+</div>
+              <div className="text-sm text-gray-400">Years Experience</div>
             </motion.div>
           </ScrollRevealItem>
           
@@ -1091,21 +1053,21 @@ function Hero({ onContact }: { onContact: () => void }) {
                   <Star className="w-6 h-6" />
                 </motion.div>
               </div>
-              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-orange-500 mb-1">{counts.satisfaction}%</div>
-              <div className="text-sm text-gray-600">Client Satisfaction</div>
+              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-500 mb-1">{counts.satisfaction}%</div>
+              <div className="text-sm text-gray-400">Client Satisfaction</div>
             </motion.div>
           </ScrollRevealItem>
         </ScrollRevealSection>
       </div>
 
       <motion.div
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30"
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
         whileHover={{ scale: 1.2 }}
       >
-        <div className="p-2 bg-white/30 backdrop-blur-sm rounded-full">
-          <ChevronDown className="w-6 h-6 text-indigo-600" />
+        <div className="p-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+          <ChevronDown className="w-6 h-6 text-cyan-400" />
         </div>
       </motion.div>
     </div>
@@ -1204,40 +1166,15 @@ function TrustSignals() {
 
 function TechnologyStack() {
   const [selectedCategory, setSelectedCategory] = useState('all');
-  
-  const categories = ['all', 'frontend', 'backend', 'database', 'devops', 'mobile'];
-  
-  const technologies = [
-    { name: 'React', icon: <FaReact className="w-10 h-10 text-blue-500" />, category: 'frontend', color: 'from-blue-500 to-cyan-500' },
-    { name: 'Next.js', icon: <SiNextdotjs className="w-10 h-10 text-gray-800" />, category: 'frontend', color: 'from-gray-800 to-gray-900' },
-    { name: 'Vue.js', icon: <FaVuejs className="w-10 h-10 text-green-500" />, category: 'frontend', color: 'from-green-500 to-emerald-500' },
-    { name: 'Angular', icon: <FaAngular className="w-10 h-10 text-red-500" />, category: 'frontend', color: 'from-red-500 to-pink-500' },
-    { name: 'TypeScript', icon: <SiTypescript className="w-10 h-10 text-blue-600" />, category: 'frontend', color: 'from-blue-600 to-blue-700' },
-    { name: 'JavaScript', icon: <SiJavascript className="w-10 h-10 text-yellow-500" />, category: 'frontend', color: 'from-yellow-400 to-orange-500' },
-    { name: 'Node.js', icon: <FaNodeJs className="w-10 h-10 text-green-600" />, category: 'backend', color: 'from-green-600 to-green-700' },
-    { name: 'Python', icon: <FaPython className="w-10 h-10 text-blue-600" />, category: 'backend', color: 'from-blue-500 to-indigo-600' },
-    { name: 'Java', icon: <FaJava className="w-10 h-10 text-orange-500" />, category: 'backend', color: 'from-orange-500 to-red-600' },
-    { name: 'PHP', icon: <FaPhp className="w-10 h-10 text-purple-600" />, category: 'backend', color: 'from-purple-500 to-indigo-600' },
-    { name: 'Laravel', icon: <SiLaravel className="w-10 h-10 text-red-500" />, category: 'backend', color: 'from-red-500 to-pink-600' },
-    { name: 'Django', icon: <SiDjango className="w-10 h-10 text-green-700" />, category: 'backend', color: 'from-green-700 to-green-800' },
-    { name: 'MongoDB', icon: <SiMongodb className="w-10 h-10 text-green-600" />, category: 'database', color: 'from-green-500 to-emerald-600' },
-    { name: 'PostgreSQL', icon: <SiPostgresql className="w-10 h-10 text-blue-600" />, category: 'database', color: 'from-blue-600 to-indigo-700' },
-    { name: 'MySQL', icon: <SiMysql className="w-10 h-10 text-blue-500" />, category: 'database', color: 'from-blue-500 to-blue-600' },
-    { name: 'Redis', icon: <SiRedis className="w-10 h-10 text-red-500" />, category: 'database', color: 'from-red-500 to-red-600' },
-    { name: 'Docker', icon: <FaDocker className="w-10 h-10 text-blue-500" />, category: 'devops', color: 'from-blue-500 to-indigo-600' },
-    { name: 'AWS', icon: <SiAmazon className="w-10 h-10 text-orange-500" />, category: 'devops', color: 'from-orange-500 to-yellow-500' },
-    { name: 'Kubernetes', icon: <SiKubernetes className="w-10 h-10 text-blue-600" />, category: 'devops', color: 'from-blue-600 to-blue-700' },
-    { name: 'React Native', icon: <FaReact className="w-10 h-10 text-blue-500" />, category: 'mobile', color: 'from-blue-500 to-cyan-500' },
-    { name: 'Flutter', icon: <SiFlutter className="w-10 h-10 text-blue-500" />, category: 'mobile', color: 'from-blue-500 to-indigo-600' },
-    { name: 'Ionic', icon: <SiIonic className="w-10 h-10 text-blue-600" />, category: 'mobile', color: 'from-blue-600 to-purple-600' },
-  ];
+  const categories = ['all', 'frontend', 'backend', 'database', 'devops', 'mobile', 'cloud', 'tools', 'design'];
 
-  const filteredTechnologies = selectedCategory === 'all' 
-    ? technologies 
-    : technologies.filter(tech => tech.category === selectedCategory);
+  // Filter technologies based on selected category
+  const filteredTechnologies = selectedCategory === 'all'
+    ? technologies
+    : technologies.filter(tech => tech.category.toLowerCase() === selectedCategory);
 
   return (
-    <section id="technologies" className="py-16 bg-gradient-to-br from-cyan-50 to-blue-50">
+    <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div
           className="section-header"
@@ -1262,36 +1199,36 @@ function TechnologyStack() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-            {categories.map((category) => (
-              <motion.button
-                key={category}
+          {categories.map((category) => (
+            <motion.button
+              key={category}
               onClick={() => setSelectedCategory(category)}
               className={`ripple-button px-6 py-3 rounded-full font-medium transition-all duration-300 magnetic ${
                 selectedCategory === category
-                    ? 'bg-gradient-to-r from-lavender to-pink text-white shadow-lg'
+                  ? 'bg-gradient-to-r from-lavender to-pink text-white shadow-lg'
                   : 'bg-white text-gray-600 border border-gray-200 hover:border-lavender'
-                }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {category.charAt(0).toUpperCase() + category.slice(1)}
-              </motion.button>
-            ))}
+              }`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </motion.button>
+          ))}
         </motion.div>
 
         {/* Technology Slider */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           <TechSlider 
             technologies={filteredTechnologies}
             itemsPerView={8}
           />
-            </motion.div>
-        </div>
+        </motion.div>
+      </div>
     </section>
   );
 }
@@ -2548,6 +2485,23 @@ function Blog() {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+  const [articles, setArticles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchArticles() {
+      try {
+        const querySnapshot = await getDocs(collection(db, "articles"));
+        const articlesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setArticles(articlesData);
+      } catch (error) {
+        setArticles([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchArticles();
+  }, []);
 
   // Scroll to next or previous item
   const scrollToItem = (direction: 'next' | 'prev') => {
@@ -2555,10 +2509,9 @@ function Blog() {
       const cardWidth = carouselRef.current.querySelector('article')?.offsetWidth || 0;
       const gap = 32; // 8rem gap
       const scrollAmount = cardWidth + gap;
-      
       if (direction === 'next') {
         carouselRef.current.scrollLeft += scrollAmount;
-        if (currentIndex < blogPosts.length - 1) setCurrentIndex(prev => prev + 1);
+        if (currentIndex < articles.length - 1) setCurrentIndex(prev => prev + 1);
       } else {
         carouselRef.current.scrollLeft -= scrollAmount;
         if (currentIndex > 0) setCurrentIndex(prev => prev - 1);
@@ -2645,67 +2598,70 @@ function Blog() {
             onMouseUp={handleMouseUp}
             onMouseMove={handleMouseMove}
           >
-            {blogPosts.map((post, index) => (
-              <motion.article
-                key={post.title}
-                className="flex-shrink-0 snap-center w-full md:w-[calc(33.333%-1.33rem)] mx-2 bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -5, scale: 1.02 }}
-              >
-                <div className="relative h-48 overflow-hidden">
-                  <Image
-                    src={post.image}
-                    alt={`${post.title} - ${post.category} article by ${post.author}`}
-                    fill
-                    className="object-cover transition-transform duration-500 hover:scale-110"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-white/90 backdrop-blur-sm text-sm text-gray-800 font-medium px-3 py-1 rounded-full">
-                      {post.category}
-                    </span>
+            {loading ? (
+              <div className="w-full text-center py-12 text-gray-400">Loading articles...</div>
+            ) : articles.length === 0 ? (
+              <div className="w-full text-center py-12 text-gray-400">No articles found.</div>
+            ) : (
+              articles.map((post: any, index: number) => (
+                <motion.article
+                  key={post.id}
+                  className="flex-shrink-0 snap-center w-full md:w-[calc(33.333%-1.33rem)] mx-2 bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ y: -5, scale: 1.02 }}
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    <Image
+                      src={post.image}
+                      alt={`${post.title} - ${post.category} article by ${post.author}`}
+                      fill
+                      className="object-cover transition-transform duration-500 hover:scale-110"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                    <div className="absolute top-4 left-4">
+                      <span className="bg-white/90 backdrop-blur-sm text-sm text-gray-800 font-medium px-3 py-1 rounded-full">
+                        {post.category}
+                      </span>
+                    </div>
                   </div>
-                </div>
-                
-                <div className="p-6">
-                  <div className="flex items-center space-x-4 mb-4">
-                    <span className="text-sm text-gray-500">{post.readTime}</span>
-                    <span className="text-sm text-gray-400">•</span>
-                    <span className="text-sm text-gray-500">{post.date}</span>
-                  </div>
-                  
-                  <h3 className="text-xl font-bold mb-3 text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                    {post.title}
-                  </h3>
-                  <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 bg-gradient-to-br from-lavender to-pink rounded-full flex items-center justify-center text-white text-sm font-bold">
-                        {post.author.split(' ').map(n => n[0]).join('')}
+                  <div className="p-6">
+                    <div className="flex items-center space-x-4 mb-4">
+                      <span className="text-sm text-gray-500">{post.readTime}</span>
+                      <span className="text-sm text-gray-400">•</span>
+                      <span className="text-sm text-gray-500">{post.date}</span>
+                    </div>
+                    <h3 className="text-xl font-bold mb-3 text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                      {post.title}
+                    </h3>
+                    <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-gradient-to-br from-lavender to-pink rounded-full flex items-center justify-center text-white text-sm font-bold">
+                          {post.author?.split(' ').map((n: string) => n[0]).join('')}
+                        </div>
+                        <span className="text-sm text-gray-600">{post.author}</span>
                       </div>
-                      <span className="text-sm text-gray-600">{post.author}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      {post.tags.slice(0, 2).map((tag, tagIndex) => (
-                        <span key={tagIndex} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                          {tag}
-                        </span>
-                      ))}
+                      <div className="flex items-center space-x-1">
+                        {(post.tags || []).slice(0, 2).map((tag: string, tagIndex: number) => (
+                          <span key={tagIndex} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </motion.article>
-            ))}
+                </motion.article>
+              ))
+            )}
           </div>
           
           {/* Dots indicator */}
           <div className="flex justify-center space-x-2 mt-6">
-            {blogPosts.map((_, index) => (
+            {articles.map((_: any, index: number) => (
               <button
                 key={index}
                 onClick={() => {
@@ -2731,10 +2687,9 @@ function Blog() {
           transition={{ duration: 0.8 }}
         >
           <TrackableLink
-            href="/blog"
+            href="/articles"
             text="View All Articles"
             category="blog"
-            target="_blank"
             className="bg-gradient-to-r from-lavender to-pink text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 inline-flex items-center justify-center"
           >
             View All Articles
@@ -2928,213 +2883,6 @@ function CallToAction({ onGetStarted, onScheduleCall }: { onGetStarted: () => vo
   );
 }
 
-function Footer() {
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  return (
-    <footer className="bg-gradient-to-br from-gray-900 via-gray-850 to-gray-800 text-white py-20 relative overflow-hidden">
-      {/* Background decorative elements */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-800"></div>
-      <div className="absolute top-0 right-0 w-72 h-72 bg-indigo-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-700/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
-      
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-16">
-          <div className="md:col-span-1">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-700 to-indigo-700 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-700/30">
-                <span className="text-white font-bold">SD</span>
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-500 to-indigo-400 bg-clip-text text-transparent">Shivkara Digitals</span>
-            </div>
-            <p className="text-gray-400 leading-relaxed">
-              Your trusted partner for custom software development, digital transformation, and business solutions that drive growth and efficiency.
-            </p>
-          </div>
-          
-          <div>
-            <h3 className="font-semibold mb-5 text-lg flex items-center">
-              <span className="w-6 h-px bg-indigo-600 mr-3"></span>
-              Services
-            </h3>
-            <ul className="space-y-3 text-gray-400">
-              <li>
-                <button 
-                  onClick={() => scrollToSection('services')}
-                  className="hover:text-lavender transition-colors cursor-pointer"
-                >
-                  Custom Software Development
-                </button>
-              </li>
-              <li>
-                <button 
-                  onClick={() => scrollToSection('services')}
-                  className="hover:text-lavender transition-colors cursor-pointer"
-                >
-                  Mobile App Development
-                </button>
-              </li>
-              <li>
-                <button 
-                  onClick={() => scrollToSection('services')}
-                  className="hover:text-blue-400 transition-colors cursor-pointer group flex items-center"
-                >
-                  <span className="w-0 h-px bg-blue-400 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-2"></span>
-                  Web Design & Development
-                </button>
-              </li>
-              <li>
-                <button 
-                  onClick={() => scrollToSection('services')}
-                  className="hover:text-blue-400 transition-colors cursor-pointer group flex items-center"
-                >
-                  <span className="w-0 h-px bg-blue-400 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-2"></span>
-                  Digital Transformation
-                </button>
-              </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="font-semibold mb-5 text-lg flex items-center">
-              <span className="w-6 h-px bg-blue-500 mr-3"></span>
-              Company
-            </h3>
-            <ul className="space-y-3 text-gray-400">
-              <li>
-                <button 
-                  onClick={() => scrollToSection('about')}
-                  className="hover:text-blue-400 transition-colors cursor-pointer group flex items-center"
-                >
-                  <span className="w-0 h-px bg-blue-400 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-2"></span>
-                  About Us
-                </button>
-              </li>
-              <li>
-                <button 
-                  onClick={() => scrollToSection('about')}
-                  className="hover:text-blue-400 transition-colors cursor-pointer group flex items-center"
-                >
-                  <span className="w-0 h-px bg-blue-400 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-2"></span>
-                  Our Team
-                </button>
-              </li>
-              <li>
-                <a 
-                  href="mailto:info@shivkaradigital.com?subject=Career%20Opportunity"
-                  className="hover:text-blue-400 transition-colors cursor-pointer group flex items-center"
-                >
-                  <span className="w-0 h-px bg-blue-400 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-2"></span>
-                  Careers
-                </a>
-              </li>
-              <li>
-                <button 
-                  onClick={() => scrollToSection('contact')}
-                  className="hover:text-blue-400 transition-colors cursor-pointer group flex items-center"
-                >
-                  <span className="w-0 h-px bg-blue-400 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-2"></span>
-                  Contact
-                </button>
-              </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="font-semibold mb-5 text-lg flex items-center">
-              <span className="w-6 h-px bg-blue-500 mr-3"></span>
-              Connect
-            </h3>
-            <div className="flex space-x-4 mt-2">
-              <a href="https://instagram.com/shivkaradigital" target="_blank" rel="noopener noreferrer" 
-                 className="w-10 h-10 bg-gray-800 hover:bg-gradient-to-br hover:from-blue-600 hover:to-purple-600 rounded-full flex items-center justify-center transition-all duration-300 group">
-                <FaInstagram className="text-gray-400 group-hover:text-white" />
-              </a>
-
-            </div>
-            <div className="mt-6">
-              <div className="flex items-center space-x-2">
-                <Mail className="w-4 h-4 text-blue-400" />
-                <a href="mailto:info@shivkaradigital.com" className="text-gray-400 hover:text-blue-400 transition-colors">
-                  info@shivkaradigital.com
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <motion.p className="text-gray-500 text-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 0.2 }}>
-            &copy; 2025 Shivkara Digitals. All rights reserved.
-          </motion.p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#privacy" className="text-gray-500 hover:text-blue-400 text-sm transition-colors">Privacy Policy</a>
-            <a href="#terms" className="text-gray-500 hover:text-blue-400 text-sm transition-colors">Terms of Service</a>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-function FloatingActionButton() {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const toggleVisibility = () => {
-      if (window.pageYOffset > 300) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
-    };
-
-    window.addEventListener('scroll', toggleVisibility);
-    return () => window.removeEventListener('scroll', toggleVisibility);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  };
-
-  return (
-    <motion.button
-      className={`fixed bottom-6 right-6 z-50 w-14 h-14 bg-gradient-to-r from-lavender to-pink text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center pulse-glow ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
-      }`}
-      whileHover={{ 
-        scale: 1.1,
-        boxShadow: "0 0 30px rgba(240, 166, 202, 0.6)"
-      }}
-      whileTap={{ scale: 0.9 }}
-      onClick={scrollToTop}
-      animate={{
-        y: [0, -5, 0],
-      }}
-      transition={{
-        duration: 2,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }}
-    >
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-    >
-      <ChevronDown className="w-6 h-6 transform rotate-180" />
-      </motion.div>
-    </motion.button>
-  );
-}
-
 function LoadingScreen() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -3278,7 +3026,7 @@ export default function HomePage() {
           onGetStarted={() => setIsGetStartedModalOpen(true)}
           onScheduleCall={() => setIsScheduleCallModalOpen(true)}
         />
-        <Footer />
+        <Footer currentPage="home" />
         <FloatingActionButton />
       </div>
   <FloatingActionButton />
