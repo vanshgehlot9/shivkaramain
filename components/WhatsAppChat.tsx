@@ -50,7 +50,9 @@ export function WhatsAppChat({
 
   const handleMessageClick = (message: string) => {
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
+    if (typeof window !== 'undefined') {
+      window.open(whatsappUrl, '_blank');
+    }
     setIsOpen(false);
   };
 

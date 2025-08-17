@@ -1,0 +1,25 @@
+# Robots.txt for Shivkara Digitals
+# Allow all crawlers access to all content
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://shivkaradigital.com/sitemap.xml
+
+# Crawl-delay (optional - helps prevent server overload)
+Crawl-delay: 1
+
+# Block access to admin areas and sensitive files
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /api/
+Disallow: *.json$
+Disallow: /firebase/
+Disallow: /lib/
+
+# Allow specific important pages
+Allow: /articles
+Allow: /projects
+Allow: /privacy
+Allow: /terms
+Allow: /cookie-policy

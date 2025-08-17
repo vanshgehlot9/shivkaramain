@@ -298,7 +298,7 @@ export function DigitalRain() {
             height: "200px",
           }}
           animate={{
-            y: [-200, window.innerHeight + 200],
+            y: [-200, (typeof window !== 'undefined' ? window.innerHeight : 600) + 200],
             opacity: [0, 1, 0],
           }}
           transition={{

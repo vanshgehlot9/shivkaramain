@@ -9,15 +9,18 @@ interface FooterProps {
 }
 
 export default function Footer({ currentPage = "home" }: FooterProps) {
-  const scrollToSection = (sectionId: string) => {
-    if (currentPage === "home") {
+    const handleNavigateToSection = (sectionId: string) => {
+    // Check if we're on the home page
+    if (typeof window !== 'undefined' && window.location.pathname === '/') {
       const element = document.getElementById(sectionId);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     } else {
       // Navigate to home page with hash
-      window.location.href = `/#${sectionId}`;
+      if (typeof window !== 'undefined') {
+        window.location.href = `/#${sectionId}`;
+      }
     }
   };
 
@@ -50,7 +53,7 @@ export default function Footer({ currentPage = "home" }: FooterProps) {
             <ul className="space-y-3 text-gray-400">
               <li>
                 <button 
-                  onClick={() => scrollToSection('services')}
+                  onClick={() => handleNavigateToSection('services')}
                   className="hover:text-lavender transition-colors cursor-pointer"
                 >
                   Custom Software Development
@@ -58,7 +61,7 @@ export default function Footer({ currentPage = "home" }: FooterProps) {
               </li>
               <li>
                 <button 
-                  onClick={() => scrollToSection('services')}
+                  onClick={() => handleNavigateToSection('services')}
                   className="hover:text-lavender transition-colors cursor-pointer"
                 >
                   Mobile App Development
@@ -66,7 +69,7 @@ export default function Footer({ currentPage = "home" }: FooterProps) {
               </li>
               <li>
                 <button 
-                  onClick={() => scrollToSection('services')}
+                  onClick={() => handleNavigateToSection('services')}
                   className="hover:text-blue-400 transition-colors cursor-pointer group flex items-center"
                 >
                   <span className="w-0 h-px bg-blue-400 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-2"></span>
@@ -75,7 +78,7 @@ export default function Footer({ currentPage = "home" }: FooterProps) {
               </li>
               <li>
                 <button 
-                  onClick={() => scrollToSection('services')}
+                  onClick={() => handleNavigateToSection('services')}
                   className="hover:text-blue-400 transition-colors cursor-pointer group flex items-center"
                 >
                   <span className="w-0 h-px bg-blue-400 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-2"></span>
@@ -93,7 +96,7 @@ export default function Footer({ currentPage = "home" }: FooterProps) {
             <ul className="space-y-3 text-gray-400">
               <li>
                 <button 
-                  onClick={() => scrollToSection('about')}
+                  onClick={() => handleNavigateToSection('about')}
                   className="hover:text-blue-400 transition-colors cursor-pointer group flex items-center"
                 >
                   <span className="w-0 h-px bg-blue-400 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-2"></span>
@@ -102,7 +105,7 @@ export default function Footer({ currentPage = "home" }: FooterProps) {
               </li>
               <li>
                 <button 
-                  onClick={() => scrollToSection('about')}
+                  onClick={() => handleNavigateToSection('about')}
                   className="hover:text-blue-400 transition-colors cursor-pointer group flex items-center"
                 >
                   <span className="w-0 h-px bg-blue-400 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-2"></span>
@@ -129,7 +132,7 @@ export default function Footer({ currentPage = "home" }: FooterProps) {
               </li>
               <li>
                 <button 
-                  onClick={() => scrollToSection('contact')}
+                  onClick={() => handleNavigateToSection('contact')}
                   className="hover:text-blue-400 transition-colors cursor-pointer group flex items-center"
                 >
                   <span className="w-0 h-px bg-blue-400 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-2"></span>

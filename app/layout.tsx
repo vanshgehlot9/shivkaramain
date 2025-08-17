@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import AnalyticsProvider from '../components/AnalyticsProvider'
 import ClientEntranceAnimation from '../components/ClientEntranceAnimation';
+import { organizationSchema, localBusinessSchema, websiteSchema } from '../lib/structured-data';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://shivkaradigital.com'),
@@ -83,7 +84,9 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
   verification: {
     google: 'your-google-verification-code', // Replace with actual Google Search Console verification code
+    yandex: 'your-yandex-verification-code',
   },
+  category: 'technology',
 }
 
 export default function RootLayout({
@@ -101,36 +104,48 @@ export default function RootLayout({
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#6366f1" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="format-detection" content="telephone=no" />
         
-        {/* Structured Data for SEO */}
+        {/* Google Analytics */}
+        <script 
+          async 
+          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (typeof window !== 'undefined') {
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-XXXXXXXXXX', {
+                  page_title: document.title,
+                  page_location: window.location.href,
+                });
+              }
+            `,
+          }}
+        />
+        
+        {/* Enhanced Structured Data for SEO */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              "name": "Shivkara Digitals",
-              "url": "https://shivkaradigitals.com",
-              "logo": "https://shivkaradigitals.com/logo.jpeg",
-              "sameAs": [
-                "https://www.facebook.com/shivkaradigitals",
-                "https://www.instagram.com/shivkaradigitals",
-                "https://www.linkedin.com/company/shivkara-digitals"
-              ],
-              "contactPoint": {
-                "@type": "ContactPoint",
-                "telephone": "+91-9999999999",
-                "contactType": "customer service",
-                "availableLanguage": ["English", "Hindi"]
-              },
-              "address": {
-                "@type": "PostalAddress",
-                "addressLocality": "Jodhpur",
-                "addressRegion": "Rajasthan",
-                "addressCountry": "India"
-              },
-              "description": "Leading software development company in Jodhpur, Rajasthan providing custom software solutions, web development, mobile apps and digital transformation services."
-            })
+            __html: JSON.stringify(organizationSchema)
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(localBusinessSchema)
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteSchema)
           }}
         />
       </head>

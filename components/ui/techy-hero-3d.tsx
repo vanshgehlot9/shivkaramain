@@ -24,12 +24,16 @@ export function TechyHero3D() {
     if (!ctx) return;
 
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      if (typeof window !== 'undefined') {
+        canvas.width = (typeof window !== 'undefined' ? window.innerWidth : 800);
+        canvas.height = (typeof window !== 'undefined' ? window.innerHeight : 600);
+      }
     };
 
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', resizeCanvas);
+    }
 
     // Initialize particles
     const particleCount = 150;
@@ -115,7 +119,9 @@ export function TechyHero3D() {
     animate();
 
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', resizeCanvas);
+      }
     };
   }, []);
 
@@ -147,21 +153,21 @@ export function FloatingCodeBlocks() {
           key={index}
           className="absolute bg-gray-900/80 backdrop-blur-sm text-green-400 px-3 py-1 rounded-md text-sm font-mono border border-green-500/30"
           initial={{ 
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 800),
+            y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600),
             opacity: 0,
             scale: 0.8
           }}
           animate={{ 
             x: [
-              Math.random() * window.innerWidth,
-              Math.random() * window.innerWidth,
-              Math.random() * window.innerWidth
+              Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 800),
+              Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 800),
+              Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 800)
             ],
             y: [
-              Math.random() * window.innerHeight,
-              Math.random() * window.innerHeight,
-              Math.random() * window.innerHeight
+              Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600),
+              Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600),
+              Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600)
             ],
             opacity: [0, 0.7, 0],
             scale: [0.8, 1, 0.8],
@@ -240,19 +246,19 @@ export function FloatingTechIcons() {
           key={index}
           className="absolute"
           initial={{ 
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 800),
+            y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600),
             scale: 0,
             rotate: 0
           }}
           animate={{ 
             x: [
-              Math.random() * window.innerWidth,
-              Math.random() * window.innerWidth,
+              Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 800),
+              Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 800),
             ],
             y: [
-              Math.random() * window.innerHeight,
-              Math.random() * window.innerHeight,
+              Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600),
+              Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600),
             ],
             scale: [0, 1, 0.8, 1, 0],
             rotate: [0, 180, 360],

@@ -567,6 +567,8 @@ function Header({ onGetStarted }: { onGetStarted: () => void }) {
 
   useEffect(() => {
     const handleScroll = () => {
+      if (typeof window === 'undefined') return;
+      
       setIsScrolled(window.scrollY > 50);
       // Scrollspy logic
       const sections = [
@@ -588,9 +590,12 @@ function Header({ onGetStarted }: { onGetStarted: () => void }) {
       }
       setActiveSection(current);
     };
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', handleScroll);
+      handleScroll();
+      return () => window.removeEventListener('scroll', handleScroll);
+    }
   }, []);
 
   return (
@@ -871,17 +876,19 @@ function Hero({ onContact }: { onContact: () => void }) {
           className="text-4xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tight space-y-4"
         >
           <ScrollRevealItem>
-            <WordFadeIn 
-              text="Transform Your Business with" 
-              className="text-white mb-2 block"
-              staggerDelay={0.05}
-            />
+            <h1 className="text-white mb-2 block">
+              <WordFadeIn 
+                text="Leading Software Development Company in Jodhpur, Rajasthan" 
+                className="text-4xl md:text-6xl font-extrabold text-white mb-2 block"
+                staggerDelay={0.05}
+              />
+            </h1>
           </ScrollRevealItem>
 
           <ScrollRevealItem className="relative inline-block mt-2 mb-3">
             <AnimatedGradientText
-              text="Custom Software"
-              className="font-extrabold mb-2 block"
+              text="Custom Software & Mobile App Development"
+              className="text-3xl md:text-5xl font-extrabold mb-2 block"
               gradientFrom="from-cyan-400"
               gradientVia="via-blue-500"
               gradientTo="to-purple-600"
@@ -897,7 +904,7 @@ function Hero({ onContact }: { onContact: () => void }) {
 
           <ScrollRevealItem>
             <WordFadeIn 
-              text="That Actually Works" 
+              text="Starting from ₹7,000 - ISO 27001 Certified" 
               className="text-white block mb-2"
               delay={0.8}
               staggerDelay={0.05}
@@ -909,15 +916,15 @@ function Hero({ onContact }: { onContact: () => void }) {
           className="text-base md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed"
         >
           <p className="mb-2">
-            We build <HighlightText 
-                      text="enterprise-grade software" 
+            We deliver <HighlightText 
+                      text="enterprise-grade software development services in Jodhpur" 
                       highlightWords={["enterprise-grade"]} 
                       highlightColor="bg-blue-600/30" 
                       highlightTextColor="text-cyan-400 font-semibold"
-                    /> and mobile apps that scale with your business.
+                    /> and mobile apps that scale with your business across Rajasthan.
           </p>
           <p>
-            From custom websites to complex enterprise solutions—delivered with global standards.
+            From custom websites to complex enterprise solutions—delivered with ISO 27001 certified global standards and 24/7 support.
           </p>
         </ImmediateDisplay>
 
@@ -1997,7 +2004,11 @@ function Location() {
                 className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2"
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => window.open('https://maps.google.com/?q=Jodhpur,Rajasthan,India', '_blank')}
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.open('https://maps.google.com/?q=Jodhpur,Rajasthan,India', '_blank');
+                  }
+                }}
               >
                 <ExternalLink className="w-4 h-4" />
                 <span>Open in Maps</span>
