@@ -7,6 +7,7 @@ export default function AddArticlePage() {
   const [form, setForm] = useState({
     title: "",
     excerpt: "",
+
     content: "",
     author: "",
     date: "",

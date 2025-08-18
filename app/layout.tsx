@@ -4,69 +4,89 @@ import AnalyticsProvider from '../components/AnalyticsProvider'
 import ClientEntranceAnimation from '../components/ClientEntranceAnimation';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://shivkaradigital.com'),
-  title: 'Shivkara Digitals - Professional Software Development & Digital Solutions Company',
-  description: 'Leading software development company in Jodhpur, Rajasthan. We provide custom software solutions, mobile app development, web development, e-commerce, and comprehensive digital transformation services. ISO 27001 certified with Microsoft, AWS & Google Cloud partnerships.',
+  metadataBase: new URL('https://shivkaradigitals.com'),
+  title: {
+    default: 'Shivkara Digitals - Professional Software Development Company in Jodhpur, Rajasthan',
+    template: '%s | Shivkara Digitals - Software Development Company Jodhpur'
+  },
+  description: 'Leading software development company in Jodhpur, Rajasthan, India. Expert mobile app development, web development, custom software solutions, e-commerce platforms, and digital transformation services. ISO 27001 certified with 75+ successful projects and 40+ happy clients.',
   keywords: [
-    'software development', 
-    'mobile app development', 
-    'web development', 
-    'custom software', 
-    'digital transformation', 
-    'Jodhpur', 
-    'Rajasthan', 
-    'India', 
-    'web design',
-    'website development',
-    'e-commerce solutions',
-    'business software',
-    'responsive websites',
-    'affordable software development',
-    'android app development',
-    'iOS app development',
-    'UI/UX design',
-    'business digitization',
-    'cloud solutions',
-    'software consulting',
-    'enterprise software',
-    'technology consulting',
-    'IT services',
-    'software as a service',
-    'digital marketing',
-    'best software company in Jodhpur',
-    'business automation',
-    'custom CRM',
-    'ERP solutions',
-    'software modernization'
+    // Primary keywords
+    'software development company Jodhpur',
+    'mobile app development Jodhpur', 
+    'web development Jodhpur',
+    'custom software solutions Rajasthan',
+    'digital transformation services India',
+    
+    // Local SEO keywords
+    'best software company Jodhpur',
+    'IT services Rajasthan',
+    'software development services Jodhpur',
+    'app development company Rajasthan',
+    'web design company Jodhpur',
+    
+    // Service-specific keywords
+    'React Native app development',
+    'Flutter app development', 
+    'Next.js web development',
+    'e-commerce development',
+    'custom CRM development',
+    'ERP software solutions',
+    
+    // Long-tail keywords
+    'affordable software development India',
+    'outsource app development Jodhpur',
+    'enterprise software development Rajasthan',
+    'startup software solutions India',
+    'digital marketing services Jodhpur',
+    
+    // Technology keywords
+    'Python development',
+    'JavaScript development',
+    'React development',
+    'Node.js development',
+    'AWS cloud solutions',
+    'DevOps services'
   ],
   authors: [{ name: 'Shivkara Digitals Team' }],
   creator: 'Shivkara Digitals',
   publisher: 'Shivkara Digitals',
   robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
   alternates: {
-    canonical: 'https://shivkaradigital.com',
+    canonical: 'https://shivkaradigitals.com',
+  },
+  category: 'technology',
+  classification: 'Software Development Company',
+  other: {
+    'business:contact_data:locality': 'Jodhpur',
+    'business:contact_data:region': 'Rajasthan', 
+    'business:contact_data:country_name': 'India',
+    'geo.region': 'IN-RJ',
+    'geo.placename': 'Jodhpur',
+    'ICBM': '26.2389, 73.0243', // Jodhpur coordinates
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://shivkaradigital.com',
-    title: 'Shivkara Digitals - Professional Software Development & Digital Solutions',
-    description: 'Transform your business with our custom software solutions. Enterprise-grade development starting from ₹7,000. Mobile apps, websites, e-commerce platforms, and complete digital transformation.',
+    url: 'https://shivkaradigitals.com',
+    title: 'Shivkara Digitals - Leading Software Development Company in Jodhpur, Rajasthan',
+    description: 'Transform your business with our custom software solutions. Enterprise-grade development starting from ₹7,000. Mobile apps, websites, e-commerce platforms, and complete digital transformation services in Jodhpur, Rajasthan.',
     siteName: 'Shivkara Digitals',
     images: [
       {
         url: '/logo.jpeg',
         width: 1200,
         height: 630,
-        alt: 'Shivkara Digitals - Professional Software Development Company in Jodhpur',
+        alt: 'Shivkara Digitals - Professional Software Development Company in Jodhpur, Rajasthan, India',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Shivkara Digitals - Professional Software Development & Digital Solutions',
-    description: 'Transform your business with our custom software solutions. Enterprise-grade development starting from ₹7,000. Expert team for web, mobile & custom software development.',
+    title: 'Shivkara Digitals - Software Development Company in Jodhpur, Rajasthan',
+    description: 'Expert software development services in Jodhpur. Custom mobile apps, websites, e-commerce solutions starting from ₹7,000. 75+ projects completed, ISO 27001 certified team.',
     creator: '@ShivkaraDigital',
+    site: '@ShivkaraDigital',
     images: ['/logo.jpeg'],
   },
   icons: {
@@ -112,24 +132,62 @@ export default function RootLayout({
               "name": "Shivkara Digitals",
               "url": "https://shivkaradigitals.com",
               "logo": "https://shivkaradigitals.com/logo.jpeg",
-              "sameAs": [
-                "https://www.facebook.com/shivkaradigitals",
-                "https://www.instagram.com/shivkaradigitals",
-                "https://www.linkedin.com/company/shivkara-digitals"
-              ],
+              "description": "Leading software development company in Jodhpur, Rajasthan, India. Specializing in custom software solutions, mobile app development, web development, and digital transformation services.",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Business District",
+                "addressLocality": "Jodhpur",
+                "addressRegion": "Rajasthan",
+                "postalCode": "342001",
+                "addressCountry": "IN"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 26.2389,
+                "longitude": 73.0243
+              },
               "contactPoint": {
                 "@type": "ContactPoint",
                 "telephone": "+91-9999999999",
                 "contactType": "customer service",
                 "availableLanguage": ["English", "Hindi"]
               },
+              "sameAs": [
+                "https://www.facebook.com/shivkaradigitals",
+                "https://www.instagram.com/shivkaradigitals",
+                "https://www.linkedin.com/company/shivkara-digitals",
+                "https://twitter.com/shivkaradigital"
+              ]
+            })
+          }}
+        />
+        
+        {/* Local Business Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              "name": "Shivkara Digitals",
+              "image": "https://shivkaradigitals.com/logo.jpeg",
+              "telephone": "+91-9999999999",
               "address": {
                 "@type": "PostalAddress",
+                "streetAddress": "Business District",
                 "addressLocality": "Jodhpur",
                 "addressRegion": "Rajasthan",
-                "addressCountry": "India"
+                "postalCode": "342001",
+                "addressCountry": "IN"
               },
-              "description": "Leading software development company in Jodhpur, Rajasthan providing custom software solutions, web development, mobile apps and digital transformation services."
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 26.2389,
+                "longitude": 73.0243
+              },
+              "url": "https://shivkaradigitals.com",
+              "openingHours": "Mo-Fr 09:00-18:00",
+              "priceRange": "₹₹"
             })
           }}
         />
