@@ -8,26 +8,22 @@ export default function FloatingActionButton() {
 
   useEffect(() => {
     const toggleVisibility = () => {
-      if (typeof window !== 'undefined' && window.pageYOffset > 300) {
+      if (window.pageYOffset > 300) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
       }
     };
 
-    if (typeof window !== 'undefined') {
-      window.addEventListener('scroll', toggleVisibility);
-      return () => window.removeEventListener('scroll', toggleVisibility);
-    }
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
 
   const scrollToTop = () => {
-    if (typeof window !== 'undefined') {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   return (

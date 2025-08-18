@@ -160,7 +160,7 @@ export function AdminOverview() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6">
         <div className="animate-pulse space-y-6">
           <div className="h-8 bg-gray-200 rounded w-1/4"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -174,18 +174,18 @@ export function AdminOverview() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               Dashboard Overview
             </h1>
             <p className="text-gray-600 mt-1">Welcome back! Here's what's happening with your business.</p>
           </div>
           <div className="flex gap-2">
-            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+            <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
               <Plus className="h-4 w-4 mr-2" />
               Quick Actions
             </Button>
@@ -222,14 +222,14 @@ export function AdminOverview() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-indigo-500 to-blue-600 text-white">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-purple-100">Total Customers</CardTitle>
-              <Users className="h-4 w-4 text-purple-200" />
+              <CardTitle className="text-sm font-medium text-blue-100">Total Customers</CardTitle>
+              <Users className="h-4 w-4 text-blue-200" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{dashboardData.totalCustomers}</div>
-              <p className="text-xs text-purple-200 flex items-center mt-1">
+              <p className="text-xs text-blue-200 flex items-center mt-1">
                 <ArrowUpRight className="h-3 w-3 mr-1" />
                 +15.3% from last month
               </p>
@@ -271,8 +271,8 @@ export function AdminOverview() {
                   <div className="text-2xl font-bold text-red-600">{formatCurrency(dashboardData.monthlyStats.expenses)}</div>
                   <div className="text-sm text-red-500">Expenses</div>
                 </div>
-                <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg">
-                  <div className="text-2xl font-bold text-purple-600">{formatCurrency(dashboardData.monthlyStats.profit)}</div>
+                <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">{formatCurrency(dashboardData.monthlyStats.profit)}</div>
                   <div className="text-sm text-purple-500">Profit</div>
                 </div>
               </div>

@@ -14,12 +14,9 @@ export default function Header({ onGetStarted, currentPage = "home" }: HeaderPro
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState(currentPage);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (typeof window === 'undefined') return;
-      
       setIsScrolled(window.scrollY > 50);
       
       // Only update active section for home page
@@ -45,26 +42,14 @@ export default function Header({ onGetStarted, currentPage = "home" }: HeaderPro
       }
     };
     
-    if (typeof window !== 'undefined') {
-      window.addEventListener('scroll', handleScroll);
-      handleScroll();
-      return () => window.removeEventListener('scroll', handleScroll);
-    }
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [currentPage]);
 
   const navigationItems = [
     { name: 'Home', href: '/', isSection: true },
-    { 
-      name: 'Services', 
-      href: '/#services', 
-      isSection: true,
-      dropdown: [
-        { name: 'Custom Software Development', href: '/services/custom-software-development' },
-        { name: 'Mobile App Development', href: '/services/mobile-app-development' },
-        { name: 'Web Development', href: '/services/web-development' },
-        { name: 'E-commerce Development', href: '/services/ecommerce-development' },
-      ]
-    },
+    { name: 'Services', href: '/#services', isSection: true },
     { name: 'Projects', href: '/#projects', isSection: true },
     { name: 'About', href: '/#about', isSection: true },
     { name: 'Articles', href: '/articles', isSection: false },
@@ -115,12 +100,7 @@ export default function Header({ onGetStarted, currentPage = "home" }: HeaderPro
           
           <nav className="hidden md:flex items-center space-x-6">
             {navigationItems.map((item, idx) => (
-              <motion.div 
-                key={item.name}
-                className="relative"
-                onMouseEnter={() => item.dropdown && setDropdownOpen(item.name)}
-                onMouseLeave={() => setDropdownOpen(null)}
-              >
+              <motion.div key={item.name}>
                 {item.isSection ? (
                   <motion.a
                     href={item.href}
@@ -173,29 +153,6 @@ export default function Header({ onGetStarted, currentPage = "home" }: HeaderPro
                       )}
                     </motion.span>
                   </Link>
-                )}
-
-                {/* Dropdown Menu */}
-                {item.dropdown && dropdownOpen === item.name && (
-                  <motion.div
-                    className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 z-50"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {item.dropdown.map((dropdownItem, dropdownIdx) => (
-                      <Link key={dropdownItem.name} href={dropdownItem.href}>
-                        <motion.div
-                          className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors cursor-pointer"
-                          whileHover={{ x: 4 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          {dropdownItem.name}
-                        </motion.div>
-                      </Link>
-                    ))}
-                  </motion.div>
                 )}
               </motion.div>
             ))}

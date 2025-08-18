@@ -79,7 +79,7 @@ export function CaseStudyCard({ project, index }: CaseStudyCardProps) {
         {/* Client Info */}
         {project.client && (
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold">
               {project.client.company.charAt(0)}
             </div>
             <div>
@@ -263,14 +263,14 @@ export function CaseStudyCard({ project, index }: CaseStudyCardProps) {
                     <div className="bg-gray-50 rounded-lg p-6 mb-8">
                       <div className="flex items-center gap-1 mb-3">
                         {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                          <Star key={i} className="w-5 h-5 text-blue-400 fill-current" />
                         ))}
                       </div>
                       <blockquote className="text-lg italic text-gray-700 mb-4">
                         "{project.testimonial}"
                       </blockquote>
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold">
                           {project.client?.name.charAt(0)}
                         </div>
                         <div>

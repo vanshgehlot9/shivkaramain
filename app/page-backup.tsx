@@ -95,7 +95,30 @@ import { TypedTextAnimation, WordFadeIn, AnimatedGradientText, HighlightText } f
 import { ParallaxSection, ParallaxBackgroundLayers, AnimatedBackgroundSection } from "../components/ui/parallax-effects";
 import Footer from "../components/Footer";
 import FloatingActionButton from "../components/FloatingActionButton";
-import TechyHeroBackground from "../components/ui/techy-hero-3d";
+
+// Import our advanced 3D components
+import { 
+  TechyHero3D, 
+  FloatingCodeBlocks, 
+  HolographicGrid, 
+  FloatingTechIcons, 
+  QuantumOrb 
+} from "../components/ui/techy-hero-3d";
+
+import { 
+  DataStreamVisualization, 
+  AIBrainVisualization, 
+  CloudInfrastructure, 
+  DigitalDNA 
+} from "../components/ui/modern-tech-elements";
+
+import { 
+  CyberpunkGlitch, 
+  HackerMatrix, 
+  QuantumField, 
+  TechnoGrid, 
+  DigitalRain 
+} from "../components/ui/cyberpunk-effects";
 
 const services = [
   {
@@ -110,14 +133,14 @@ const services = [
     title: "Mobile App Development",
     description: "Native and cross-platform mobile applications that enhance customer engagement and business efficiency.",
     features: ["iOS & Android Apps", "Cross-platform Solutions", "App Maintenance", "Performance Optimization"],
-    color: "from-blue-600 to-indigo-600"
+    color: "from-purple-500 to-pink-500"
   },
   {
     icon: <Palette className="w-8 h-8" />,
     title: "Web Design & Development",
     description: "Professional websites and web applications that establish your brand and convert visitors to customers.",
     features: ["Responsive Design", "E-commerce Solutions", "CMS Development", "SEO Optimization"],
-    color: "from-teal-500 to-blue-500"
+    color: "from-green-500 to-emerald-500"
   },
   {
     icon: <Zap className="w-8 h-8" />,
@@ -131,7 +154,7 @@ const services = [
     title: "IT Consulting & Support",
     description: "Expert technology consulting and ongoing support to ensure your digital solutions perform optimally.",
     features: ["Technology Assessment", "System Maintenance", "24/7 Support", "Security Audits"],
-    color: "from-indigo-600 to-blue-600"
+    color: "from-indigo-500 to-purple-500"
   },
   {
     icon: <Users className="w-8 h-8" />,
@@ -145,26 +168,26 @@ const services = [
 const technologies = [
   { name: "React", icon: <FaReact className="w-8 h-8" />, category: "Frontend", color: "from-blue-500 to-cyan-500" },
   { name: "TypeScript", icon: <SiTypescript className="w-8 h-8" />, category: "Frontend", color: "from-blue-400 to-blue-700" },
-  { name: "Node.js", icon: <FaNodeJs className="w-8 h-8" />, category: "Backend", color: "from-teal-500 to-emerald-500" },
-  { name: "Python", icon: <FaPython className="w-8 h-8" />, category: "Backend", color: "from-teal-400 to-blue-400" },
-  { name: "Java", icon: <FaJava className="w-8 h-8" />, category: "Backend", color: "from-blue-500 to-indigo-500" },
-  { name: "MongoDB", icon: <SiMongodb className="w-8 h-8" />, category: "Database", color: "from-teal-600 to-teal-400" },
+  { name: "Node.js", icon: <FaNodeJs className="w-8 h-8" />, category: "Backend", color: "from-green-500 to-emerald-500" },
+  { name: "Python", icon: <FaPython className="w-8 h-8" />, category: "Backend", color: "from-yellow-400 to-orange-400" },
+  { name: "Java", icon: <FaJava className="w-8 h-8" />, category: "Backend", color: "from-red-500 to-orange-500" },
+  { name: "MongoDB", icon: <SiMongodb className="w-8 h-8" />, category: "Database", color: "from-green-600 to-green-400" },
   { name: "PostgreSQL", icon: <SiPostgresql className="w-8 h-8" />, category: "Database", color: "from-blue-700 to-blue-400" },
-  { name: "Redis", icon: <SiRedis className="w-8 h-8" />, category: "Database", color: "from-blue-500 to-indigo-500" },
+  { name: "Redis", icon: <SiRedis className="w-8 h-8" />, category: "Database", color: "from-red-500 to-pink-500" },
   { name: "Docker", icon: <FaDocker className="w-8 h-8" />, category: "DevOps", color: "from-blue-400 to-cyan-400" },
   { name: "Kubernetes", icon: <SiKubernetes className="w-8 h-8" />, category: "DevOps", color: "from-blue-500 to-blue-800" },
-  { name: "AWS", icon: <FaAws className="w-8 h-8" />, category: "Cloud", color: "from-blue-400 to-indigo-500" },
-  { name: "Google Cloud", icon: <FaGoogle className="w-8 h-8" />, category: "Cloud", color: "from-blue-400 to-teal-400" },
+  { name: "AWS", icon: <FaAws className="w-8 h-8" />, category: "Cloud", color: "from-yellow-400 to-orange-500" },
+  { name: "Google Cloud", icon: <FaGoogle className="w-8 h-8" />, category: "Cloud", color: "from-blue-400 to-green-400" },
   { name: "Azure", icon: <FaMicrosoft className="w-8 h-8" />, category: "Cloud", color: "from-blue-700 to-indigo-700" },
-  { name: "Terraform", icon: <SiTerraform className="w-8 h-8" />, category: "DevOps", color: "from-indigo-500 to-blue-500" },
-  { name: "Jenkins", icon: <SiJenkins className="w-8 h-8" />, category: "DevOps", color: "from-blue-400 to-indigo-400" },
+  { name: "Terraform", icon: <SiTerraform className="w-8 h-8" />, category: "DevOps", color: "from-purple-500 to-indigo-500" },
+  { name: "Jenkins", icon: <SiJenkins className="w-8 h-8" />, category: "DevOps", color: "from-red-400 to-orange-400" },
   { name: "GitHub", icon: <SiGithub className="w-8 h-8" />, category: "Tools", color: "from-gray-700 to-gray-900" },
-  { name: "GitLab", icon: <SiGitlab className="w-8 h-8" />, category: "Tools", color: "from-blue-500 to-indigo-500" },
-  { name: "Slack", icon: <SiSlack className="w-8 h-8" />, category: "Tools", color: "from-blue-400 to-indigo-400" },
+  { name: "GitLab", icon: <SiGitlab className="w-8 h-8" />, category: "Tools", color: "from-orange-500 to-pink-500" },
+  { name: "Slack", icon: <SiSlack className="w-8 h-8" />, category: "Tools", color: "from-purple-400 to-blue-400" },
   { name: "Jira", icon: <SiJira className="w-8 h-8" />, category: "Tools", color: "from-blue-400 to-indigo-400" },
-  { name: "Figma", icon: <SiFigma className="w-8 h-8" />, category: "Design", color: "from-indigo-400 to-blue-400" },
-  { name: "Adobe", icon: <SiAdobe className="w-8 h-8" />, category: "Design", color: "from-blue-400 to-indigo-400" },
-  { name: "Sketch", icon: <SiSketch className="w-8 h-8" />, category: "Design", color: "from-blue-400 to-teal-400" }
+  { name: "Figma", icon: <SiFigma className="w-8 h-8" />, category: "Design", color: "from-pink-400 to-yellow-400" },
+  { name: "Adobe", icon: <SiAdobe className="w-8 h-8" />, category: "Design", color: "from-red-400 to-orange-400" },
+  { name: "Sketch", icon: <SiSketch className="w-8 h-8" />, category: "Design", color: "from-yellow-400 to-pink-400" }
 ];
 
 const processSteps = [
@@ -180,28 +203,28 @@ const processSteps = [
     title: "Design & Architecture",
     description: "Our team creates detailed designs, user interfaces, and technical architecture.",
     icon: <Palette className="w-8 h-8" />,
-    color: "from-teal-500 to-blue-500"
+    color: "from-purple-500 to-pink-500"
   },
   {
     step: "03",
     title: "Development & Testing",
     description: "We build your solution using modern technologies with continuous testing and quality assurance.",
     icon: <Code className="w-8 h-8" />,
-    color: "from-teal-500 to-emerald-500"
+    color: "from-green-500 to-emerald-500"
   },
   {
     step: "04",
     title: "Deployment & Launch",
     description: "We deploy your solution to production with monitoring and support systems in place.",
     icon: <Zap className="w-8 h-8" />,
-    color: "from-blue-500 to-indigo-500"
+    color: "from-orange-500 to-red-500"
   },
   {
     step: "05",
     title: "Support & Maintenance",
     description: "Ongoing support, updates, and maintenance to ensure your solution continues to perform optimally.",
     icon: <Shield className="w-8 h-8" />,
-    color: "from-indigo-500 to-blue-500"
+    color: "from-indigo-500 to-purple-500"
   }
 ];
 
@@ -365,7 +388,7 @@ const pricingPlans = [
       "Performance monitoring"
     ],
     popular: true,
-    color: "from-blue-600 to-indigo-600",
+    color: "from-purple-500 to-pink-500",
     badge: "MOST POPULAR",
     savings: "Save ₹25,000",
     deliveryTime: "4-6 weeks",
@@ -544,6 +567,8 @@ function Header({ onGetStarted }: { onGetStarted: () => void }) {
 
   useEffect(() => {
     const handleScroll = () => {
+      if (typeof window === 'undefined') return;
+      
       setIsScrolled(window.scrollY > 50);
       // Scrollspy logic
       const sections = [
@@ -565,9 +590,12 @@ function Header({ onGetStarted }: { onGetStarted: () => void }) {
       }
       setActiveSection(current);
     };
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', handleScroll);
+      handleScroll();
+      return () => window.removeEventListener('scroll', handleScroll);
+    }
   }, []);
 
   return (
@@ -768,38 +796,77 @@ function Hero({ onContact }: { onContact: () => void }) {
   return (
     <div
       ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 to-white"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black"
     >
-      {/* Enhanced Techy 3D Background - Optimized for performance */}
-      <TechyHeroBackground className="z-0" />
+      {/* Advanced 3D Hero Background - Immediately visible */}
+      <motion.div
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0 }}
+        className="absolute inset-0 w-full h-full overflow-hidden"
+      >
+        {/* Base quantum field and grid */}
+        <QuantumField />
+        <TechnoGrid />
+        
+        {/* Main particle system */}
+        <TechyHero3D />
+        
+        {/* Holographic grid overlay */}
+        <HolographicGrid />
+        
+        {/* Digital DNA in center background */}
+        <DigitalDNA />
+        
+        {/* Data visualizations */}
+        <DataStreamVisualization />
+        <AIBrainVisualization />
+        <CloudInfrastructure />
+        
+        {/* Cyberpunk elements */}
+        <CyberpunkGlitch />
+        <HackerMatrix />
+        <DigitalRain />
+        
+        {/* Floating tech elements */}
+        <FloatingCodeBlocks />
+        <FloatingTechIcons />
+        
+        {/* Central quantum orb */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ zIndex: 1 }}>
+          <QuantumOrb />
+        </div>
+        
+        {/* Radial gradient overlay for depth */}
+        <div className="absolute inset-0 w-full h-full bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.05),transparent_70%)] z-10" />
+      </motion.div>
 
-      {/* Content overlay with improved readability */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 text-center pt-10 pb-8 md:pt-20 md:pb-16">
+  <div className="relative z-20 max-w-6xl mx-auto px-6 text-center pt-10 pb-8 md:pt-20 md:pb-16">
         {/* Removed ScrollRevealSection to ensure content is visible immediately */}
-  <div className="mb-8 relative z-20">
+  <div className="mb-8 relative z-30">
           <motion.div
-            className="inline-flex items-center space-x-2 bg-white/90 backdrop-blur-sm px-6 py-3 rounded-full shadow-md border border-gray-100 mb-8 animate-float"
+            className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md px-6 py-3 rounded-full shadow-lg border border-white/20 mb-8 animate-float"
             initial={{ opacity: 1, scale: 1 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0 }}
             whileHover={{ 
               scale: 1.03,
-              boxShadow: "0 10px 30px rgba(79, 70, 229, 0.15)"
+              boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)"
             }}
           >
-            <div className="bg-indigo-50 p-1 rounded-full">
+            <div className="bg-blue-500/20 p-1 rounded-full">
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
               >
-                <Sparkles className="w-4 h-4 text-indigo-600" />
+                <Sparkles className="w-4 h-4 text-cyan-400" />
               </motion.div>
             </div>
             <TypedTextAnimation 
               text="ENTERPRISE-GRADE DIGITAL SOLUTIONS"
-              className="text-gray-800 font-medium text-sm tracking-wide"
+              className="text-white font-medium text-sm tracking-wide"
               typingSpeed={0.03}
-              cursorColor="#4f46e5"
+              cursorColor="#06b6d4"
               startDelay={0.5}
             />
           </motion.div>
@@ -809,23 +876,25 @@ function Hero({ onContact }: { onContact: () => void }) {
           className="text-4xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tight space-y-4"
         >
           <ScrollRevealItem>
-            <WordFadeIn 
-              text="Transform Your Business with" 
-              className="text-gray-900 mb-2 block"
-              staggerDelay={0.05}
-            />
+            <h1 className="text-white mb-2 block">
+              <WordFadeIn 
+                text="Leading Software Development Company in Jodhpur, Rajasthan" 
+                className="text-4xl md:text-6xl font-extrabold text-white mb-2 block"
+                staggerDelay={0.05}
+              />
+            </h1>
           </ScrollRevealItem>
 
           <ScrollRevealItem className="relative inline-block mt-2 mb-3">
             <AnimatedGradientText
-              text="Custom Software"
-              className="font-extrabold mb-2 block"
-              gradientFrom="from-blue-700"
-              gradientVia="via-indigo-600"
-              gradientTo="to-blue-800"
+              text="Custom Software & Mobile App Development"
+              className="text-3xl md:text-5xl font-extrabold mb-2 block"
+              gradientFrom="from-cyan-400"
+              gradientVia="via-blue-500"
+              gradientTo="to-purple-600"
             />
             <motion.div 
-              className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-800 rounded-full"
+              className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-full"
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ delay: 1.2, duration: 0.8, ease: "easeOut" }}
@@ -835,8 +904,8 @@ function Hero({ onContact }: { onContact: () => void }) {
 
           <ScrollRevealItem>
             <WordFadeIn 
-              text="That Actually Works" 
-              className="text-gray-900 block mb-2"
+              text="Starting from ₹7,000 - ISO 27001 Certified" 
+              className="text-white block mb-2"
               delay={0.8}
               staggerDelay={0.05}
             />
@@ -844,18 +913,18 @@ function Hero({ onContact }: { onContact: () => void }) {
         </ImmediateDisplay>
 
         <ImmediateDisplay
-          className="text-base md:text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed"
+          className="text-base md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed"
         >
           <p className="mb-2">
-            We build <HighlightText 
-                      text="enterprise-grade software" 
+            We deliver <HighlightText 
+                      text="enterprise-grade software development services in Jodhpur" 
                       highlightWords={["enterprise-grade"]} 
-                      highlightColor="bg-indigo-100" 
-                      highlightTextColor="text-indigo-800 font-semibold"
-                    /> and mobile apps that scale with your business.
+                      highlightColor="bg-blue-600/30" 
+                      highlightTextColor="text-cyan-400 font-semibold"
+                    /> and mobile apps that scale with your business across Rajasthan.
           </p>
           <p>
-            From custom websites to complex enterprise solutions—delivered with global standards.
+            From custom websites to complex enterprise solutions—delivered with ISO 27001 certified global standards and 24/7 support.
           </p>
         </ImmediateDisplay>
 
@@ -867,14 +936,14 @@ function Hero({ onContact }: { onContact: () => void }) {
               trackCTAClick("Get Free Quote in 24hrs", "hero");
               onContact();
             }}
-            className="group relative bg-indigo-700 text-white px-8 py-4 rounded-xl font-semibold text-base shadow-lg shadow-indigo-600/20 overflow-hidden flex items-center space-x-2 depth-effect"
+            className="group relative bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-base shadow-lg shadow-cyan-500/30 overflow-hidden flex items-center space-x-2 depth-effect"
             whileHover={{ 
               scale: 1.03,
-              boxShadow: "0 15px 30px rgba(79, 70, 229, 0.3)"
+              boxShadow: "0 15px 30px rgba(6, 182, 212, 0.4)"
             }}
             whileTap={{ scale: 0.97 }}
           >
-            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-800 to-indigo-700 transition-transform duration-300 ease-out transform translate-x-full group-hover:translate-x-0"></span>
+            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-600 to-purple-700 transition-transform duration-300 ease-out transform translate-x-full group-hover:translate-x-0"></span>
             <motion.div
               animate={{ rotate: [0, 360] }}
               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
@@ -890,11 +959,12 @@ function Hero({ onContact }: { onContact: () => void }) {
               trackCTAClick("View Our Work", "hero");
               document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="bg-white text-gray-700 px-8 py-4 rounded-full font-semibold text-lg shadow-lg transition-all duration-300 flex items-center space-x-2 border border-gray-200 backdrop-blur-sm bg-white/80"
+            className="bg-white/10 backdrop-blur-md text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg transition-all duration-300 flex items-center space-x-2 border border-white/20"
             whileHover={{ 
               scale: 1.05, 
               y: -2,
-              boxShadow: "0 10px 25px rgba(59, 130, 246, 0.15)"
+              boxShadow: "0 10px 25px rgba(255, 255, 255, 0.1)",
+              backgroundColor: "rgba(255, 255, 255, 0.15)"
             }}
             whileTap={{ scale: 0.95 }}
           >
@@ -927,8 +997,8 @@ function Hero({ onContact }: { onContact: () => void }) {
                   <CheckCircle className="w-6 h-6" />
                 </motion.div>
               </div>
-              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-indigo-700 mb-1">{counts.projects}+</div>
-              <div className="text-sm text-gray-600">Projects Completed</div>
+              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500 mb-1">{counts.projects}+</div>
+              <div className="text-sm text-gray-400">Projects Completed</div>
             </motion.div>
           </ScrollRevealItem>
           
@@ -948,8 +1018,8 @@ function Hero({ onContact }: { onContact: () => void }) {
                   <Heart className="w-6 h-6" />
                 </motion.div>
               </div>
-              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 mb-1">{counts.clients}+</div>
-              <div className="text-sm text-gray-600">Happy Clients</div>
+              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-500 mb-1">{counts.clients}+</div>
+              <div className="text-sm text-gray-400">Happy Clients</div>
             </motion.div>
           </ScrollRevealItem>
           
@@ -969,8 +1039,8 @@ function Hero({ onContact }: { onContact: () => void }) {
                   <Award className="w-6 h-6" />
                 </motion.div>
               </div>
-              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-cyan-600 mb-1">{counts.experience}+</div>
-              <div className="text-sm text-gray-600">Years Experience</div>
+              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-500 mb-1">{counts.experience}+</div>
+              <div className="text-sm text-gray-400">Years Experience</div>
             </motion.div>
           </ScrollRevealItem>
           
@@ -990,21 +1060,21 @@ function Hero({ onContact }: { onContact: () => void }) {
                   <Star className="w-6 h-6" />
                 </motion.div>
               </div>
-              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-orange-500 mb-1">{counts.satisfaction}%</div>
-              <div className="text-sm text-gray-600">Client Satisfaction</div>
+              <div className="counter text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-500 mb-1">{counts.satisfaction}%</div>
+              <div className="text-sm text-gray-400">Client Satisfaction</div>
             </motion.div>
           </ScrollRevealItem>
         </ScrollRevealSection>
       </div>
 
       <motion.div
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30"
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
         whileHover={{ scale: 1.2 }}
       >
-        <div className="p-2 bg-white/30 backdrop-blur-sm rounded-full">
-          <ChevronDown className="w-6 h-6 text-indigo-600" />
+        <div className="p-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+          <ChevronDown className="w-6 h-6 text-cyan-400" />
         </div>
       </motion.div>
     </div>
@@ -1070,7 +1140,7 @@ function TrustSignals() {
           >
             <div className="flex items-center space-x-1">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-3 h-3 text-blue-400 fill-current" />
+                <Star key={i} className="w-3 h-3 text-yellow-400 fill-current" />
               ))}
             </div>
             <span className="text-sm font-medium text-gray-700">5.0 Reviews</span>
@@ -1357,7 +1427,7 @@ function Projects() {
   return (
     <motion.section
       id="projects"
-      className="py-16 bg-gradient-to-br from-blue-50 to-indigo-50"
+      className="py-16 bg-gradient-to-br from-purple-50 to-pink-50"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -1628,7 +1698,7 @@ function Testimonials() {
                 <div className="flex items-center">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <motion.div key={i} initial={{ opacity: 0, scale: 0 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.1 }}>
-                      <Star className="w-5 h-5 text-blue-400 fill-current" />
+                      <Star className="w-5 h-5 text-yellow-400 fill-current" />
                     </motion.div>
                   ))}
                 </div>
@@ -1773,7 +1843,7 @@ function Location() {
       {/* Background elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-r from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-r from-purple-400/20 to-pink-400/20 rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -1784,7 +1854,7 @@ function Location() {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 text-lg font-semibold tracking-wider mb-3 block">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 text-lg font-semibold tracking-wider mb-3 block">
             FIND US
           </span>
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
@@ -1806,12 +1876,12 @@ function Location() {
           >
             <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
               {/* Map Header */}
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4">
+              <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4">
                 <div className="flex items-center space-x-3">
                   <div className="flex space-x-1">
                     <div className="w-3 h-3 bg-red-400 rounded-full"></div>
-                    <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
-                    <div className="w-3 h-3 bg-teal-400 rounded-full"></div>
+                    <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                    <div className="w-3 h-3 bg-green-400 rounded-full"></div>
                   </div>
                   <h3 className="text-white font-medium">Shivkara Digitals - Location</h3>
                 </div>
@@ -1862,7 +1932,7 @@ function Location() {
             {/* Address Card */}
             <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
               <div className="flex items-start space-x-4">
-                <div className="p-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg">
+                <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
                   <MapPin className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -1931,10 +2001,14 @@ function Location() {
             {/* Quick Actions */}
             <div className="flex flex-col sm:flex-row gap-4">
               <motion.button
-                className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2"
+                className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2"
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => window.open('https://maps.google.com/?q=Jodhpur,Rajasthan,India', '_blank')}
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.open('https://maps.google.com/?q=Jodhpur,Rajasthan,India', '_blank');
+                  }
+                }}
               >
                 <ExternalLink className="w-4 h-4" />
                 <span>Open in Maps</span>
@@ -2001,7 +2075,7 @@ function Contact() {
   return (
     <motion.section
       id="contact"
-      className="py-16 bg-gradient-to-br from-indigo-50 to-blue-50"
+      className="py-16 bg-gradient-to-br from-indigo-50 to-purple-50"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}

@@ -108,7 +108,7 @@ export function LeadCapturePopup({ isOpen, onClose, onSubmit }: LeadCapturePopup
               </button>
 
               {/* Header */}
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 pb-8">
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 pb-8">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
                     <Gift className="w-6 h-6" />
@@ -189,7 +189,7 @@ export function LeadCapturePopup({ isOpen, onClose, onSubmit }: LeadCapturePopup
                     <button
                       type="button"
                       onClick={nextStep}
-                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
                     >
                       Continue →
                     </button>

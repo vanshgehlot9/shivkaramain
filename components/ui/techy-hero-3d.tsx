@@ -1,391 +1,332 @@
 "use client";
-import { motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 
-export function TechyHero3D() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [particles, setParticles] = useState<Array<{
-    x: number;
-    y: number;
-    z: number;
-    vx: number;
-    vy: number;
-    vz: number;
-    size: number;
-    opacity: number;
-    color: string;
-  }>>([]);
+interface TechyHero3DProps {
+  intensity?: number;
+  className?: string;
+}
 
+// Optimized 3D tech grid component for low-end devices
+export function TechyHero3D({ intensity = 1, className = "" }: TechyHero3DProps) {
+  const [isLowEndDevice, setIsLowEndDevice] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Detect low-end device
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const resizeCanvas = () => {
-      if (typeof window !== 'undefined') {
-        canvas.width = (typeof window !== 'undefined' ? window.innerWidth : 800);
-        canvas.height = (typeof window !== 'undefined' ? window.innerHeight : 600);
-      }
+    const checkDevice = () => {
+      const deviceMemory = (navigator as any).deviceMemory;
+      const hardwareConcurrency = navigator.hardwareConcurrency;
+      const connection = (navigator as any).connection;
+      
+      // Determine if device is low-end based on multiple factors
+      const isLowEnd = 
+        deviceMemory && deviceMemory <= 4 ||
+        hardwareConcurrency <= 2 ||
+        connection && connection.effectiveType === '2g' ||
+        connection && connection.effectiveType === '3g' ||
+        /Android.*Chrome\/\d+/.test(navigator.userAgent) && deviceMemory <= 4;
+      
+      setIsLowEndDevice(isLowEnd);
     };
 
-    resizeCanvas();
-    if (typeof window !== 'undefined') {
-      window.addEventListener('resize', resizeCanvas);
-    }
-
-    // Initialize particles
-    const particleCount = 150;
-    const newParticles: Array<{
-      x: number;
-      y: number;
-      z: number;
-      vx: number;
-      vy: number;
-      vz: number;
-      size: number;
-      opacity: number;
-      color: string;
-    }> = [];
-
-    for (let i = 0; i < particleCount; i++) {
-      newParticles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        z: Math.random() * 1000,
-        vx: (Math.random() - 0.5) * 2,
-        vy: (Math.random() - 0.5) * 2,
-        vz: (Math.random() - 0.5) * 5,
-        size: Math.random() * 3 + 1,
-        opacity: Math.random() * 0.8 + 0.2,
-        color: `hsl(${220 + Math.random() * 40}, 70%, ${60 + Math.random() * 30}%)`
-      });
-    }
-
-    setParticles(newParticles);
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      newParticles.forEach((particle, index) => {
-        // Update particle position
-        particle.x += particle.vx;
-        particle.y += particle.vy;
-        particle.z += particle.vz;
-
-        // Boundary check
-        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
-        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
-        if (particle.z < 0 || particle.z > 1000) particle.vz *= -1;
-
-        // 3D projection
-        const scale = 300 / (300 + particle.z);
-        const x2d = particle.x * scale + canvas.width / 2 * (1 - scale);
-        const y2d = particle.y * scale + canvas.height / 2 * (1 - scale);
-
-        // Draw particle with 3D effect
-        ctx.beginPath();
-        ctx.arc(x2d, y2d, particle.size * scale, 0, Math.PI * 2);
-        ctx.fillStyle = particle.color;
-        ctx.globalAlpha = particle.opacity * scale;
-        ctx.fill();
-
-        // Draw connections between nearby particles
-        newParticles.slice(index + 1).forEach(otherParticle => {
-          const dx = particle.x - otherParticle.x;
-          const dy = particle.y - otherParticle.y;
-          const dz = particle.z - otherParticle.z;
-          const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
-          if (distance < 120) {
-            const otherScale = 300 / (300 + otherParticle.z);
-            const otherX2d = otherParticle.x * otherScale + canvas.width / 2 * (1 - otherScale);
-            const otherY2d = otherParticle.y * otherScale + canvas.height / 2 * (1 - otherScale);
-
-            ctx.beginPath();
-            ctx.moveTo(x2d, y2d);
-            ctx.lineTo(otherX2d, otherY2d);
-            ctx.strokeStyle = `rgba(59, 130, 246, ${0.3 * (1 - distance / 120) * scale * otherScale})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        });
-      });
-
-      requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => {
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('resize', resizeCanvas);
-      }
-    };
+    checkDevice();
   }, []);
 
+  // Optimized animation variants based on device capability
+  const animationConfig = useMemo(() => {
+    if (prefersReducedMotion || isLowEndDevice) {
+      return {
+        duration: 8,
+        ease: "linear" as const,
+        repeat: Infinity,
+        // Reduced complexity for low-end devices
+        complexity: 0.3
+      };
+    }
+    return {
+      duration: 6,
+      ease: "linear" as const, 
+      repeat: Infinity,
+      complexity: intensity
+    };
+  }, [prefersReducedMotion, isLowEndDevice, intensity]);
+
+  // Memoized grid patterns to avoid recalculation
+  const gridElements = useMemo(() => {
+    const elements = [];
+    const gridSize = isLowEndDevice ? 4 : 6; // Fewer elements for low-end devices
+    
+    for (let i = 0; i < gridSize; i++) {
+      for (let j = 0; j < gridSize; j++) {
+        elements.push({
+          id: `${i}-${j}`,
+          x: (i / (gridSize - 1)) * 100,
+          y: (j / (gridSize - 1)) * 100,
+          delay: (i + j) * 0.1
+        });
+      }
+    }
+    return elements;
+  }, [isLowEndDevice]);
+
+  if (prefersReducedMotion) {
+    return (
+      <div className={`absolute inset-0 ${className}`}>
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/20 to-indigo-100/20" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_50%)]" />
+      </div>
+    );
+  }
+
   return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-none"
-      style={{ zIndex: 1 }}
+    <div ref={containerRef} className={`absolute inset-0 overflow-hidden ${className}`}>
+      {/* Animated tech grid background */}
+      <motion.div 
+        className="absolute inset-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      >
+        {/* Dynamic grid pattern */}
+        <div className="absolute inset-0">
+          {gridElements.map((element) => (
+            <motion.div
+              key={element.id}
+              className="absolute w-1 h-1 bg-blue-400/30 rounded-full"
+              style={{
+                left: `${element.x}%`,
+                top: `${element.y}%`,
+              }}
+              animate={{
+                scale: [0.5, 1.5, 0.5],
+                opacity: [0.3, 0.8, 0.3],
+              }}
+              transition={{
+                duration: animationConfig.duration,
+                repeat: Infinity,
+                delay: element.delay,
+                ease: animationConfig.ease,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Floating tech elements */}
+        <TechFloatingElements 
+          count={isLowEndDevice ? 3 : 5} 
+          animationConfig={animationConfig}
+        />
+
+        {/* Circuit-like connections */}
+        <CircuitConnections 
+          complexity={animationConfig.complexity}
+          isLowEnd={isLowEndDevice}
+        />
+
+        {/* Holographic overlay */}
+        <HolographicOverlay intensity={animationConfig.complexity} />
+      </motion.div>
+    </div>
+  );
+}
+
+// Optimized floating tech elements
+function TechFloatingElements({ count, animationConfig }: { count: number; animationConfig: any }) {
+  const elements = useMemo(() => {
+    return Array.from({ length: count }, (_, i) => ({
+      id: i,
+      size: Math.random() * 30 + 20,
+      x: Math.random() * 80 + 10,
+      y: Math.random() * 80 + 10,
+      rotationSpeed: Math.random() * 2 + 1,
+      floatDistance: Math.random() * 20 + 10,
+    }));
+  }, [count]);
+
+  return (
+    <>
+      {elements.map((element) => (
+        <motion.div
+          key={element.id}
+          className="absolute pointer-events-none"
+          style={{
+            left: `${element.x}%`,
+            top: `${element.y}%`,
+            width: element.size,
+            height: element.size,
+          }}
+          animate={{
+            y: [-element.floatDistance, element.floatDistance, -element.floatDistance],
+            rotate: [0, 360],
+          }}
+          transition={{
+            y: {
+              duration: animationConfig.duration * 0.8,
+              repeat: Infinity,
+              ease: "easeInOut",
+            },
+            rotate: {
+              duration: animationConfig.duration * element.rotationSpeed,
+              repeat: Infinity,
+              ease: "linear",
+            },
+          }}
+        >
+          {/* Tech cube with CSS 3D transforms */}
+          <div className="relative w-full h-full preserve-3d">
+            <div 
+              className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-indigo-600/20 backdrop-blur-sm border border-blue-300/30 rounded-lg"
+              style={{ transform: 'translateZ(0)' }}
+            />
+            <div 
+              className="absolute inset-1 bg-gradient-to-tr from-cyan-400/10 to-blue-500/10 rounded border border-cyan-300/20"
+              style={{ transform: 'translateZ(2px)' }}
+            />
+          </div>
+        </motion.div>
+      ))}
+    </>
+  );
+}
+
+// Optimized circuit connections
+function CircuitConnections({ complexity, isLowEnd }: { complexity: number; isLowEnd: boolean }) {
+  const connections = useMemo(() => {
+    const count = isLowEnd ? 3 : Math.floor(5 * complexity);
+    return Array.from({ length: count }, (_, i) => ({
+      id: i,
+      path: `M${Math.random() * 100},${Math.random() * 100} Q${Math.random() * 100},${Math.random() * 100} ${Math.random() * 100},${Math.random() * 100}`,
+      delay: i * 0.5,
+    }));
+  }, [complexity, isLowEnd]);
+
+  return (
+    <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100">
+      {connections.map((connection) => (
+        <motion.path
+          key={connection.id}
+          d={connection.path}
+          stroke="url(#techGradient)"
+          strokeWidth="0.2"
+          fill="none"
+          strokeDasharray="2 4"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ 
+            pathLength: [0, 1, 0], 
+            opacity: [0, 0.6, 0] 
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            delay: connection.delay,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+      <defs>
+        <linearGradient id="techGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.8" />
+          <stop offset="50%" stopColor="#06b6d4" stopOpacity="0.6" />
+          <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.4" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
+// Holographic overlay effect
+function HolographicOverlay({ intensity }: { intensity: number }) {
+  return (
+    <motion.div 
+      className="absolute inset-0 pointer-events-none"
+      animate={{
+        background: [
+          'radial-gradient(circle at 20% 20%, rgba(59,130,246,0.1) 0%, transparent 50%)',
+          'radial-gradient(circle at 80% 80%, rgba(6,182,212,0.1) 0%, transparent 50%)',
+          'radial-gradient(circle at 50% 50%, rgba(139,92,246,0.1) 0%, transparent 50%)',
+          'radial-gradient(circle at 20% 20%, rgba(59,130,246,0.1) 0%, transparent 50%)',
+        ],
+      }}
+      transition={{
+        duration: 8,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
+      style={{ opacity: intensity }}
     />
   );
 }
 
-export function FloatingCodeBlocks() {
-  const codeSnippets = [
-    "const app = () => {",
-    "function deploy() {",
-    "AI.optimize();",
-    "export default",
-    "async/await",
-    "React.jsx",
-    "API.connect()",
-    "ML.predict()"
-  ];
+// Performance-optimized 3D matrix rain effect
+export function MatrixRain({ density = 0.3, className = "" }: { density?: number; className?: string }) {
+  const [drops, setDrops] = useState<Array<{ id: number; x: number; delay: number }>>([]);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  
+  useEffect(() => {
+    const dropCount = Math.floor(20 * density); // Limit drops for performance
+    const newDrops = Array.from({ length: dropCount }, (_, i) => ({
+      id: i,
+      x: (i / dropCount) * 100,
+      delay: Math.random() * 2,
+    }));
+    setDrops(newDrops);
+  }, [density]);
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 2 }}>
-      {codeSnippets.map((code, index) => (
+    <div className={`absolute inset-0 pointer-events-none ${className}`}>
+      {drops.map((drop) => (
         <motion.div
-          key={index}
-          className="absolute bg-gray-900/80 backdrop-blur-sm text-green-400 px-3 py-1 rounded-md text-sm font-mono border border-green-500/30"
-          initial={{ 
-            x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 800),
-            y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600),
-            opacity: 0,
-            scale: 0.8
+          key={drop.id}
+          className="absolute w-px bg-gradient-to-b from-green-400/60 via-green-300/40 to-transparent"
+          style={{
+            left: `${drop.x}%`,
+            height: '100px',
+            top: '-100px',
           }}
-          animate={{ 
-            x: [
-              Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 800),
-              Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 800),
-              Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 800)
-            ],
-            y: [
-              Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600),
-              Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600),
-              Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600)
-            ],
-            opacity: [0, 0.7, 0],
-            scale: [0.8, 1, 0.8],
-            rotate: [0, 360, 720]
-          }}
-          transition={{
-            duration: 15 + Math.random() * 10,
-            repeat: Infinity,
-            ease: "linear",
-            delay: index * 2
-          }}
-        >
-          {code}
-        </motion.div>
-      ))}
-    </div>
-  );
-}
-
-export function HolographicGrid() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 1 }}>
-      <motion.div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
-          `,
-          backgroundSize: '50px 50px'
-        }}
-        animate={{
-          backgroundPosition: ['0px 0px', '50px 50px'],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "linear"
-        }}
-      />
-      <motion.div
-        className="absolute inset-0"
-        style={{
-          background: 'radial-gradient(circle at center, rgba(59, 130, 246, 0.05) 0%, transparent 70%)'
-        }}
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.3, 0.6, 0.3]
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-      />
-    </div>
-  );
-}
-
-export function FloatingTechIcons() {
-  const techIcons = [
-    { symbol: "⚛️", name: "React" },
-    { symbol: "📱", name: "Mobile" },
-    { symbol: "☁️", name: "Cloud" },
-    { symbol: "🤖", name: "AI" },
-    { symbol: "🔗", name: "Blockchain" },
-    { symbol: "💾", name: "Database" },
-    { symbol: "🔒", name: "Security" },
-    { symbol: "⚡", name: "Performance" }
-  ];
-
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 2 }}>
-      {techIcons.map((icon, index) => (
-        <motion.div
-          key={index}
-          className="absolute"
-          initial={{ 
-            x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 800),
-            y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600),
-            scale: 0,
-            rotate: 0
-          }}
-          animate={{ 
-            x: [
-              Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 800),
-              Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 800),
-            ],
-            y: [
-              Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600),
-              Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 600),
-            ],
-            scale: [0, 1, 0.8, 1, 0],
-            rotate: [0, 180, 360],
-          }}
-          transition={{
-            duration: 12 + Math.random() * 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: index * 1.5
-          }}
-        >
-          <div className="relative">
-            <motion.div
-              className="text-4xl filter drop-shadow-lg"
-              whileHover={{ scale: 1.2 }}
-              animate={{
-                filter: [
-                  "drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))",
-                  "drop-shadow(0 0 16px rgba(79, 70, 229, 0.8))",
-                  "drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))"
-                ]
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            >
-              {icon.symbol}
-            </motion.div>
-            <motion.div
-              className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs font-mono text-blue-400 bg-gray-900/80 px-2 py-1 rounded backdrop-blur-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 1, 0] }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 2
-              }}
-            >
-              {icon.name}
-            </motion.div>
-          </div>
-        </motion.div>
-      ))}
-    </div>
-  );
-}
-
-export function QuantumOrb() {
-  return (
-    <motion.div
-      className="absolute top-1/2 right-1/4 transform -translate-y-1/2 pointer-events-none"
-      style={{ zIndex: 3 }}
-      animate={{
-        y: [-20, 20, -20],
-        rotate: [0, 360],
-      }}
-      transition={{
-        y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-        rotate: { duration: 8, repeat: Infinity, ease: "linear" }
-      }}
-    >
-      <div className="relative w-40 h-40">
-        {/* Outer rings */}
-        {[...Array(3)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute inset-0 rounded-full border-2"
-            style={{
-              borderColor: `rgba(59, 130, 246, ${0.3 - i * 0.1})`,
-              transform: `scale(${1 + i * 0.3})`
-            }}
-            animate={{
-              rotate: [0, 360],
-              scale: [1 + i * 0.3, 1.2 + i * 0.3, 1 + i * 0.3]
-            }}
-            transition={{
-              rotate: { duration: 8 + i * 2, repeat: Infinity, ease: "linear" },
-              scale: { duration: 3 + i, repeat: Infinity, ease: "easeInOut" }
-            }}
-          />
-        ))}
-        
-        {/* Core orb */}
-        <motion.div
-          className="absolute inset-4 rounded-full bg-gradient-radial from-blue-400/60 via-indigo-500/40 to-purple-600/20"
           animate={{
-            boxShadow: [
-              "0 0 20px rgba(59, 130, 246, 0.5)",
-              "0 0 40px rgba(79, 70, 229, 0.8)",
-              "0 0 20px rgba(59, 130, 246, 0.5)"
-            ]
+            y: [0, window.innerHeight + 100],
           }}
           transition={{
-            duration: 2,
+            duration: 3,
             repeat: Infinity,
-            ease: "easeInOut"
+            delay: drop.delay,
+            ease: "linear",
           }}
         />
-        
-        {/* Energy particles */}
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-2 h-2 bg-blue-400 rounded-full"
-            style={{
-              top: '50%',
-              left: '50%',
-              transformOrigin: '0 0'
-            }}
-            animate={{
-              rotate: [0, 360],
-              x: [0, 60 * Math.cos(i * Math.PI / 4)],
-              y: [0, 60 * Math.sin(i * Math.PI / 4)],
-              opacity: [0, 1, 0]
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 0.5
-            }}
-          />
-        ))}
-      </div>
-    </motion.div>
+      ))}
+    </div>
+  );
+}
+
+// Main techy hero background component
+export default function TechyHeroBackground({ className = "" }: { className?: string }) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return (
+      <div className={`absolute inset-0 bg-gradient-to-br from-blue-50/20 to-indigo-100/20 ${className}`} />
+    );
+  }
+
+  return (
+    <div className={`absolute inset-0 ${className}`}>
+      {/* Base gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/20" />
+      
+      {/* Tech 3D elements */}
+      <TechyHero3D intensity={0.7} />
+      
+      {/* Subtle matrix effect for extra tech feel */}
+      <MatrixRain density={0.2} className="opacity-20" />
+      
+      {/* Overlay for content readability */}
+      <div className="absolute inset-0 bg-white/10 backdrop-blur-[0.5px]" />
+    </div>
   );
 }

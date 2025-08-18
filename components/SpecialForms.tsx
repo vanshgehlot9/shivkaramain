@@ -338,7 +338,7 @@ export function PlanSelectionForm({ planDetails, onSuccess }: PlanSelectionFormP
   return (
     <div className="bg-white rounded-2xl shadow-xl p-8">
       {planDetails && (
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 mb-8 border border-blue-200">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 mb-8 border border-blue-200">
           <div className="flex items-start space-x-3">
             <CreditCard className="w-6 h-6 text-blue-600 mt-1" />
             <div>
@@ -492,7 +492,7 @@ export function PlanSelectionForm({ planDetails, onSuccess }: PlanSelectionFormP
           className={`w-full py-4 rounded-lg font-semibold text-lg shadow-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
             isSubmitting 
               ? 'bg-gray-400 cursor-not-allowed' 
-              : 'bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:shadow-xl'
+              : 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white hover:shadow-xl'
           }`}
           whileHover={!isSubmitting ? { scale: 1.02 } : {}}
           whileTap={!isSubmitting ? { scale: 0.98 } : {}}

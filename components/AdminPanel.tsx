@@ -182,7 +182,7 @@ export function AdminPanel() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'new': return 'bg-blue-100 text-blue-800';
-      case 'read': return 'bg-yellow-100 text-yellow-800';
+      case 'read': return 'bg-blue-100 text-blue-800';
       case 'replied': return 'bg-green-100 text-green-800';
       default: return 'bg-gray-100 text-gray-800';
     }
@@ -267,7 +267,7 @@ export function AdminPanel() {
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-lg font-medium text-gray-900">Plans</h3>
-            <p className="text-3xl font-bold text-purple-600">
+            <p className="text-3xl font-bold text-blue-600">
               {submissions.filter(s => s.type === 'plan_selection').length}
             </p>
           </div>
@@ -301,7 +301,7 @@ export function AdminPanel() {
                   </button>
                   <button
                     onClick={() => setFilter('read')}
-                    className={`px-4 py-2 rounded-lg ${filter === 'read' ? 'bg-yellow-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                    className={`px-4 py-2 rounded-lg ${filter === 'read' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
                   >
                     Read
                   </button>
@@ -329,7 +329,7 @@ export function AdminPanel() {
               <div className="flex gap-2">
                 <button
                   onClick={() => setTypeFilter('all')}
-                  className={`px-4 py-2 rounded-lg ${typeFilter === 'all' ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                  className={`px-4 py-2 rounded-lg ${typeFilter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
                 >
                   All Types
                 </button>

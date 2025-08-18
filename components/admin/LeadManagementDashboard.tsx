@@ -160,8 +160,8 @@ export function LeadManagementDashboard() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'new': return 'bg-blue-100 text-blue-800';
-      case 'contacted': return 'bg-yellow-100 text-yellow-800';
-      case 'qualified': return 'bg-purple-100 text-purple-800';
+      case 'contacted': return 'bg-blue-100 text-blue-800';
+      case 'qualified': return 'bg-indigo-100 text-indigo-800';
       case 'converted': return 'bg-green-100 text-green-800';
       case 'closed': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
@@ -171,7 +171,7 @@ export function LeadManagementDashboard() {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high': return 'text-red-600';
-      case 'medium': return 'text-yellow-600';
+      case 'medium': return 'text-blue-600';
       case 'low': return 'text-green-600';
       default: return 'text-gray-600';
     }
