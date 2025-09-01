@@ -21,8 +21,8 @@ export const SEO_CONFIG = {
       latitude: 26.2389,
       longitude: 73.0243
     },
-    phone: '+91-9999999999',
-    email: 'contact@shivkaradigitals.com',
+    phone: '+91-9521699090',
+    email: 'info@shivkaradigital.com',
     openingHours: 'Mo-Fr 09:00-18:00',
     serviceAreas: ['Jodhpur', 'Rajasthan', 'India', 'International']
   },

@@ -76,8 +76,8 @@ export function ExpensesDashboard() {
   const handleEdit = (expense: Expense) => {
     setEditingId(expense.id);
     setForm({
-      category: expense.category,
-      amount: expense.amount.toString(),
+      category: expense.category || "",
+      amount: expense.amount ? expense.amount.toString() : "",
       date: expense.date ? expense.date.toDate().toISOString().slice(0, 10) : "",
       description: expense.description || ""
     });

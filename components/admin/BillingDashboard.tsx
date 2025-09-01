@@ -76,8 +76,8 @@ export function BillingDashboard() {
         status: form.status,
         dueDate: Timestamp.fromDate(new Date(form.dueDate)),
         description: form.description,
-        invoiceNumber: editingId ? invoices.find(inv => inv.id === editingId)?.invoiceNumber : generateInvoiceNumber(),
-        createdDate: editingId ? invoices.find(inv => inv.id === editingId)?.createdDate : Timestamp.now(),
+        invoiceNumber: editingId ? (invoices.find(inv => inv.id === editingId)?.invoiceNumber || generateInvoiceNumber()) : generateInvoiceNumber(),
+        createdDate: editingId ? (invoices.find(inv => inv.id === editingId)?.createdDate || Timestamp.now()) : Timestamp.now(),
         updatedAt: Timestamp.now()
       };
 
@@ -99,10 +99,10 @@ export function BillingDashboard() {
   const handleEdit = (invoice: Invoice) => {
     setEditingId(invoice.id);
     setForm({
-      clientName: invoice.clientName,
-      email: invoice.email,
-      amount: invoice.amount.toString(),
-      status: invoice.status,
+      clientName: invoice.clientName || "",
+      email: invoice.email || "",
+      amount: invoice.amount ? invoice.amount.toString() : "",
+      status: invoice.status || "unpaid",
       dueDate: invoice.dueDate ? invoice.dueDate.toDate().toISOString().slice(0, 10) : "",
       description: invoice.description || ""
     });

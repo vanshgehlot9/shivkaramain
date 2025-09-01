@@ -1,6 +1,7 @@
 "use client";
+import { useState } from 'react';
 import { motion } from "framer-motion";
-import { Mail } from "lucide-react";
+import { Mail, X } from "lucide-react";
 import { FaInstagram } from "react-icons/fa";
 import Link from "next/link";
 
@@ -9,6 +10,7 @@ interface FooterProps {
 }
 
 export default function Footer({ currentPage = "home" }: FooterProps) {
+  const [showPolicy, setShowPolicy] = useState(false);
   const scrollToSection = (sectionId: string) => {
     if (currentPage === "home") {
       const element = document.getElementById(sectionId);
@@ -169,9 +171,72 @@ export default function Footer({ currentPage = "home" }: FooterProps) {
             <Link href="/privacy" className="text-gray-500 hover:text-blue-400 text-sm transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="text-gray-500 hover:text-blue-400 text-sm transition-colors">Terms of Service</Link>
             <Link href="/cookie-policy" className="text-gray-500 hover:text-blue-400 text-sm transition-colors">Cookie Policy</Link>
+            <button onClick={() => setShowPolicy(true)} className="text-gray-500 hover:text-blue-400 text-sm transition-colors">Cancellation & Refund Policy</button>
+            <Link href="/cancellation-policy" className="text-gray-500 hover:text-blue-400 text-sm transition-colors">View full policy</Link>
           </div>
         </div>
       </div>
+      {showPolicy && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setShowPolicy(false)} aria-hidden="true"></div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="relative max-w-3xl mx-4 w-full bg-white rounded-xl shadow-2xl p-6 md:p-8 z-10 overflow-y-auto max-h-[85vh] text-gray-900"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Cancellation and Refund Policy"
+          >
+            <button
+              onClick={() => setShowPolicy(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              aria-label="Close policy"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <h2 className="text-2xl font-bold mb-3">Shivkara Digital – Cancellation & Refund Policy</h2>
+            <p className="text-gray-700 mb-4">At Shivkara Digital, we value transparency and customer trust. Our subscription plans are designed to be flexible so you can choose what works best for your business. You can cancel your subscription at any time depending on your plan type.</p>
+
+            <h3 className="font-semibold mt-4">Monthly Plan (₹2,499):</h3>
+            <ul className="list-disc pl-5 text-gray-700 mb-3">
+              <li>Cancel anytime before renewal.</li>
+              <li>No refunds for partial months; access remains until the end of current billing period.</li>
+            </ul>
+
+            <h3 className="font-semibold mt-2">Yearly Plan (₹19,999):</h3>
+            <ul className="list-disc pl-5 text-gray-700 mb-3">
+              <li>Full refund if canceled within 7 days of purchase.</li>
+              <li>After 7 days, no refunds are provided but you retain access until subscription term ends.</li>
+            </ul>
+
+            <h3 className="font-semibold mt-2">Special Launch Offer (valid till 31st October 2025):</h3>
+            <ul className="list-disc pl-5 text-gray-700 mb-3">
+              <li>If you cancel before delivery of the FREE Social Media Starter Pack, that benefit will be voided.</li>
+              <li>Discounts offered during the launch (including the 5% discount) are non-refundable.</li>
+            </ul>
+
+            <h3 className="font-semibold mt-2">General Rules:</h3>
+            <ul className="list-disc pl-5 text-gray-700 mb-4">
+              <li>Domains, third-party services, or add-ons purchased separately are non-refundable.</li>
+              <li>Refunds due to technical issues or failure to deliver services will be reviewed on a case-by-case basis.</li>
+              <li>Cancellations can be made via email at <a href="mailto:info@shivkaradigital.com" className="text-blue-600 underline">info@shivkaradigital.com</a> or through your client dashboard (if applicable).</li>
+            </ul>
+
+            <div className="bg-gray-50 border border-gray-100 rounded-lg p-4">
+              <h4 className="font-semibold mb-2">Quick Summary</h4>
+              <ul className="text-gray-700 list-disc pl-5">
+                <li><strong>Monthly Plan (₹2,499):</strong> Cancel anytime before renewal. No refunds for partial months.</li>
+                <li className="mt-2"><strong>Yearly Plan (₹19,999):</strong> Full refund if canceled within 7 days; otherwise no refunds but access continues.</li>
+                <li className="mt-2"><strong>Special Launch Offer (till 31st Oct 2025):</strong> Cancel before delivery → lose FREE Social Media Starter Pack. 5% discount is non-refundable.</li>
+                <li className="mt-2">Domains & third-party add-ons are non-refundable. Refunds only in case of service failure (case-by-case).</li>
+                <li className="mt-2">Cancel via email: <a href="mailto:info@shivkaradigital.com" className="text-blue-600 underline">info@shivkaradigital.com</a> or via client dashboard.</li>
+              </ul>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </footer>
   );
 }

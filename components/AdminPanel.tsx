@@ -121,21 +121,28 @@ export function AdminPanel() {
 
       // Prepare CSV data
       const csvData = filteredSubmissions.map(sub => {
-        const date = sub.timestamp.toDate();
+        let dateObj;
+        if (sub.timestamp && typeof sub.timestamp.toDate === 'function') {
+          dateObj = sub.timestamp.toDate();
+        } else if (typeof sub.timestamp === 'number' || typeof sub.timestamp === 'string') {
+          dateObj = new Date(sub.timestamp);
+        } else {
+          dateObj = new Date();
+        }
         return [
-          getTypeLabel(sub.type),
-          `"${sub.name}"`,
-          `"${sub.email}"`,
+          `"${getTypeLabel(sub.type) || ''}"`,
+          `"${sub.name || ''}"`,
+          `"${sub.email || ''}"`,
           `"${sub.phone || ''}"`,
           `"${sub.company || ''}"`,
           `"${sub.subject || sub.selectedPlan || sub.offerTitle || ''}"`,
           `"${sub.service || sub.projectTimeline || ''}"`,
-          `"${sub.message.replace(/"/g, '""')}"`, // Escape quotes in message
-          sub.status,
-          `"${sub.type === 'offer_claim' ? `${sub.offerPrice} (was ${sub.originalPrice})` : 
-               sub.type === 'plan_selection' ? `${sub.planPrice}` : ''}"`,
-          date.toLocaleDateString(),
-          date.toLocaleTimeString()
+          `"${(sub.message || '').replace(/"/g, '""')}"`,
+          `"${sub.status || ''}"`,
+          `"${sub.type === 'offer_claim' ? `${sub.offerPrice || ''} (was ${sub.originalPrice || ''})` : 
+               sub.type === 'plan_selection' ? `${sub.planPrice || ''}` : ''}"`,
+          `"${dateObj.toLocaleDateString()}"`,
+          `"${dateObj.toLocaleTimeString()}"`
         ];
       });
 

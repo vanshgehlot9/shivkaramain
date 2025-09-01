@@ -21,7 +21,6 @@ import {
   ChevronRight,
   TrendingUp,
   Clock,
-  CheckCircle,
   Award,
   Globe,
   Database,
@@ -68,7 +67,7 @@ import {
   Calendar as CalendarIcon,
   Clock as ClockIcon,
   Users as UsersIcon,
-  CheckCircle as CheckCircleIcon
+  CheckCircle
 } from "lucide-react";
 import Image from 'next/image';
 import { projects } from "../lib/projects";
@@ -88,7 +87,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { ParticleBackground, FloatingElements } from "../components/ui/particles";
 import { EnhancedCard, GradientCard, GlassCard } from "../components/ui/enhanced-card";
 import { TechSlider } from "../components/ui/tech-slider";
-import FeaturedProjects from "../components/FeaturedProjects";
+import { SubscriptionPricing } from "../components/SubscriptionPricing";
 import { ScrollRevealSection, ScrollRevealItem } from "../components/ui/scroll-reveal";
 import { ImmediateDisplay } from "../components/ui/immediate-display";
 import { TypedTextAnimation, WordFadeIn, AnimatedGradientText, HighlightText } from "../components/ui/text-animations";
@@ -140,7 +139,10 @@ const services = [
     features: ["CRM Implementation", "ERP Systems", "Business Intelligence", "Workflow Automation"],
     color: "from-teal-500 to-cyan-500"
   }
-];
+].map(service => ({
+  ...service,
+  // Add any additional properties or modifications here
+}));
 
 const technologies = [
   { name: "React", icon: <FaReact className="w-8 h-8" />, category: "Frontend", color: "from-blue-500 to-cyan-500" },
@@ -317,93 +319,6 @@ const clientLogos = [
   { name: "Jodhpur Bombay Roadway", logo: "🚛", category: "Logistics" }
 ];
 
-const pricingPlans = [
-  {
-    name: "Startup Package",
-    price: "₹25,000",
-    originalPrice: "₹35,000",
-    period: "project",
-    description: "Perfect for new businesses and startups looking to establish their digital presence",
-    features: [
-      "Professional responsive website (up to 7 pages)",
-      "Mobile-optimized design",
-      "Contact form with email notifications",
-      "Basic SEO optimization",
-      "Google Analytics integration",
-      "2 months free support",
-      "SSL certificate setup",
-      "Social media integration",
-      "Basic content management",
-      "Performance optimization"
-    ],
-    popular: false,
-    color: "from-blue-500 to-cyan-500",
-    badge: "BEST FOR STARTUPS",
-    savings: "Save ₹10,000",
-    deliveryTime: "2-3 weeks",
-    revisions: "3 revisions included",
-    support: "2 months free support"
-  },
-  {
-    name: "Business Growth",
-    price: "₹75,000",
-    originalPrice: "₹1,00,000",
-    period: "combo",
-    description: "Complete digital solution with website and mobile presence for growing businesses",
-    features: [
-      "Professional website (up to 12 pages)",
-      "Android mobile application",
-      "Admin dashboard and analytics",
-      "Database integration with cloud backup",
-      "Advanced SEO and local optimization",
-      "6 months premium support",
-      "Payment gateway integration",
-      "Push notifications system",
-      "App store publishing assistance",
-      "Social media API integration",
-      "Email marketing setup",
-      "Performance monitoring"
-    ],
-    popular: true,
-    color: "from-blue-600 to-indigo-600",
-    badge: "MOST POPULAR",
-    savings: "Save ₹25,000",
-    deliveryTime: "4-6 weeks",
-    revisions: "5 revisions included",
-    support: "6 months premium support"
-  },
-  {
-    name: "Enterprise Solution",
-    price: "₹1,50,000",
-    originalPrice: "₹2,00,000",
-    period: "project",
-    description: "Comprehensive digital transformation for established businesses and enterprises",
-    features: [
-      "Custom web application development",
-      "iOS & Android mobile applications",
-      "Advanced admin panel with role management",
-      "API development and third-party integrations",
-      "Cloud infrastructure setup (AWS/Google Cloud)",
-      "12 months platinum support",
-      "Advanced analytics and reporting",
-      "Multi-language support",
-      "Advanced security implementation",
-      "Automated backup and disaster recovery",
-      "Performance optimization and monitoring",
-      "Dedicated project manager",
-      "Training and documentation",
-      "24/7 technical support"
-    ],
-    popular: false,
-    color: "from-orange-500 to-red-500",
-    badge: "ENTERPRISE GRADE",
-    savings: "Save ₹50,000",
-    deliveryTime: "8-12 weeks",
-    revisions: "Unlimited revisions",
-    support: "12 months platinum support"
-  }
-];
-
 const blogPosts = [
   {
     title: "The Future of Web Development in 2025",
@@ -434,47 +349,6 @@ const blogPosts = [
     category: "Mobile Development",
     image: "/blog/artcle3.png",
     tags: ["Mobile", "React Native", "Flutter"]
-  }
-];
-
-const specialOffers = [
-  {
-    title: "New Business Combo",
-    description: "Website + Android App + 8 Months Support",
-    originalPrice: "₹1,20,000",
-    offerPrice: "₹75,000",
-    savings: "₹45,000",
-    features: [
-      "Professional Website (10 pages)",
-      "Android Mobile Application",
-      "Admin Dashboard",
-      "8 Months Free Support",
-      "Payment Gateway Integration",
-      "SEO Optimization",
-      "App Store Publishing",
-      "Free Domain & Hosting (1 year)"
-    ],
-    validUntil: "September 30, 2025",
-    color: "from-green-500 to-emerald-500"
-  },
-  {
-    title: "Startup Special",
-    description: "Basic Website Package",
-    originalPrice: "₹15,000",
-    offerPrice: "₹7,000",
-    savings: "₹8,000",
-    features: [
-      "Responsive Website (5 pages)",
-      "Contact Form",
-      "SEO Optimization",
-      "1 Month Support",
-      "Mobile-Friendly Design",
-      "Fast Loading Speed",
-      "Free SSL Certificate",
-      "Basic Analytics"
-    ],
-    validUntil: "September 30, 2025",
-    color: "from-blue-500 to-cyan-500"
   }
 ];
 
@@ -1241,22 +1115,9 @@ function Process() {
 
 function Services() {
   return (
-    <motion.section
-      id="services"
-      className="py-24 bg-white"
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.8 }}
-    >
+    <section id="services" className="py-12 sm:py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6">
-        <motion.div
-          className="section-header text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
+        <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center space-x-2 bg-indigo-50 px-4 py-2 rounded-full mb-4">
             <div className="w-2 h-2 bg-indigo-700 rounded-full"></div>
             <span className="text-indigo-700 text-sm font-semibold tracking-wide">OUR SERVICES</span>
@@ -1268,56 +1129,35 @@ function Services() {
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
             We offer end-to-end software solutions tailored to meet your specific business requirements and drive meaningful digital transformation.
           </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service, index) => (
-            <motion.div
-              key={service.title}
-              className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 group overflow-hidden relative"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.6 }}
-              whileHover={{ y: -5 }}
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full -translate-y-1/2 translate-x-1/2 opacity-20 group-hover:scale-150 transition-transform duration-700"></div>
-              <div className={`w-14 h-14 bg-gradient-to-br ${service.color} rounded-xl flex items-center justify-center text-white mb-6 shadow-lg relative`}>
-                <motion.div
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.6 }}
-                >
-                {service.icon}
-                </motion.div>
+        </div>
+        
+        <div className="max-h-[70vh] overflow-y-auto custom-scrollbar">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+            {services.map((service, index) => (
+              <div
+                key={service.title}
+                className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 group"
+              >
+                <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${service.color} flex items-center justify-center mb-4`}>
+                  {service.icon}
+                </div>
+                <h3 className="text-xl font-bold mb-3">{service.title}</h3>
+                <p className="text-gray-600 mb-4">{service.description}</p>
+                <ul className="space-y-2">
+                  {service.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-center text-sm text-gray-600">
+                      <Check className="w-4 h-4 text-green-500 mr-2" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <div className="h-1 bg-gradient-to-r from-blue-700 to-indigo-600 w-0 group-hover:w-full transition-all duration-700 ease-out mt-4"></div>
               </div>
-              
-              <h3 className="text-xl font-bold mb-4 text-gray-900">{service.title}</h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">{service.description}</p>
-              
-              <ul className="space-y-3">
-                {service.features.map((feature, featureIndex) => (
-                  <motion.li 
-                    key={feature} 
-                    className="flex items-start space-x-3"
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.1 * featureIndex, duration: 0.5 }}
-                  >
-                    <div className="bg-indigo-50 rounded-full p-1 mt-0.5">
-                      <CheckCircle className="w-3.5 h-3.5 text-indigo-700 flex-shrink-0" />
-                    </div>
-                    <span className="text-sm text-gray-600">{feature}</span>
-                  </motion.li>
-                ))}
-              </ul>
-              
-              <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-700 to-indigo-600 w-0 group-hover:w-full transition-all duration-700 ease-out"></div>
-            </motion.div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
 
@@ -2163,259 +2003,6 @@ function Features({ onCustomQuote }: { onCustomQuote: () => void }) {
   );
 }
 
-function SpecialOffers({ onClaimOffer }: { onClaimOffer: (offer: any) => void }) {
-  return (
-    <motion.section
-      className="py-20 bg-gradient-to-br from-lavender/10 to-pink/10"
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.8 }}
-    >
-      <div className="max-w-7xl mx-auto px-6">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Special <span className="bg-gradient-to-r from-lavender to-pink bg-clip-text text-transparent">Offers</span>
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Limited time offers to help your business grow. Don't miss these exclusive deals!
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 gap-8">
-          {specialOffers.map((offer, index) => (
-            <motion.div
-              key={offer.title}
-              className="group relative bg-white backdrop-blur-xl rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-500 border border-gray-100 overflow-hidden"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ y: -8 }}
-            >
-              {/* Glass effect background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-lavender/5 to-pink/10 group-hover:opacity-100 opacity-0 transition-opacity duration-500" />
-              
-              {/* Animated decorative elements */}
-              <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-lavender to-pink rounded-full opacity-20 blur-2xl group-hover:scale-150 transition-transform duration-700" />
-              <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full opacity-20 blur-2xl group-hover:scale-150 transition-transform duration-700" />
-              
-              {/* Offer Badge */}
-              <div className="absolute -top-4 -right-4 bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg transform rotate-12 group-hover:rotate-6 transition-transform duration-300">
-                LIMITED TIME
-              </div>
-
-              {/* Content wrapper with relative positioning */}
-              <div className="relative">
-                {/* Price Section */}
-                <div className="text-center mb-8">
-                  <h3 className="text-3xl font-bold mb-2 text-gray-900 group-hover:text-lavender transition-colors duration-300">{offer.title}</h3>
-                  <p className="text-gray-600 mb-6">{offer.description}</p>
-                  
-                  <div className="flex items-center justify-center space-x-4 mb-4">
-                    <span className="text-2xl text-gray-400 line-through">{offer.originalPrice}</span>
-                    <span className="text-5xl font-bold bg-gradient-to-r from-lavender to-pink bg-clip-text text-transparent">
-                      {offer.offerPrice}
-                    </span>
-                  </div>
-                  
-                  <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-5 py-2 rounded-full text-sm font-semibold inline-block shadow-lg">
-                    Save {offer.savings}
-                  </div>
-                </div>
-
-                {/* Features */}
-                <ul className="space-y-4 mb-8">
-                  {offer.features.map((feature) => (
-                    <li key={feature} className="flex items-center space-x-3">
-                      <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-lavender/10 group-hover:bg-lavender/20 transition-colors duration-300">
-                        <Check className="w-4 h-4 text-lavender" />
-                      </div>
-                      <span className="text-gray-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Valid Until */}
-                <div className="text-center mb-6">
-                  <p className="text-sm font-medium inline-flex items-center px-3 py-1.5 rounded-full bg-red-50 text-red-600 group-hover:bg-red-100 transition-colors duration-300">
-                    <Clock className="w-4 h-4 mr-1" /> Valid until: <span className="font-bold ml-1">{offer.validUntil}</span>
-                  </p>
-                </div>
-
-                <motion.button
-                  onClick={() => onClaimOffer(offer)}
-                  className="w-full py-4 bg-gradient-to-r from-lavender to-pink text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-pink to-lavender opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
-                  <span className="relative flex items-center justify-center">
-                    Claim This Offer <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-                  </span>
-                </motion.button>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </motion.section>
-  );
-}
-
-function Pricing({ onCustomQuote, onGetStarted }: { onCustomQuote: () => void; onGetStarted: (plan: any) => void }) {
-  const [selectedPlan, setSelectedPlan] = useState('Professional');
-
-  return (
-    <motion.section
-      className="py-20 bg-gradient-to-br from-slate-50 to-indigo-50"
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.8 }}
-    >
-      <div className="max-w-7xl mx-auto px-6">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Transparent <span className="bg-gradient-to-r from-lavender to-pink bg-clip-text text-transparent">Pricing</span>
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Choose the perfect plan for your business needs. All plans include our commitment to quality and ongoing support.
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {pricingPlans.map((plan, index) => (
-            <motion.div
-              key={plan.name}
-              className={`group relative bg-white rounded-2xl overflow-hidden transition-all duration-500 ${
-                plan.popular 
-                  ? 'md:scale-105 shadow-2xl z-10' 
-                  : 'shadow-xl hover:shadow-2xl'
-              }`}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ y: -8 }}
-            >
-              {/* Background gradient effect */}
-              <div className={`absolute inset-0 ${plan.popular ? 'opacity-10' : 'opacity-0 group-hover:opacity-5'} transition-opacity duration-500 bg-gradient-to-br from-lavender to-pink`}></div>
-              
-              {/* Top accent bar */}
-              <div className={`h-2 w-full ${
-                plan.popular
-                  ? 'bg-gradient-to-r from-lavender to-pink'
-                  : 'bg-gradient-to-r from-gray-200 to-gray-300 group-hover:from-lavender/30 group-hover:to-pink/30'
-              } transition-colors duration-500`}></div>
-              
-              {plan.badge && (
-                <div className="absolute top-6 right-6">
-                  <span className="bg-gradient-to-r from-lavender to-pink text-white px-4 py-1.5 rounded-full text-xs font-medium shadow-lg">
-                    {plan.badge}
-                  </span>
-                </div>
-              )}
-
-              <div className="p-8">
-                <div className="text-center mb-8">
-                  <h3 className={`text-2xl font-bold mb-4 ${plan.popular ? 'text-lavender' : 'text-gray-900 group-hover:text-lavender transition-colors duration-300'}`}>{plan.name}</h3>
-                  <div className="mb-3">
-                    <span className="text-5xl font-bold bg-gradient-to-r from-lavender to-pink bg-clip-text text-transparent">{plan.price}</span>
-                    <span className="text-gray-600">/{plan.period}</span>
-                  </div>
-                  {plan.originalPrice && (
-                    <div className="mb-3">
-                      <span className="text-lg text-gray-400 line-through">{plan.originalPrice}</span>
-                      <span className="ml-2 text-green-600 font-bold">{plan.savings}</span>
-                    </div>
-                  )}
-                  <p className="text-gray-600 mb-6">{plan.description}</p>
-                  
-                  {/* Plan highlights */}
-                  <div className="flex flex-col gap-3 mb-6">
-                    <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-full bg-blue-50 text-blue-700">
-                      <Clock className="w-4 h-4" />
-                      <span className="font-medium">{plan.deliveryTime}</span>
-                    </div>
-                    <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-full bg-green-50 text-green-700">
-                      <CheckCircle className="w-4 h-4" />
-                      <span className="font-medium">{plan.revisions}</span>
-                    </div>
-                    <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-full bg-purple-50 text-purple-700">
-                      <Shield className="w-4 h-4" />
-                      <span className="font-medium">{plan.support}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-4 mb-8">
-                  {plan.features.map((feature) => (
-                    <div key={feature} className="flex items-center space-x-3 group">
-                      <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-lavender/10 group-hover:bg-lavender/20 transition-colors duration-300">
-                        <Check className="w-4 h-4 text-lavender" />
-                      </div>
-                      <span className="text-gray-700">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <motion.button
-                  onClick={() => {
-                    trackCTAClick(`Select ${plan.name} Plan`, "pricing");
-                    onGetStarted(plan);
-                  }}
-                  className={`w-full py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center relative overflow-hidden ${
-                    plan.popular
-                      ? 'bg-gradient-to-r from-lavender to-pink text-white shadow-lg hover:shadow-xl'
-                      : 'bg-gray-100 text-gray-700 hover:bg-lavender/20'
-                  }`}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <span className="relative flex items-center">
-                    Get Started <ArrowRight className="ml-2 w-5 h-5 transition-transform duration-300" />
-                  </span>
-                </motion.button>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        <motion.div
-          className="text-center mt-12"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
-          <p className="text-gray-600 mb-4">Need a custom solution? Let's discuss your requirements.</p>
-          <motion.button
-            onClick={onCustomQuote}
-            className="bg-gradient-to-r from-lavender to-pink text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Contact Us for Custom Quote
-          </motion.button>
-        </motion.div>
-      </div>
-    </motion.section>
-  );
-}
-
 function Blog() {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -2943,11 +2530,7 @@ export default function HomePage() {
         <Features onCustomQuote={() => setIsCustomQuoteModalOpen(true)} />
         <Projects />
         <Testimonials />
-        <SpecialOffers onClaimOffer={(offer) => {
-          setSelectedOffer(offer);
-          setIsClaimOfferModalOpen(true);
-        }} />
-        <Pricing 
+        <SubscriptionPricing 
           onCustomQuote={() => setIsCustomQuoteModalOpen(true)}
           onGetStarted={(plan) => {
             setSelectedPlan(plan);
@@ -3040,7 +2623,7 @@ export default function HomePage() {
                   <h4 className="font-semibold">Technical Review (45 min)</h4>
                   <p className="text-sm text-gray-600">Deep technical consultation</p>
                 </div>
-                <CheckCircleIcon className="w-5 h-5 text-gray-400" />
+                <CheckCircle className="w-5 h-5 text-gray-400" />
               </div>
             </div>
           </div>

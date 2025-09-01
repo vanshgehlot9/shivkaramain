@@ -299,12 +299,12 @@ export default function UserManagementDashboard() {
   const startEdit = (user: User) => {
     setEditingUser(user)
     setFormData({
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      role: user.role,
-      status: user.status,
-      department: user.department,
+      name: user.name || '',
+      email: user.email || '',
+      phone: user.phone || '',
+      role: user.role || 'employee',
+      status: user.status || 'active',
+      department: user.department || '',
       permissions: user.permissions || []
     })
   }

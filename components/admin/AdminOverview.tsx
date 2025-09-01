@@ -12,14 +12,14 @@ interface DashboardData {
   totalRevenue: number
   totalOrders: number
   totalCustomers: number
-  activeProjects: number
+  // activeProjects: number
   recentActivities: Activity[]
   monthlyStats: MonthlyStats
 }
 
 interface Activity {
   id: string
-  type: 'order' | 'project' | 'customer' | 'expense'
+  type: 'order' | 'customer' | 'expense'
   description: string
   timestamp: Date
   amount?: number
@@ -38,7 +38,6 @@ export function AdminOverview() {
     totalRevenue: 0,
     totalOrders: 0,
     totalCustomers: 0,
-    activeProjects: 0,
     recentActivities: [],
     monthlyStats: {
       revenue: 0,
@@ -66,7 +65,7 @@ export function AdminOverview() {
         const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0)
         const totalOrders = orders.length
         const totalCustomers = new Set(orders.map(order => order.customerEmail)).size
-        const activeProjects = orders.filter(order => order.status === 'in-progress').length
+  // const activeProjects = orders.filter(order => order.status === 'in-progress').length
 
         // Calculate monthly stats (current month)
         const currentMonth = new Date().getMonth()
@@ -108,7 +107,7 @@ export function AdminOverview() {
           totalRevenue,
           totalOrders,
           totalCustomers,
-          activeProjects,
+          // activeProjects,
           recentActivities: activities,
           monthlyStats: {
             revenue: monthlyRevenue,
@@ -131,8 +130,6 @@ export function AdminOverview() {
     switch (type) {
       case 'order':
         return <ShoppingCart className="h-4 w-4" />
-      case 'project':
-        return <FileText className="h-4 w-4" />
       case 'customer':
         return <Users className="h-4 w-4" />
       case 'expense':
@@ -236,19 +233,6 @@ export function AdminOverview() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-orange-500 to-orange-600 text-white">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-orange-100">Active Projects</CardTitle>
-              <FileText className="h-4 w-4 text-orange-200" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{dashboardData.activeProjects}</div>
-              <p className="text-xs text-orange-200 flex items-center mt-1">
-                <ArrowUpRight className="h-3 w-3 mr-1" />
-                +5.7% from last month
-              </p>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Monthly Performance */}
@@ -272,8 +256,8 @@ export function AdminOverview() {
                   <div className="text-sm text-red-500">Expenses</div>
                 </div>
                 <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">{formatCurrency(dashboardData.monthlyStats.profit)}</div>
-                  <div className="text-sm text-purple-500">Profit</div>
+                  <div className="text-2xl font-bold text-indigo-600">{formatCurrency(dashboardData.monthlyStats.profit)}</div>
+                  <div className="text-sm text-indigo-500">Profit</div>
                 </div>
               </div>
             </CardContent>
@@ -284,19 +268,19 @@ export function AdminOverview() {
               <CardTitle className="text-xl font-semibold text-gray-800">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button variant="outline" className="w-full justify-start">
+              <Button variant="outline" className="w-full justify-start" onClick={() => window.location.href='/admin/orders'}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add New Order
               </Button>
-              <Button variant="outline" className="w-full justify-start">
+              <Button variant="outline" className="w-full justify-start" onClick={() => window.location.href='/admin/billing'}>
                 <FileText className="h-4 w-4 mr-2" />
                 Create Invoice
               </Button>
-              <Button variant="outline" className="w-full justify-start">
+              <Button variant="outline" className="w-full justify-start" onClick={() => window.location.href='/admin/users'}>
                 <Users className="h-4 w-4 mr-2" />
                 Add Customer
               </Button>
-              <Button variant="outline" className="w-full justify-start">
+              <Button variant="outline" className="w-full justify-start" onClick={() => window.location.href='/admin/expenses'}>
                 <DollarSign className="h-4 w-4 mr-2" />
                 Record Expense
               </Button>
