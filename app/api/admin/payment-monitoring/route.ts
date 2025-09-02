@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { paymentMonitoringService } from '../../../../lib/payment-monitoring-service';
+import { paymentMonitoringService } from '@/lib/payment-monitoring-service';
 
 // This API endpoint should be called by a cron job daily
 export async function POST(request: NextRequest) {

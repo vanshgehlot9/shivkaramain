@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { paymentMonitoringService } from '../../../../lib/payment-monitoring-service';
+import { paymentMonitoringService } from '@/lib/payment-monitoring-service';
 
 // Suspend website manually
 export async function POST(request: NextRequest) {
