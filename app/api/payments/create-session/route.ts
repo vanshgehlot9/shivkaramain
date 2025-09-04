@@ -1,4 +1,4 @@
-// Payment API route removed for Razorpay review. Restore when ready to enable payments.
+// Payment API route removed for Razorpay review. No code present.
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import Razorpay from 'razorpay';
