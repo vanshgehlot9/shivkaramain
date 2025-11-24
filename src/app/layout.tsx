@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import Grain from "@/components/Grain";
 import Preloader from "@/components/Preloader";
@@ -58,7 +59,9 @@ export default function RootLayout({
       <body
         className={`${outfit.variable} antialiased bg-black text-white`}
       >
-        <AnalyticsTracker />
+        <Suspense fallback={null}>
+          <AnalyticsTracker />
+        </Suspense>
         <Preloader />
         <Grain />
         <WhatsAppWidget />
