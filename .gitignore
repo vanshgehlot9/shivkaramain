@@ -47,6 +47,7 @@ Thumbs.db
 firebase-debug.log
 firestore-debug.log
 ui-debug.log
+service-account.json
 
 # Package manager lock files (choose one)
 # package-lock.json
