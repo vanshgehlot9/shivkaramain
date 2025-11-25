@@ -6,6 +6,7 @@ import Grain from "@/components/Grain";
 import Preloader from "@/components/Preloader";
 import WhatsAppWidget from "@/components/WhatsAppWidget";
 import LeadPopup from "@/components/LeadPopup";
+import ScrollProgress from "@/components/ScrollProgress";
 import { Toaster } from "@/components/ui/toaster";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 
@@ -64,6 +65,7 @@ export default function RootLayout({
         </Suspense>
         <Preloader />
         <Grain />
+        <ScrollProgress />
         <WhatsAppWidget />
         <LeadPopup />
         {children}

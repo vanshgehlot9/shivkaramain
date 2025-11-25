@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/firebase-admin-config';
 import { COLLECTIONS } from '@/lib/firebase-collections';
+import { sendLeadNotification } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
     try {
@@ -33,6 +34,9 @@ export async function POST(request: NextRequest) {
         };
 
         const docRef = await db.collection(COLLECTIONS.LEADS).add(leadData);
+
+        // Send email notification
+        await sendLeadNotification(leadData);
 
         return NextResponse.json({
             success: true,

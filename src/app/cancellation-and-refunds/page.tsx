@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 
-export default function ReturnAndRefund() {
+export default function CancellationAndRefunds() {
     return (
         <main className="min-h-screen bg-black text-white selection:bg-[#FF7A00] selection:text-white">
             <Navbar />
@@ -18,7 +18,7 @@ export default function ReturnAndRefund() {
                     className="max-w-4xl mx-auto"
                 >
                     <h1 className="text-4xl md:text-6xl font-black mb-8 tracking-tight">
-                        Return & Refund <span className="text-[#FF7A00]">Policy</span>
+                        Cancellation & Refunds <span className="text-[#FF7A00]">Policy</span>
                     </h1>
 
                     <div className="space-y-8 text-gray-300 leading-relaxed">

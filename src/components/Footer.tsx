@@ -88,7 +88,8 @@ export default function Footer() {
                         <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
                         <Link href="/terms-and-conditions" className="hover:text-white transition-colors">Terms & Conditions</Link>
                         <Link href="/cookies-policy" className="hover:text-white transition-colors">Cookies Policy</Link>
-                        <Link href="/return-and-refund" className="hover:text-white transition-colors">Return & Refund</Link>
+                        <Link href="/cancellation-and-refunds" className="hover:text-white transition-colors">Cancellation & Refunds</Link>
+                        <Link href="/shipping-policy" className="hover:text-white transition-colors">Shipping Policy</Link>
                     </div>
                     <button onClick={scrollToTop} className="flex items-center gap-2 hover:text-white transition-colors">
                         Back to Top <ArrowUp className="w-4 h-4" />

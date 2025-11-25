@@ -3,6 +3,7 @@ import { db } from '@/lib/firebase-admin-config';
 import { COLLECTIONS } from '@/lib/firebase-collections';
 import { Invoice } from '@/types/admin';
 import { verifyAuth, unauthorizedResponse } from '@/lib/auth-admin';
+import { sendInvoiceEmail } from '@/lib/email';
 
 // Helper function to generate invoice number
 async function generateInvoiceNumber(): Promise<string> {
@@ -197,6 +198,14 @@ export async function POST(request: NextRequest) {
 
     const docRef = await db.collection(COLLECTIONS.INVOICES).add(invoiceData);
 
+    // Send email if status is sent
+    if (invoiceStatus === 'sent') {
+      const clientData = clientDoc.data();
+      if (clientData && clientData.email) {
+        await sendInvoiceEmail(invoiceData, clientData.email);
+      }
+    }
+
     return NextResponse.json({
       success: true,
       data: { id: docRef.id, ...invoiceData },
@@ -319,6 +328,16 @@ export async function PUT(request: NextRequest) {
     };
 
     await db.collection(COLLECTIONS.INVOICES).doc(id).update(finalUpdateData);
+
+    // Send email if status changed to sent
+    if (updateData.status === 'sent' && currentInvoice.status !== 'sent') {
+      const clientDocForEmail = await db.collection(COLLECTIONS.CLIENTS).doc(currentInvoice.clientId).get();
+      const clientData = clientDocForEmail.data();
+      if (clientData && clientData.email) {
+        const fullInvoice = { ...currentInvoice, ...finalUpdateData };
+        await sendInvoiceEmail(fullInvoice, clientData.email);
+      }
+    }
 
     return NextResponse.json({
       success: true,

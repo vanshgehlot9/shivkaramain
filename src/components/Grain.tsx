@@ -3,7 +3,7 @@
 export default function Grain() {
     return (
         <div className="fixed inset-0 pointer-events-none z-[90] opacity-20 mix-blend-overlay">
-            <div className="w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] animate-noise" />
+            <div className="w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAwIDIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZmlsdGVyIGlkPSJub2lzZUZpbHRlciI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuNjUiIG51bU9jdGF2ZXM9IjMiIHN0aXRjaFRpbGVzPSJzdGl0Y2giLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgjbm9pc2VGaWx0ZXIpIiBvcGFjaXR5PSIxIi8+PC9zdmc+')] animate-noise" />
             <style jsx global>{`
                 @keyframes noise {
                     0%, 100% { transform: translate(0, 0); }
