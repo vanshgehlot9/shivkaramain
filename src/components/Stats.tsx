@@ -14,7 +14,7 @@ function Counter({ value, suffix }: { value: number, suffix: string }) {
     const ref = useRef<HTMLSpanElement>(null);
     const motionValue = useMotionValue(0);
     const springValue = useSpring(motionValue, { damping: 60, stiffness: 100 });
-    const isInView = useInView(ref, { once: true, margin: "-100px" });
+    const isInView = useInView(ref, { once: true, margin: "-10px" });
 
     useEffect(() => {
         if (isInView) {
@@ -23,11 +23,12 @@ function Counter({ value, suffix }: { value: number, suffix: string }) {
     }, [isInView, value, motionValue]);
 
     useEffect(() => {
-        springValue.on("change", (latest) => {
+        const unsubscribe = springValue.on("change", (latest) => {
             if (ref.current) {
                 ref.current.textContent = Math.floor(latest).toString();
             }
         });
+        return () => unsubscribe();
     }, [springValue]);
 
     return (

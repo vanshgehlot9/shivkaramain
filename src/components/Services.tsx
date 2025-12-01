@@ -82,7 +82,7 @@ function ServiceCard({ service, index }: { service: any; index: number }) {
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
             style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-            className={`group relative perspective-1000 ${service.colSpan}`}
+            className={`group relative perspective-1000 ${service.colSpan} min-w-[85vw] md:min-w-0 snap-center`}
         >
             <div className={`relative h-full border border-white/5 bg-[#050505] overflow-hidden rounded-3xl p-8 hover:border-white/10 transition-colors duration-500`}>
                 {/* Spotlight Effect */}
@@ -162,7 +162,7 @@ export default function Services() {
                     </motion.p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 perspective-2000">
+                <div className="flex md:grid md:grid-cols-3 overflow-x-auto md:overflow-visible gap-6 perspective-2000 snap-x snap-mandatory pb-8 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide">
                     {services.map((service, index) => (
                         <ServiceCard key={index} service={service} index={index} />
                     ))}
