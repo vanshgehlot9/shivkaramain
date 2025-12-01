@@ -21,6 +21,8 @@ import {
 import { getInvoices, createInvoice, getClients } from "@/lib/admin-api";
 import Image from "next/image";
 import { useReactToPrint } from 'react-to-print';
+import { getRecommendedPaymentTerm, generateMilestoneBreakdown, generateBookingBreakdown, PAYMENT_CONFIG, ServiceType } from "@/lib/payment-config";
+import { Link as LinkIcon, Copy, Bookmark } from "lucide-react";
 
 export default function InvoicesPage() {
   const [selectedTemplate, setSelectedTemplate] = useState<"minimal" | "bold" | "editorial">("editorial");
@@ -64,6 +66,50 @@ export default function InvoicesPage() {
     terms: "Payment is due within 15 days.",
     status: "draft"
   });
+
+  // Smart Invoice Builder State
+  const [smartBuilder, setSmartBuilder] = useState({
+    active: false,
+    mode: "STANDARD" as "STANDARD" | "BOOKING", // Added Mode
+    projectValue: 0,
+    serviceType: "WEBSITE" as ServiceType,
+  });
+
+  const handleSmartSplit = () => {
+    let newItems = [];
+    let notes = "";
+    let terms = "";
+
+    if (smartBuilder.mode === "BOOKING") {
+      // Booking Mode Logic (₹4000 Rule)
+      const milestones = generateBookingBreakdown(smartBuilder.projectValue);
+      newItems = milestones.map(m => ({
+        description: m.name,
+        quantity: 1,
+        rate: m.amount
+      }));
+      notes = "Booking Mode: ₹4000 Advance Applied.";
+      terms = "The Booking Fee is non-refundable. Work begins upon receipt of this advance.";
+    } else {
+      // Standard Logic
+      const term = getRecommendedPaymentTerm(smartBuilder.projectValue, smartBuilder.serviceType);
+      const milestones = generateMilestoneBreakdown(smartBuilder.projectValue, term);
+      newItems = milestones.map(m => ({
+        description: `${m.name} (${m.percentage}%)`,
+        quantity: 1,
+        rate: m.amount
+      }));
+      notes = `Payment Terms: ${term.replace(/_/g, ' ')}`;
+      terms = `This invoice is part of a ${term.replace(/_/g, ' ')} agreement.`;
+    }
+
+    setFormData({
+      ...formData,
+      items: newItems,
+      notes,
+      terms
+    });
+  };
 
   useEffect(() => {
     fetchInvoices();
@@ -247,10 +293,247 @@ export default function InvoicesPage() {
         ))}
       </div>
 
-      {/* Create Invoice Modal - [Form content remains the same, too long to include here] */}
+      {/* Create Invoice Modal */}
       {showCreateForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          {/* ... form modal content ... */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+          <div className="w-full max-w-3xl bg-[#111111] border border-white/10 rounded-3xl shadow-2xl my-8 relative">
+            <div className="p-6 border-b border-white/10 flex justify-between items-center">
+              <h2 className="text-xl font-bold text-white">Create New Invoice</h2>
+              <button onClick={() => setShowCreateForm(false)} className="text-white/40 hover:text-white">
+                <XCircle className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+
+              {/* Smart Builder Toggle */}
+              <div className="bg-[#FF7A00]/10 border border-[#FF7A00]/20 rounded-xl p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 bg-[#FF7A00]/20 rounded-lg text-[#FF7A00]">
+                      <CheckCircle className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-white">Smart Invoice Builder</h3>
+                      <p className="text-xs text-white/60">Auto-calculate milestones based on project value</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setSmartBuilder({ ...smartBuilder, active: !smartBuilder.active })}
+                    className="text-xs font-bold text-[#FF7A00] hover:underline"
+                  >
+                    {smartBuilder.active ? "Hide Builder" : "Show Builder"}
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-4 mb-4">
+                  <button
+                    onClick={() => setSmartBuilder({ ...smartBuilder, mode: "STANDARD" })}
+                    className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${smartBuilder.mode === "STANDARD" ? "bg-[#FF7A00] text-black" : "bg-white/5 text-white/60"}`}
+                  >
+                    Standard Split
+                  </button>
+                  <button
+                    onClick={() => setSmartBuilder({ ...smartBuilder, mode: "BOOKING" })}
+                    className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors flex items-center gap-2 ${smartBuilder.mode === "BOOKING" ? "bg-[#FF7A00] text-black" : "bg-white/5 text-white/60"}`}
+                  >
+                    <Bookmark className="w-4 h-4" />
+                    Booking Mode (₹4k)
+                  </button>
+                </div>
+
+                {smartBuilder.active && (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-[#FF7A00]/10">
+                    <div>
+                      <label className="block text-xs font-medium text-white/60 mb-1">Service Type</label>
+                      <select
+                        value={smartBuilder.serviceType}
+                        onChange={(e) => setSmartBuilder({ ...smartBuilder, serviceType: e.target.value as ServiceType })}
+                        className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-[#FF7A00]"
+                      >
+                        <option value="WEBSITE">Website Dev</option>
+                        <option value="WEB_APP">Web App / SaaS</option>
+                        <option value="MOBILE_APP">Mobile App</option>
+                        <option value="MARKETING">Marketing Retainer</option>
+                        <option value="AMC">AMC / Maintenance</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-white/60 mb-1">Total Project Value (₹)</label>
+                      <input
+                        type="number"
+                        value={smartBuilder.projectValue}
+                        onChange={(e) => setSmartBuilder({ ...smartBuilder, projectValue: parseFloat(e.target.value) || 0 })}
+                        className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-[#FF7A00]"
+                      />
+                    </div>
+                    <div className="flex items-end">
+                      <button
+                        type="button"
+                        onClick={handleSmartSplit}
+                        className="w-full bg-[#FF7A00] text-black font-bold py-2 rounded-lg text-sm hover:bg-[#FF7A00]/90"
+                      >
+                        Auto-Generate Items
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <form id="create-invoice-form" onSubmit={handleSubmit} className="space-y-6">
+                {/* Client & Dates */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-white/60 mb-1">Client</label>
+                    <select
+                      value={formData.clientId}
+                      onChange={(e) => handleClientChange(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-[#FF7A00]"
+                      required
+                    >
+                      <option value="">Select Client</option>
+                      {clients.map(client => (
+                        <option key={client.id} value={client.id}>{client.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-white/60 mb-1">Invoice Date</label>
+                    <input
+                      type="date"
+                      value={formData.date}
+                      onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-[#FF7A00]"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-white/60 mb-1">Due Date</label>
+                    <input
+                      type="date"
+                      value={formData.dueDate}
+                      onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-[#FF7A00]"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Items */}
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="text-xs font-medium text-white/60">Items</label>
+                    <button type="button" onClick={addItem} className="text-xs text-[#FF7A00] hover:underline">+ Add Item</button>
+                  </div>
+                  <div className="space-y-2">
+                    {formData.items.map((item, index) => (
+                      <div key={index} className="flex gap-2 items-start">
+                        <input
+                          type="text"
+                          placeholder="Description"
+                          value={item.description}
+                          onChange={(e) => handleItemChange(index, 'description', e.target.value)}
+                          className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"
+                          required
+                        />
+                        <input
+                          type="number"
+                          placeholder="Qty"
+                          value={item.quantity}
+                          onChange={(e) => handleItemChange(index, 'quantity', parseInt(e.target.value) || 0)}
+                          className="w-20 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"
+                          required
+                        />
+                        <input
+                          type="number"
+                          placeholder="Rate"
+                          value={item.rate}
+                          onChange={(e) => handleItemChange(index, 'rate', parseFloat(e.target.value) || 0)}
+                          className="w-32 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"
+                          required
+                        />
+                        <button type="button" onClick={() => removeItem(index)} className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Totals & Notes */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-medium text-white/60 mb-1">Notes</label>
+                      <textarea
+                        value={formData.notes}
+                        onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white h-20"
+                        placeholder="Additional notes..."
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-white/60 mb-1">Terms</label>
+                      <textarea
+                        value={formData.terms}
+                        onChange={(e) => setFormData({ ...formData, terms: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white h-20"
+                        placeholder="Payment terms..."
+                      />
+                    </div>
+                  </div>
+                  <div className="bg-white/5 rounded-xl p-4 space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-white/60">Subtotal</span>
+                      <span className="text-white font-medium">
+                        ₹{formData.items.reduce((sum, item) => sum + (item.quantity * item.rate), 0).toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-white/60">Tax (%)</span>
+                      <input
+                        type="number"
+                        value={formData.taxPercentage}
+                        onChange={(e) => setFormData({ ...formData, taxPercentage: parseFloat(e.target.value) || 0 })}
+                        className="w-20 bg-black/20 border border-white/10 rounded px-2 py-1 text-right text-sm text-white"
+                      />
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-white/60">Discount</span>
+                      <input
+                        type="number"
+                        value={formData.discount}
+                        onChange={(e) => setFormData({ ...formData, discount: parseFloat(e.target.value) || 0 })}
+                        className="w-24 bg-black/20 border border-white/10 rounded px-2 py-1 text-right text-sm text-white"
+                      />
+                    </div>
+                    <div className="pt-3 border-t border-white/10 flex justify-between items-center">
+                      <span className="text-lg font-bold text-white">Total</span>
+                      <span className="text-xl font-bold text-[#FF7A00]">₹{calculateTotal().toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div className="p-6 border-t border-white/10 flex justify-end gap-4">
+              <button
+                onClick={() => setShowCreateForm(false)}
+                className="px-6 py-2 rounded-xl text-white/60 hover:text-white hover:bg-white/5"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                form="create-invoice-form"
+                disabled={submitting}
+                className="px-6 py-2 bg-[#FF7A00] text-black font-bold rounded-xl hover:bg-[#FF7A00]/90 disabled:opacity-50 flex items-center gap-2"
+              >
+                {submitting ? <Loader2 className="animate-spin w-4 h-4" /> : <Save className="w-4 h-4" />}
+                Create Invoice
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -602,6 +885,17 @@ export default function InvoicesPage() {
             </div>
 
             <div className="sticky bottom-0 p-6 bg-[#111111]/95 backdrop-blur border-t border-white/5 flex gap-4">
+              <button
+                onClick={() => {
+                  const link = `${window.location.origin}/pay/${selectedInvoice}`;
+                  navigator.clipboard.writeText(link);
+                  alert("Payment link copied to clipboard: " + link);
+                }}
+                className="flex-1 py-4 bg-white/10 text-white font-black uppercase tracking-wider text-sm hover:bg-white/20 transition-colors rounded-xl flex items-center justify-center gap-2"
+              >
+                <LinkIcon className="w-5 h-5" />
+                Copy Link
+              </button>
               <button
                 onClick={handlePrint}
                 className="flex-1 py-4 bg-[#FF7A00] text-black font-black uppercase tracking-wider text-sm hover:bg-[#FF7A00]/90 transition-colors rounded-xl flex items-center justify-center gap-2"

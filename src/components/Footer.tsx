@@ -11,8 +11,12 @@ export default function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="bg-black text-white pt-24 pb-8 border-t border-white/10">
-            <div className="container mx-auto px-6">
+        <footer className="bg-[#030303] text-white pt-24 pb-8 border-t border-white/5 relative overflow-hidden">
+            {/* Background Glow */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-shivkara-orange/5 blur-[150px] rounded-full pointer-events-none" />
+
+            <div className="container mx-auto px-6 relative z-10">
 
                 {/* Main Footer Content */}
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-20">
@@ -25,7 +29,7 @@ export default function Footer() {
                             </div>
                             <span className="text-xl font-bold tracking-tight">SHIVKARA<span className="text-shivkara-orange">.</span></span>
                         </Link>
-                        <p className="text-gray-400 leading-relaxed max-w-sm">
+                        <p className="text-gray-500 leading-relaxed max-w-sm font-light">
                             We build digital experiences that define the future. Merging art, technology, and strategy to create lasting value for ambitious brands.
                         </p>
                         <div className="flex items-center gap-3 mt-4">
@@ -39,7 +43,7 @@ export default function Footer() {
                     {/* Navigation - Col Span 2 */}
                     <div className="md:col-span-2 md:col-start-6">
                         <h4 className="font-bold mb-6 text-white text-lg">Company</h4>
-                        <ul className="space-y-4 text-gray-400">
+                        <ul className="space-y-4 text-gray-500">
                             <FooterLink href="/about">About Us</FooterLink>
                             <FooterLink href="/#services">Services</FooterLink>
                             <FooterLink href="/#work">Our Work</FooterLink>
@@ -51,7 +55,7 @@ export default function Footer() {
                     {/* Services - Col Span 2 */}
                     <div className="md:col-span-2">
                         <h4 className="font-bold mb-6 text-white text-lg">Services</h4>
-                        <ul className="space-y-4 text-gray-400">
+                        <ul className="space-y-4 text-gray-500">
                             <FooterLink href="#">Web Development</FooterLink>
                             <FooterLink href="#">Mobile Apps</FooterLink>
                             <FooterLink href="#">UI/UX Design</FooterLink>
@@ -67,7 +71,7 @@ export default function Footer() {
                             <a href="mailto:info@shivkaradigital.com" className="text-2xl font-light hover:text-shivkara-orange transition-colors">
                                 info@shivkaradigital.com
                             </a>
-                            <p className="text-gray-400">
+                            <p className="text-gray-500">
                                 Jodhpur, Rajasthan<br />
                                 India
                             </p>
@@ -80,7 +84,7 @@ export default function Footer() {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+                <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-600">
                     <div className="flex gap-6">
                         <span>&copy; {currentYear} Shivkara Digital. All rights reserved.</span>
                     </div>

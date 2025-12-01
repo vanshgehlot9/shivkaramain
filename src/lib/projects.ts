@@ -9,7 +9,7 @@ export const projects = [
     tech: ["React", "Node.js", "MongoDB", "Payment Gateway"],
     features: [
       "Room booking and management",
-      "Guest services integration", 
+      "Guest services integration",
       "Inventory and payment processing",
       "Admin dashboard"
     ],
@@ -32,7 +32,7 @@ export const projects = [
     budget: "₹4,50,000",
     results: {
       bookingIncrease: "320%",
-      internationalGuests: "150%", 
+      internationalGuests: "150%",
       averageStay: "2.5 days",
       revenueGrowth: "280%",
       websiteTraffic: "400%"
@@ -51,7 +51,7 @@ export const projects = [
     ]
   },
   {
-    name: "Tree Nuts - E-Commerce Platform", 
+    name: "Tree Nuts - E-Commerce Platform",
     slug: "tree-nuts-ecommerce-platform",
     type: "E-Commerce Solution",
     description: "Full-featured e-commerce platform with advanced inventory management, multi-vendor support, and analytics dashboard.",
@@ -60,7 +60,7 @@ export const projects = [
     tech: ["Next.js", "Node.js", "PostgreSQL", "Stripe"],
     features: [
       "Multi-vendor support",
-      "Advanced inventory management", 
+      "Advanced inventory management",
       "Analytics dashboard",
       "Secure payment integration"
     ],
@@ -68,7 +68,7 @@ export const projects = [
       "Handling high traffic during sales",
       "Real-time inventory sync"
     ],
-    demoLink: "#", 
+    demoLink: "#",
     repoLink: "#",
     link: "/projects/tree-nuts-ecommerce-platform",
     category: "web",
@@ -76,7 +76,7 @@ export const projects = [
     client: {
       name: "Himanshu Jain",
       company: "Tree Nuts",
-      location: "Jodhpur, Rajasthan", 
+      location: "Jodhpur, Rajasthan",
       industry: "Agriculture & Food"
     },
     timeline: "8 weeks",
@@ -90,7 +90,7 @@ export const projects = [
     },
     testimonial: "Shivkara Digitals completely transformed our agricultural business. The e-commerce platform they built increased our sales by 300% within 6 months. Their team's dedication and technical expertise are unmatched in Jodhpur.",
     beforeAfter: {
-      before: "/project/treenut-before.png", 
+      before: "/project/treenut-before.png",
       after: "/project/treenut.png"
     },
     techStack: [
@@ -123,50 +123,8 @@ export const projects = [
     link: "/projects/jodhpur-bombay-roadway-carrier",
     category: "enterprise"
   },
-  {
-    name: "Pigo Taxi - Admin Dashboard",
-    slug: "pigo-taxi-admin-dashboard",
-    type: "Transportation Solution",
-    description: "Advanced taxi management system with driver tracking, fare calculation, and real-time dispatch management.",
-    image: "/project/pigo.jpeg",
-    screenshots: ["/project/pigo1.jpeg"],
-    tech: ["React Native", "Firebase", "Google Maps API", "Payment Integration"],
-    features: [
-      "Driver tracking",
-      "Fare calculation",
-      "Real-time dispatch management"
-    ],
-    challenges: [
-      "Integrating Google Maps API",
-      "Ensuring real-time updates"
-    ],
-    demoLink: "#",
-    repoLink: "#",
-    link: "/projects/pigo-taxi-admin-dashboard",
-    category: "mobile"
-  },
-  {
-    name: "Vehicle Rental Platform",
-    slug: "vehicle-rental-platform",
-    type: "Rental Management",
-    description: "Complete vehicle rental platform with booking management, insurance integration, and customer verification system.",
-    image: "/project/vor.jpeg",
-    screenshots: ["/project/vor1.jpeg", "/project/vor2.jpeg", "/project/vor3.jpeg", "/project/vor4.jpeg", "/project/vor5.jpeg"],
-    tech: ["React", "Node.js", "MongoDB", "Insurance APIs"],
-    features: [
-      "Booking management",
-      "Insurance integration",
-      "Customer verification system"
-    ],
-    challenges: [
-      "Integrating third-party insurance APIs",
-      "Automating customer verification"
-    ],
-    demoLink: "#",
-    repoLink: "#",
-    link: "/projects/vehicle-rental-platform",
-    category: "mobile"
-  },
+
+
   {
     name: "NikkiFashion - E-Commerce Clothing Store",
     slug: "nikkifashion-ecommerce-clothing-store",

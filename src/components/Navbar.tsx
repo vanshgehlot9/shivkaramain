@@ -5,15 +5,17 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import MagneticButton from "./MagneticButton";
+import BookingModal from "./BookingModal";
 
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [bookingModalOpen, setBookingModalOpen] = useState(false);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     useEffect(() => {
         const handleScroll = () => {
-            setScrolled(window.scrollY > 50);
+            setScrolled(window.scrollY > 20);
         };
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
@@ -32,13 +34,13 @@ export default function Navbar() {
                 initial={{ y: -100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className={`fixed top-0 left-0 right-0 z-50 flex justify-center transition-all duration-500 ${scrolled ? "py-4" : "py-8"}`}
+                className={`fixed top-0 left-0 right-0 z-50 flex justify-center transition-all duration-500 ${scrolled ? "py-4" : "py-6"}`}
             >
                 <div
                     className={`
                         relative flex items-center justify-between px-2 pr-2 rounded-full transition-all duration-500
                         ${scrolled
-                            ? "w-[90%] max-w-5xl bg-[#0A0A0A]/80 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12)] pl-6 py-2"
+                            ? "w-[90%] max-w-5xl bg-[#050505]/60 backdrop-blur-2xl border border-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.2)] pl-6 py-2"
                             : "w-[95%] max-w-7xl bg-transparent border border-transparent pl-0 py-0"
                         }
                     `}
@@ -48,20 +50,20 @@ export default function Navbar() {
                         <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-white flex items-center justify-center">
                             <img src="/shivkaralogo.jpg" alt="Shivkara" className="w-full h-full object-cover" />
                         </div>
-                        <span className={`text-xl font-bold tracking-tight transition-colors duration-300 ${scrolled ? "text-white" : "text-white"}`}>
+                        <span className="text-xl font-bold tracking-tight text-white">
                             SHIVKARA<span className="text-shivkara-orange">.</span>
                         </span>
                     </Link>
 
                     {/* Desktop Nav */}
-                    <nav className="hidden md:flex items-center gap-2 bg-white/5 rounded-full p-1 border border-white/5 backdrop-blur-sm ml-auto mr-4">
+                    <nav className="hidden md:flex items-center gap-1 bg-white/5 rounded-full p-1 border border-white/5 backdrop-blur-md ml-auto mr-4">
                         {navLinks.map((item, index) => (
                             <Link
                                 key={item.name}
                                 href={item.href}
                                 onMouseEnter={() => setHoveredIndex(index)}
                                 onMouseLeave={() => setHoveredIndex(null)}
-                                className="relative px-6 py-2.5 text-sm font-medium text-gray-300 transition-colors hover:text-white"
+                                className="relative px-5 py-2 text-sm font-medium text-gray-400 transition-colors hover:text-white"
                             >
                                 {hoveredIndex === index && (
                                     <motion.div
@@ -77,11 +79,14 @@ export default function Navbar() {
 
                     {/* CTA Button */}
                     <div className="hidden md:block">
-                        <MagneticButton className="group relative px-6 py-3 bg-white text-black rounded-full text-sm font-bold overflow-hidden transition-transform hover:scale-105 active:scale-95 flex items-center gap-2">
-                            <Link href="/lets-talk" className="flex items-center gap-2 relative z-10">
-                                <span className="group-hover:text-white transition-colors duration-300">Let's Talk</span>
+                        <MagneticButton
+                            onClick={() => setBookingModalOpen(true)}
+                            className="group relative px-6 py-2.5 bg-white text-black rounded-full text-sm font-bold overflow-hidden transition-transform hover:scale-105 active:scale-95 flex items-center gap-2"
+                        >
+                            <span className="flex items-center gap-2 relative z-10">
+                                <span className="group-hover:text-white transition-colors duration-300">Start Project</span>
                                 <ArrowUpRight className="w-4 h-4 group-hover:text-white transition-colors duration-300" />
-                            </Link>
+                            </span>
                             <div className="absolute inset-0 bg-shivkara-orange translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
                         </MagneticButton>
                     </div>
@@ -129,18 +134,22 @@ export default function Navbar() {
                                 transition={{ delay: 0.4 }}
                                 className="mt-8"
                             >
-                                <Link
-                                    href="/lets-talk"
-                                    onClick={() => setMobileMenuOpen(false)}
+                                <button
+                                    onClick={() => {
+                                        setMobileMenuOpen(false);
+                                        setBookingModalOpen(true);
+                                    }}
                                     className="px-10 py-5 bg-shivkara-orange text-black text-xl font-bold rounded-full inline-flex items-center gap-3 hover:bg-white transition-colors"
                                 >
                                     Start Project <ArrowUpRight />
-                                </Link>
+                                </button>
                             </motion.div>
                         </div>
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            <BookingModal isOpen={bookingModalOpen} onClose={() => setBookingModalOpen(false)} />
         </>
     );
 }

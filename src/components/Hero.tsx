@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ChevronRight, Terminal, Cpu, Globe } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import MagneticButton from "./MagneticButton";
 import { useRouter } from "next/navigation";
@@ -10,7 +10,6 @@ export default function Hero() {
     const router = useRouter();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
-    const [isHovered, setIsHovered] = useState(false);
 
     // Mouse position for interaction
     const mouseX = useMotionValue(0);
@@ -42,87 +41,80 @@ export default function Hero() {
         window.addEventListener("resize", resize);
         resize();
 
-        // Star properties
-        const stars: { x: number; y: number; z: number; size: number }[] = [];
-        const numStars = 1500;
-        const speed = 2; // Speed of movement towards viewer
+        // Globe properties
+        const globeRadius = Math.min(canvas.width, canvas.height) * 0.35;
+        const dots: { lat: number; lon: number; size: number }[] = [];
+        const numDots = 800;
 
-        for (let i = 0; i < numStars; i++) {
-            stars.push({
-                x: (Math.random() - 0.5) * canvas.width * 2,
-                y: (Math.random() - 0.5) * canvas.height * 2,
-                z: Math.random() * canvas.width,
-                size: Math.random() * 2
+        // Initialize dots on sphere
+        for (let i = 0; i < numDots; i++) {
+            const phi = Math.acos(-1 + (2 * i) / numDots);
+            const theta = Math.sqrt(numDots * Math.PI) * phi;
+
+            dots.push({
+                lat: phi,
+                lon: theta,
+                size: Math.random() * 1.5 + 0.5
             });
         }
 
         const draw = () => {
-            ctx.fillStyle = "black";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             const cx = canvas.width / 2;
             const cy = canvas.height / 2;
 
-            // Mouse interaction
-            const mx = mouseX.get() * 100;
-            const my = mouseY.get() * 100;
+            // Rotation
+            const rotationSpeed = 0.002;
+            const rotationX = time * rotationSpeed;
+            const rotationY = time * rotationSpeed * 0.5;
 
-            stars.forEach((star) => {
-                // Move star towards viewer
-                star.z -= speed;
+            // Mouse interaction (tilt)
+            const mx = mouseX.get() * 0.5;
+            const my = mouseY.get() * 0.5;
 
-                // Reset star if it passes the viewer
-                if (star.z <= 0) {
-                    star.z = canvas.width;
-                    star.x = (Math.random() - 0.5) * canvas.width * 2;
-                    star.y = (Math.random() - 0.5) * canvas.height * 2;
-                }
+            dots.forEach(dot => {
+                // Rotate
+                let x = globeRadius * Math.sin(dot.lat) * Math.cos(dot.lon + rotationX);
+                let y = globeRadius * Math.sin(dot.lat) * Math.sin(dot.lon + rotationX);
+                let z = globeRadius * Math.cos(dot.lat);
 
-                // Project 3D coordinates to 2D
-                const k = 128.0 / star.z;
-                const px = (star.x + mx) * k + cx;
-                const py = (star.y + my) * k + cy;
+                // Apply tilt based on mouse
+                const tiltedX = x * Math.cos(mx) - z * Math.sin(mx);
+                const tiltedZ = x * Math.sin(mx) + z * Math.cos(mx);
+                x = tiltedX;
+                z = tiltedZ;
 
-                if (px >= 0 && px <= canvas.width && py >= 0 && py <= canvas.height) {
-                    const size = (1 - star.z / canvas.width) * 3;
-                    const shade = Math.floor((1 - star.z / canvas.width) * 255);
+                const tiltedY = y * Math.cos(my) - z * Math.sin(my);
+                z = y * Math.sin(my) + z * Math.cos(my);
+                y = tiltedY;
 
-                    ctx.fillStyle = `rgb(${shade}, ${shade}, ${shade})`;
+                // Project
+                const scale = 400 / (400 - z);
+                const px = cx + x * scale;
+                const py = cy + y * scale;
+
+                // Draw
+                if (z < 100) { // Only draw front-ish dots
+                    const alpha = (1 - z / globeRadius) * 0.8; // Fade back dots
+                    ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+
+                    // Highlight dots near mouse
+                    // const dist = Math.hypot(px - (cx + mx * 200), py - (cy + my * 200));
+                    // if (dist < 50) ctx.fillStyle = "#FF4D00";
+
                     ctx.beginPath();
-                    ctx.arc(px, py, size, 0, Math.PI * 2);
+                    ctx.arc(px, py, dot.size * scale, 0, Math.PI * 2);
                     ctx.fill();
                 }
             });
 
-            // Draw connecting lines for nearby stars (constellation effect)
-            ctx.strokeStyle = "rgba(255, 107, 0, 0.15)"; // Shivkara Orange
+            // Draw connecting lines for a "network" feel
+            // Optimization: Only connect a few random dots to avoid performance hit
+            ctx.strokeStyle = "rgba(255, 77, 0, 0.1)";
             ctx.lineWidth = 0.5;
 
-            // Only connect a subset to save performance
-            for (let i = 0; i < 100; i++) {
-                const star1 = stars[i];
-                const k1 = 128.0 / star1.z;
-                const x1 = (star1.x + mx) * k1 + cx;
-                const y1 = (star1.y + my) * k1 + cy;
-
-                if (star1.z > 100 && x1 > 0 && x1 < canvas.width && y1 > 0 && y1 < canvas.height) {
-                    for (let j = i + 1; j < 100; j++) {
-                        const star2 = stars[j];
-                        const k2 = 128.0 / star2.z;
-                        const x2 = (star2.x + mx) * k2 + cx;
-                        const y2 = (star2.y + my) * k2 + cy;
-
-                        const dist = Math.hypot(x1 - x2, y1 - y2);
-
-                        if (dist < 100) {
-                            ctx.beginPath();
-                            ctx.moveTo(x1, y1);
-                            ctx.lineTo(x2, y2);
-                            ctx.stroke();
-                        }
-                    }
-                }
-            }
+            // ... (omitted for performance, keeping it clean with just dots for now)
 
             time++;
             animationFrameId = requestAnimationFrame(draw);
@@ -139,73 +131,126 @@ export default function Hero() {
     const handleMouseMove = (e: React.MouseEvent) => {
         const { clientX, clientY } = e;
         const { innerWidth, innerHeight } = window;
-        mouseX.set((clientX / innerWidth - 0.5) * 2); // -1 to 1
-        mouseY.set((clientY / innerHeight - 0.5) * 2); // -1 to 1
+        mouseX.set((clientX / innerWidth - 0.5) * 2);
+        mouseY.set((clientY / innerHeight - 0.5) * 2);
     };
 
     return (
         <section
             ref={containerRef}
             onMouseMove={handleMouseMove}
-            className="relative h-screen w-full overflow-hidden bg-black flex items-center justify-center"
+            className="relative h-screen w-full overflow-hidden bg-[#030303] flex items-center justify-center"
         >
-            {/* Canvas Background */}
+            {/* Canvas Background (Globe) */}
             <canvas
                 ref={canvasRef}
-                className="absolute inset-0 z-0"
+                className="absolute inset-0 z-0 opacity-40"
             />
 
             {/* Overlay Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black z-10 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#030303] z-10 pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#030303_120%)] z-10 pointer-events-none" />
 
             {/* Content */}
             <motion.div
                 style={{ y, opacity }}
-                className="relative z-20 text-center px-6 flex flex-col items-center"
+                className="relative z-20 text-center px-6 flex flex-col items-center w-full max-w-6xl mx-auto"
             >
+                {/* Badge */}
                 <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
+                    initial={{ y: -20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.6 }}
+                    className="mb-8"
+                >
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-xs font-medium text-gray-300 hover:border-shivkara-orange/50 transition-colors cursor-default">
+                        <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-shivkara-orange opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-shivkara-orange"></span>
+                        </span>
+                        Accepting New Projects for 2025
+                        <ChevronRight className="w-3 h-3 text-gray-500" />
+                    </div>
+                </motion.div>
+
+                {/* Main Heading */}
+                <motion.div
+                    initial={{ scale: 0.95, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 1.5, ease: "easeOut" }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
                     className="mb-8 relative"
                 >
-                    <div className="absolute -inset-10 bg-shivkara-orange/20 blur-[100px] rounded-full animate-pulse-glow" />
-                    <h1 className="text-5xl sm:text-7xl md:text-9xl lg:text-[12rem] font-black tracking-tighter leading-none text-white mix-blend-difference select-none">
-                        SHIVKARA
-                    </h1>
-                    <h1 className="text-5xl sm:text-7xl md:text-9xl lg:text-[12rem] font-black tracking-tighter leading-none text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50 select-none mt-[-0.2em]">
-                        DIGITAL
+                    {/* Glow behind text */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-shivkara-orange/10 blur-[100px] rounded-full pointer-events-none" />
+
+                    <h1 className="text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight leading-[1.1] text-white">
+                        Architecting <br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-500">
+                            Digital Excellence
+                        </span>
                     </h1>
                 </motion.div>
 
+                {/* Subheading */}
                 <motion.p
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.5, duration: 0.8 }}
-                    className="text-gray-400 text-lg md:text-2xl max-w-2xl mb-12 font-light tracking-wide"
+                    transition={{ delay: 0.3, duration: 0.8 }}
+                    className="text-gray-400 text-lg md:text-xl max-w-2xl mb-12 font-light leading-relaxed"
                 >
-                    Architecting the <span className="text-white font-medium">digital universe</span> for visionary brands.
+                    We are a premium software agency specializing in <span className="text-white">AI-driven solutions</span>, <span className="text-white">scalable cloud architecture</span>, and <span className="text-white">immersive web experiences</span>.
                 </motion.p>
 
+                {/* Buttons */}
                 <motion.div
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.8, duration: 0.8 }}
-                    className="flex flex-wrap justify-center gap-6"
+                    transition={{ delay: 0.5, duration: 0.8 }}
+                    className="flex flex-wrap justify-center gap-4"
                 >
                     <MagneticButton
                         onClick={() => router.push('/lets-talk')}
-                        className="group relative flex items-center justify-center gap-3 bg-white text-black px-12 py-5 rounded-full font-bold text-sm uppercase tracking-wider overflow-hidden transition-all hover:scale-105"
+                        className="group relative flex items-center justify-center gap-3 bg-white text-black px-8 py-4 rounded-full font-bold text-sm transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]"
                     >
-                        <span className="relative z-10">Start Project</span>
-                        <ArrowUpRight className="relative z-10 w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
-                        <div className="absolute inset-0 bg-shivkara-orange translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                        <span>Start Your Project</span>
+                        <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                    </MagneticButton>
+
+                    <MagneticButton
+                        onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })}
+                        className="group relative flex items-center justify-center gap-3 bg-white/5 border border-white/10 text-white px-8 py-4 rounded-full font-bold text-sm transition-all hover:bg-white/10 hover:border-white/20"
+                    >
+                        <span>View Portfolio</span>
                     </MagneticButton>
                 </motion.div>
-            </motion.div>
 
-            {/* Bottom Fade */}
-            <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black to-transparent z-20 pointer-events-none" />
+                {/* Tech Stack / Trust Indicators */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8, duration: 1 }}
+                    className="mt-20 pt-10 border-t border-white/5 w-full max-w-4xl flex flex-col items-center"
+                >
+                    <p className="text-xs font-mono text-gray-600 uppercase tracking-widest mb-6">Powering Next-Gen Technologies</p>
+                    <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+                        {/* Simple SVG Icons for Tech Stack */}
+                        <TechIcon label="React" />
+                        <TechIcon label="Next.js" />
+                        <TechIcon label="Node.js" />
+                        <TechIcon label="AWS" />
+                        <TechIcon label="Python" />
+                    </div>
+                </motion.div>
+            </motion.div>
         </section>
+    );
+}
+
+function TechIcon({ label }: { label: string }) {
+    return (
+        <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-shivkara-orange" />
+            <span className="text-sm font-bold text-gray-300">{label}</span>
+        </div>
     );
 }

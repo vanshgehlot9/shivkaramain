@@ -70,6 +70,7 @@ export default function RootLayout({
         <LeadPopup />
         {children}
         <Toaster />
+        <script src="https://checkout.razorpay.com/v1/checkout.js" async></script>
       </body>
     </html>
   );
