@@ -103,7 +103,15 @@ export default function CertificatePrintPage() {
                 useCORS: true,
                 backgroundColor: '#ffffff',
                 logging: false,
-                // allowTaint: true  <-- REMOVED: causes security error on toDataURL
+                onclone: (clonedDoc) => {
+                    // Fix text gradient for PDF generation
+                    const nameElement = clonedDoc.querySelector('.student-name-gradient') as HTMLElement;
+                    if (nameElement) {
+                        nameElement.style.background = 'none';
+                        nameElement.style.webkitTextFillColor = '#1e293b';
+                        nameElement.style.color = '#1e293b';
+                    }
+                }
             });
 
             // Create PDF with A4 Landscape dimensions
@@ -211,6 +219,22 @@ export default function CertificatePrintPage() {
                 .signature-img {
                     mix-blend-mode: multiply;
                     filter: grayscale(100%) contrast(250%) brightness(110%);
+                }
+                
+                .student-name-gradient {
+                    background: linear-gradient(135deg, #1e293b 0%, #3b82f6 50%, #1e293b 100%);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                    color: transparent;
+                }
+                
+                @media print {
+                    .student-name-gradient {
+                        background: none !important;
+                        -webkit-text-fill-color: #1e293b !important;
+                        color: #1e293b !important;
+                    }
                 }
             `}</style>
 
@@ -320,14 +344,9 @@ export default function CertificatePrintPage() {
 
                             <div className="relative mb-10 w-full max-w-4xl">
                                 <h2
-                                    className="text-7xl font-bold mb-6 px-12 tracking-tight"
+                                    className="text-7xl font-bold mb-6 px-12 tracking-tight student-name-gradient"
                                     style={{
-                                        fontFamily: "'Playfair Display', serif",
-                                        background: 'linear-gradient(135deg, #1e293b 0%, #3b82f6 50%, #1e293b 100%)',
-                                        WebkitBackgroundClip: 'text',
-                                        WebkitTextFillColor: 'transparent',
-                                        backgroundClip: 'text',
-                                        color: 'transparent'
+                                        fontFamily: "'Playfair Display', serif"
                                     }}
                                 >
                                     {certificate.studentName || 'Participant Name'}

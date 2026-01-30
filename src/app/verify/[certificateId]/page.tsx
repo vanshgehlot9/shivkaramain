@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 async function getVerificationResult(certificateId: string): Promise<VerificationResult | null> {
     try {
-        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://shivkaradigital.com';
         const response = await fetch(`${baseUrl}/api/public/verify/${certificateId}`, {
             cache: 'no-store',
         });

@@ -35,13 +35,23 @@ export async function createAuditLog(input: CreateAuditLogInput): Promise<string
     }
 
     try {
+        // Sanitize metadata to remove undefined values (Firestore rejects undefined)
+        const cleanMetadata = input.metadata
+            ? Object.entries(input.metadata).reduce((acc, [key, value]) => {
+                if (value !== undefined) {
+                    acc[key] = value;
+                }
+                return acc;
+            }, {} as Record<string, unknown>)
+            : {};
+
         const auditLog: Omit<AuditLog, 'id'> = {
             action: input.action,
             entityType: input.entityType,
             entityId: input.entityId,
             performedBy: input.performedBy,
             ipAddressHash: hashIpAddress(input.ipAddress),
-            metadata: input.metadata || {},
+            metadata: cleanMetadata,
             timestamp: new Date()
         };
 
