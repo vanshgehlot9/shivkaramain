@@ -2,7 +2,6 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import Work from "@/components/Work";
-import Team from "@/components/Team";
 
 import TechStack from "@/components/TechStack";
 import Industries from "@/components/Industries";
@@ -58,7 +57,6 @@ export default function Home() {
       <Testimonials />
       <CostEstimator />
       <FoundersNote />
-      <Team />
       <Insights />
       <FAQ />
       <CallToAction />

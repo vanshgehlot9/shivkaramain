@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { Printer, Download, Loader2 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import QRCode from 'qrcode';
 
 interface CertificateData {
     id: string;
@@ -19,6 +20,7 @@ export default function CertificatePrintPage() {
     const params = useParams();
     const certificateId = params.id as string;
     const [certificate, setCertificate] = useState<CertificateData | null>(null);
+    const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [downloading, setDownloading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -34,10 +36,13 @@ export default function CertificatePrintPage() {
             const response = await fetch(`/api/admin/certificates/${certificateId}`);
             const data = await response.json();
 
-            if (data.success && data.data?.certificate) {
-                setCertificate(data.data.certificate);
-            } else if (data.success && data.data) {
-                setCertificate(data.data);
+            if (data.success && data.data) {
+                // Handle both nested and flat structure
+                const certData = data.data.certificate || data.data;
+                setCertificate(certData);
+
+                // Generate QR Code locally to avoid CORS/tainting issues
+                generateQRCode(certData.id);
             } else {
                 setError(data.error || 'Certificate not found');
             }
@@ -46,6 +51,27 @@ export default function CertificatePrintPage() {
             setError('Failed to load certificate');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const generateQRCode = async (id: string) => {
+        const verifyUrl = typeof window !== 'undefined'
+            ? `${window.location.origin}/verify/${id}`
+            : `https://shivkaradigital.com/verify/${id}`;
+
+        try {
+            const url = await QRCode.toDataURL(verifyUrl, {
+                width: 200,
+                margin: 1,
+                color: {
+                    dark: '#000000',
+                    light: '#ffffff'
+                },
+                errorCorrectionLevel: 'H'
+            });
+            setQrCodeDataUrl(url);
+        } catch (err) {
+            console.error('Error generating QR code:', err);
         }
     };
 
@@ -71,12 +97,13 @@ export default function CertificatePrintPage() {
 
         try {
             // Create canvas from the certificate element
+            // IMPORTANT: images must be CORS compliant or data URLs
             const canvas = await html2canvas(element, {
                 scale: 4, // Higher quality (approx 300 DPI)
                 useCORS: true,
-                allowTaint: true,
-                backgroundColor: '#fbf9fd', // Consistent background color
+                backgroundColor: '#ffffff',
                 logging: false,
+                // allowTaint: true  <-- REMOVED: causes security error on toDataURL
             });
 
             // Create PDF with A4 Landscape dimensions
@@ -139,12 +166,6 @@ export default function CertificatePrintPage() {
     const bootcampCode = (certificate.bootcampName || 'BOOTCAMP').replace(/\s+/g, '').substring(0, 8).toUpperCase();
     const idSuffix = (certificate.id || '0000').substring(0, 4).toUpperCase();
     const formattedCertId = `SKD-${bootcampCode}-${idSuffix}`;
-
-    // Generate QR code URL
-    const verifyUrl = typeof window !== 'undefined'
-        ? `${window.location.origin}/verify/${certificate.id}`
-        : `https://shivkaradigital.com/verify/${certificate.id}`;
-    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(verifyUrl)}&ecc=H`;
 
     return (
         <>
@@ -335,7 +356,6 @@ export default function CertificatePrintPage() {
                                             src="/signature/sawaisingh.png"
                                             alt="Signature"
                                             className="h-16 w-auto object-contain signature-img"
-                                            style={{ mixBlendMode: 'multiply' }}
                                         />
                                     </div>
                                     <div className="border-t border-slate-800 pt-2 w-32 mx-auto">
@@ -351,7 +371,6 @@ export default function CertificatePrintPage() {
                                             src="/signature/ashutosh.png"
                                             alt="Signature"
                                             className="h-16 w-auto object-contain signature-img"
-                                            style={{ mixBlendMode: 'multiply' }}
                                         />
                                     </div>
                                     <div className="border-t border-slate-800 pt-2 w-32 mx-auto">
@@ -367,7 +386,6 @@ export default function CertificatePrintPage() {
                                             src="/signature/mohit.png"
                                             alt="Signature"
                                             className="h-16 w-auto object-contain signature-img"
-                                            style={{ mixBlendMode: 'multiply' }}
                                         />
                                     </div>
                                     <div className="border-t border-slate-800 pt-2 w-32 mx-auto">
@@ -387,11 +405,15 @@ export default function CertificatePrintPage() {
                                     <p className="text-[10px] text-slate-400">Shivkara Digital</p>
                                 </div>
                                 <div className="bg-white p-1.5 rounded border border-slate-100 shadow-sm">
-                                    <img
-                                        src={qrCodeUrl}
-                                        alt="QR Code"
-                                        className="w-16 h-16"
-                                    />
+                                    {qrCodeDataUrl ? (
+                                        <img
+                                            src={qrCodeDataUrl}
+                                            alt="QR Code"
+                                            className="w-16 h-16"
+                                        />
+                                    ) : (
+                                        <div className="w-16 h-16 bg-slate-100 animate-pulse rounded" />
+                                    )}
                                 </div>
                             </div>
                         </footer>
