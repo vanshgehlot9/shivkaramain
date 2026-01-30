@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
-import Work from "@/components/Work";
+
 
 import TechStack from "@/components/TechStack";
 import Industries from "@/components/Industries";
@@ -15,10 +15,10 @@ import Values from "@/components/Values";
 import Security from "@/components/Security";
 import Methodology from "@/components/Methodology";
 import Results from "@/components/Results";
-import FoundersNote from "@/components/FoundersNote";
 import CostEstimator from "@/components/CostEstimator";
 import OnboardingRoadmap from "@/components/OnboardingRoadmap";
 import TechGlossary from "@/components/TechGlossary";
+import BootcampsHighlight from "@/components/BootcampsHighlight";
 
 import Footer from "@/components/Footer";
 import Stats from "@/components/Stats";
@@ -52,12 +52,11 @@ export default function Home() {
       <Security />
       <TechStack />
       <TechGlossary />
-      <Work />
       <Process />
       <Testimonials />
       <CostEstimator />
-      <FoundersNote />
       <Insights />
+      <BootcampsHighlight />
       <FAQ />
       <CallToAction />
       <Contact />

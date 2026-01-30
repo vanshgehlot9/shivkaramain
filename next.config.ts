@@ -11,6 +11,18 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'randomuser.me',
       },
+      {
+        protocol: 'https',
+        hostname: 'miro.medium.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.altexsoft.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.traininginbangalore.com',
+      },
     ],
   },
 };
