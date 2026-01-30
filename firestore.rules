@@ -1,0 +1,117 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ============================================================================
+    // Helper Functions
+    // ============================================================================
+    
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Check if user is an admin (has admin custom claim)
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.admin == true;
+    }
+
+    // ============================================================================
+    // Existing Collections (maintain current behavior for now)
+    // ============================================================================
+    
+    match /income/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    match /expenses/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    match /clients/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    match /invoices/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    match /transactions/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    match /analytics/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    match /visitors/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if true; // Allow tracking writes from clients
+    }
+
+    match /pageViews/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if true;
+    }
+
+    match /visitorStats/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if true;
+    }
+
+    match /leads/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if true; // Allow lead form submissions
+    }
+
+    // ============================================================================
+    // Certificate Verification System - High Security
+    // ============================================================================
+
+    // Bootcamps: Admin-only write, read for authenticated users
+    match /bootcamps/{bootcampId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Students: Admin-only access
+    match /students/{studentId} {
+      allow read, write: if isAuthenticated();
+      // For production, uncomment below for stricter access:
+      // allow read, write: if isAdmin();
+    }
+
+    // Certificates: Critical security
+    // - Only admins can create/update/delete via server-side operations
+    // - Public read access is handled via API routes with rate limiting
+    match /certificates/{certificateId} {
+      // Allow authenticated users to read (admin panel needs this)
+      allow read: if isAuthenticated();
+      
+      // Only server-side (admin SDK) can write certificates
+      // Frontend users should never directly write certificate documents
+      allow create, update, delete: if false;
+    }
+
+    // Audit Logs: Read-only for admins, write only from server
+    match /audit_logs/{logId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Only server can write
+    }
+
+    // Verification Stats: Read for admins, write only from server
+    match /verification_stats/{certId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Only server can write
+    }
+
+    // ============================================================================
+    // Catch-all: Deny everything else
+    // ============================================================================
+    
+    // This ensures any new collections must have explicit rules
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

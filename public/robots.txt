@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Important pages for SEO
+Allow: /articles
+Allow: /privacy
+Allow: /terms
+Allow: /cookie-policy
+
+# Block admin areas from search engines
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /test/
+Disallow: /test-contact/
+
+# Sitemap location
+Sitemap: https://shivkaradigitals.com/sitemap.xml
+Sitemap: https://shivkaradigitals.com/sitemap-articles.xml
+
+# Crawl delay (optional - helps with server load)
+Crawl-delay: 1

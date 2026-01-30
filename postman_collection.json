@@ -1,0 +1,790 @@
+{
+    "info": {
+        "name": "Shivkara Digital Admin API",
+        "description": "Complete API collection for the Admin Dashboard",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000/api/admin",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Dashboard",
+            "item": [
+                {
+                    "name": "Get Dashboard Stats",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/dashboard",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "dashboard"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Income",
+            "item": [
+                {
+                    "name": "Get All Income",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/income?limit=100",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "income"
+                            ],
+                            "query": [
+                                {
+                                    "key": "limit",
+                                    "value": "100"
+                                },
+                                {
+                                    "key": "startDate",
+                                    "value": "2025-01-01",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "endDate",
+                                    "value": "2025-12-31",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Income",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"date\": \"2025-11-23\",\n  \"clientName\": \"ABC Corp\",\n  \"projectName\": \"Website Development\",\n  \"paymentMode\": \"bank_transfer\",\n  \"amount\": 50000,\n  \"description\": \"Payment for website project\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/income",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "income"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Income",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"id\": \"income_123\",\n  \"amount\": 55000\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/income",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "income"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Income",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/income?id=income_123",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "income"
+                            ],
+                            "query": [
+                                {
+                                    "key": "id",
+                                    "value": "income_123"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Expenses",
+            "item": [
+                {
+                    "name": "Get All Expenses",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/expenses?limit=100",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "expenses"
+                            ],
+                            "query": [
+                                {
+                                    "key": "limit",
+                                    "value": "100"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Expense",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"date\": \"2025-11-23\",\n  \"purpose\": \"Office Rent\",\n  \"category\": \"office\",\n  \"paymentMode\": \"bank_transfer\",\n  \"amount\": 25000,\n  \"vendorName\": \"Property Owner\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/expenses",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "expenses"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Expense",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"id\": \"expense_123\",\n  \"amount\": 30000\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/expenses",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "expenses"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Expense",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/expenses?id=expense_123",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "expenses"
+                            ],
+                            "query": [
+                                {
+                                    "key": "id",
+                                    "value": "expense_123"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Clients",
+            "item": [
+                {
+                    "name": "Get All Clients",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/clients?limit=100",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "clients"
+                            ],
+                            "query": [
+                                {
+                                    "key": "limit",
+                                    "value": "100"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Client",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"+91 9876543210\",\n  \"company\": \"ABC Corp\",\n  \"status\": \"active\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/clients",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "clients"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Client",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"id\": \"client_123\",\n  \"status\": \"inactive\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/clients",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "clients"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Client",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/clients?id=client_123",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "clients"
+                            ],
+                            "query": [
+                                {
+                                    "key": "id",
+                                    "value": "client_123"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Invoices",
+            "item": [
+                {
+                    "name": "Get All Invoices",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/invoices?limit=100",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "invoices"
+                            ],
+                            "query": [
+                                {
+                                    "key": "limit",
+                                    "value": "100"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Invoice",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"clientId\": \"client_123\",\n  \"clientName\": \"ABC Corp\",\n  \"date\": \"2025-11-23\",\n  \"dueDate\": \"2025-12-23\",\n  \"items\": [\n    {\n      \"description\": \"Website Development\",\n      \"quantity\": 1,\n      \"rate\": 50000,\n      \"amount\": 50000\n    }\n  ],\n  \"taxPercentage\": 18,\n  \"discount\": 0,\n  \"status\": \"draft\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/invoices",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "invoices"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Invoice",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"id\": \"invoice_123\",\n  \"status\": \"paid\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/invoices",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "invoices"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Invoice",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/invoices?id=invoice_123",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "invoices"
+                            ],
+                            "query": [
+                                {
+                                    "key": "id",
+                                    "value": "invoice_123"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Cashbook",
+            "item": [
+                {
+                    "name": "Get Transactions",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/cashbook?limit=100",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "cashbook"
+                            ],
+                            "query": [
+                                {
+                                    "key": "limit",
+                                    "value": "100"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Manual Entry",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"date\": \"2025-11-23\",\n  \"type\": \"income\",\n  \"amount\": 10000,\n  \"note\": \"Cash deposit\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/cashbook",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "cashbook"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Reports",
+            "item": [
+                {
+                    "name": "Income Report",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/reports?type=income&startDate=2025-01-01&endDate=2025-12-31",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "reports"
+                            ],
+                            "query": [
+                                {
+                                    "key": "type",
+                                    "value": "income"
+                                },
+                                {
+                                    "key": "startDate",
+                                    "value": "2025-01-01"
+                                },
+                                {
+                                    "key": "endDate",
+                                    "value": "2025-12-31"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Expense Report",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/reports?type=expense&startDate=2025-01-01&endDate=2025-12-31",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "reports"
+                            ],
+                            "query": [
+                                {
+                                    "key": "type",
+                                    "value": "expense"
+                                },
+                                {
+                                    "key": "startDate",
+                                    "value": "2025-01-01"
+                                },
+                                {
+                                    "key": "endDate",
+                                    "value": "2025-12-31"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Profit & Loss Report",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/reports?type=profit_loss&startDate=2025-01-01&endDate=2025-12-31",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "reports"
+                            ],
+                            "query": [
+                                {
+                                    "key": "type",
+                                    "value": "profit_loss"
+                                },
+                                {
+                                    "key": "startDate",
+                                    "value": "2025-01-01"
+                                },
+                                {
+                                    "key": "endDate",
+                                    "value": "2025-12-31"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Client Report",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/reports?type=client&startDate=2025-01-01&endDate=2025-12-31",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "reports"
+                            ],
+                            "query": [
+                                {
+                                    "key": "type",
+                                    "value": "client"
+                                },
+                                {
+                                    "key": "startDate",
+                                    "value": "2025-01-01"
+                                },
+                                {
+                                    "key": "endDate",
+                                    "value": "2025-12-31"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Tax Report",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/reports?type=tax&startDate=2025-01-01&endDate=2025-12-31",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "reports"
+                            ],
+                            "query": [
+                                {
+                                    "key": "type",
+                                    "value": "tax"
+                                },
+                                {
+                                    "key": "startDate",
+                                    "value": "2025-01-01"
+                                },
+                                {
+                                    "key": "endDate",
+                                    "value": "2025-12-31"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Analytics",
+            "item": [
+                {
+                    "name": "Overview Analytics",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/analytics?metric=overview",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "analytics"
+                            ],
+                            "query": [
+                                {
+                                    "key": "metric",
+                                    "value": "overview"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Page Analytics",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/analytics?metric=pages",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "analytics"
+                            ],
+                            "query": [
+                                {
+                                    "key": "metric",
+                                    "value": "pages"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Traffic Sources",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/analytics?metric=sources",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "analytics"
+                            ],
+                            "query": [
+                                {
+                                    "key": "metric",
+                                    "value": "sources"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Device Analytics",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/analytics?metric=devices",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "analytics"
+                            ],
+                            "query": [
+                                {
+                                    "key": "metric",
+                                    "value": "devices"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Location Analytics",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/analytics?metric=locations",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "analytics"
+                            ],
+                            "query": [
+                                {
+                                    "key": "metric",
+                                    "value": "locations"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Record Page View",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"path\": \"/about\",\n  \"referrer\": \"https://google.com\",\n  \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\",\n  \"country\": \"India\",\n  \"city\": \"Mumbai\",\n  \"sessionId\": \"session_123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/analytics",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "analytics"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
