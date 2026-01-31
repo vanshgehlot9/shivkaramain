@@ -19,25 +19,27 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Shivkara Digital | Premium Web Development & Digital Marketing Agency",
-  description: "Shivkara Digital is a leading web development and digital marketing agency in Jodhpur, India. We specialize in custom websites, mobile apps, SEO, and branding for ambitious businesses.",
+  metadataBase: new URL('https://www.shivkaradigital.com'),
+  title: "Shivkara Digital | Premium Web Design & Development Agency",
+  description: "Architecting digital excellence for ambitious brands. We merge strategy, design, and technology to build the extraordinary.",
   keywords: [
-    "Web Development", "App Development", "Digital Marketing", "SEO Services",
-    "Jodhpur Agency", "Custom Software", "React Development", "Next.js Experts",
-    "UI/UX Design", "E-commerce Solutions", "Shivkara Digital", "Website Design India"
+    "Web Design", "Web Development", "App Development", "Digital Agency", "SEO",
+    "Jodhpur", "Custom Software", "Next.js", "React", "Branding", "UI/UX Design",
+    "Student Internship Training", "Coding Bootcamps Jodhpur", "Live Project Training",
+    "Industrial Training Jodhpur", "Summer Internship 2026", "React Training"
   ],
   openGraph: {
-    title: "Shivkara Digital | Premium Web Development & Digital Marketing Agency",
-    description: "Transform your business with custom software & mobile apps that scale. We build digital legacies.",
-    url: "https://shivkaradigital.com",
+    title: "Shivkara Digital | Premium Web Design & Development Agency",
+    description: "Architecting digital excellence for ambitious brands. We merge strategy, design, and technology to build the extraordinary.",
+    url: "https://www.shivkaradigital.com",
     siteName: "Shivkara Digital",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Shivkara Digital | Premium Web Development & Digital Marketing Agency",
-    description: "Transform your business with custom software & mobile apps that scale.",
+    title: "Shivkara Digital | Premium Web Design & Development Agency",
+    description: "Architecting digital excellence for ambitious brands.",
   },
   robots: {
     index: true,
@@ -51,9 +53,9 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://shivkaradigital.com",
+    canonical: "https://www.shivkaradigital.com",
     languages: {
-      'en-US': 'https://shivkaradigital.com',
+      'en-US': 'https://www.shivkaradigital.com',
     },
   },
 };
@@ -62,23 +64,23 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "Shivkara Digital",
-  "url": "https://shivkaradigital.com",
-  "logo": "https://shivkaradigital.com/logo.png",
+  "url": "https://www.shivkaradigital.com",
+  "logo": "https://www.shivkaradigital.com/logo.png",
   "sameAs": [
     "https://www.linkedin.com/company/shivkara-digital",
-    "https://www.instagram.com/shivkara.digital",
+    "https://www.instagram.com/shivkaradigital/",
     "https://twitter.com/shivkaradigital"
   ],
   "contactPoint": {
     "@type": "ContactPoint",
-    "telephone": "+91-1234567890", // Placeholder
+    "telephone": "+91-9521699090",
     "contactType": "customer service",
     "areaServed": "IN",
     "availableLanguage": "en"
   },
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "Jodhpur, Rajasthan",
+    "streetAddress": "Mansarovar Plaza",
     "addressLocality": "Jodhpur",
     "addressRegion": "RJ",
     "postalCode": "342001",

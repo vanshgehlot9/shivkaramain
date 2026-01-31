@@ -1,11 +1,16 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import WhatsAppWidget from "@/components/WhatsAppWidget";
-import LeadPopup from "@/components/LeadPopup";
-import Preloader from "@/components/Preloader";
-import ScrollProgress from "@/components/ScrollProgress";
-import Grain from "@/components/Grain";
+import dynamic from 'next/dynamic';
+
+// Dynamically import components to reduce initial bundle size
+const WhatsAppWidget = dynamic(() => import("@/components/WhatsAppWidget"), { ssr: false });
+const LeadPopup = dynamic(() => import("@/components/LeadPopup"), { ssr: false });
+const Preloader = dynamic(() => import("@/components/Preloader"), { ssr: false });
+const ScrollProgress = dynamic(() => import("@/components/ScrollProgress"), { ssr: false });
+const Grain = dynamic(() => import("@/components/Grain"), { ssr: false });
+const AnalyticsTracker = dynamic(() => import("@/components/AnalyticsTracker"), { ssr: false });
+const SmoothScroll = dynamic(() => import("@/components/SmoothScroll"), { ssr: false });
 
 export default function SiteOverlays() {
     const pathname = usePathname();
@@ -15,6 +20,8 @@ export default function SiteOverlays() {
 
     return (
         <>
+            <SmoothScroll />
+            <AnalyticsTracker />
             <Preloader />
             <Grain />
             <ScrollProgress />

@@ -49,7 +49,8 @@ export default function Insights() {
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {/* Desktop Grid */}
+                <div className="hidden md:grid md:grid-cols-3 gap-8">
                     {posts.map((post, index) => (
                         <motion.div
                             key={index}
@@ -96,6 +97,54 @@ export default function Insights() {
                             </div>
                         </motion.div>
                     ))}
+                </div>
+
+                {/* Mobile Slider */}
+                <div className="md:hidden overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)] -mx-6">
+                    <motion.div
+                        className="flex gap-6 w-max px-6"
+                        animate={{ x: "-50%" }}
+                        transition={{
+                            duration: 30,
+                            repeat: Infinity,
+                            ease: "linear",
+                            repeatType: "loop"
+                        }}
+                    >
+                        {[...posts, ...posts].map((post, index) => (
+                            <div
+                                key={`mobile-post-${index}`}
+                                className="w-[300px] flex-shrink-0"
+                            >
+                                <div className="relative h-[200px] mb-4 rounded-2xl overflow-hidden border border-white/10">
+                                    <Image
+                                        src={post.image}
+                                        alt={post.title}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                    <div className="absolute top-4 left-4 px-3 py-1 bg-black/50 backdrop-blur-md border border-white/10 rounded-full flex items-center gap-2">
+                                        <Tag className="w-3 h-3 text-shivkara-orange" />
+                                        <span className="text-[10px] font-mono text-white uppercase tracking-wider">{post.category}</span>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-4 text-[10px] font-mono text-gray-500 mb-3">
+                                    <div className="flex items-center gap-1">
+                                        <Calendar className="w-3 h-3" />
+                                        {post.date}
+                                    </div>
+                                </div>
+
+                                <h3 className="text-lg font-bold text-white mb-2 leading-tight">
+                                    {post.title}
+                                </h3>
+                                <p className="text-gray-400 text-xs leading-relaxed line-clamp-2">
+                                    {post.excerpt}
+                                </p>
+                            </div>
+                        ))}
+                    </motion.div>
                 </div>
             </div>
         </section>

@@ -1,98 +1,157 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
+import {
+    Truck,
+    Package,
+    Globe,
+    Clock,
+    MapPin,
+    FileCheck,
+    AlertTriangle,
+    Zap
+} from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function ShippingPolicy() {
     return (
-        <main className="min-h-screen bg-black text-white selection:bg-[#FF7A00] selection:text-white">
+        <div className="min-h-screen bg-[#030303] text-white font-sans selection:bg-emerald-500/30">
             <Navbar />
 
-            <div className="pt-32 pb-20 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto">
+            <main className="relative pt-32 pb-20 px-6 max-w-7xl mx-auto">
+
+                {/* Header */}
+                <div className="text-center mb-20">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-mono text-emerald-400 mb-6 backdrop-blur-md">
+                            <Truck size={14} />
+                            <span>LOGISTICS & FULFILLMENT</span>
+                        </div>
+                        <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-8">
+                            Shipping <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">Policy</span>
+                        </h1>
+                        <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+                            Whether it's digital access or physical merchandise, we ensure timely and secure delivery. Here is how we handle orders.
+                        </p>
+                    </motion.div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
+
+                    {/* Digital Delivery Card */}
+                    <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        className="bg-[#0a0a0a] border border-white/5 rounded-3xl p-8 relative overflow-hidden group hover:border-emerald-500/30 transition-all duration-500"
+                    >
+                        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20 group-hover:opacity-30 transition-opacity" />
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 blur-[80px] rounded-full group-hover:bg-emerald-500/10 transition-colors" />
+
+                        <div className="relative z-10">
+                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-transparent border border-emerald-500/20 flex items-center justify-center mb-8">
+                                <Zap size={32} className="text-emerald-400" />
+                            </div>
+
+                            <h2 className="text-3xl font-bold mb-4">Digital Products</h2>
+                            <p className="text-gray-400 mb-8 leading-relaxed">
+                                Courses, workshops, and digital assets are delivered instantly upon successful payment verification.
+                            </p>
+
+                            <div className="space-y-4">
+                                <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
+                                    <Clock className="text-emerald-400 mt-1" />
+                                    <div>
+                                        <h4 className="font-bold text-sm">Instant Access</h4>
+                                        <p className="text-xs text-gray-500 mt-1">Login credentials sent via email immediately.</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
+                                    <FileCheck className="text-emerald-400 mt-1" />
+                                    <div>
+                                        <h4 className="font-bold text-sm">License Activation</h4>
+                                        <p className="text-xs text-gray-500 mt-1">Software licenses activated within 5 minutes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    {/* Physical Shipping Card */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        className="bg-[#0a0a0a] border border-white/5 rounded-3xl p-8 relative overflow-hidden group hover:border-blue-500/30 transition-all duration-500"
+                    >
+                        <div className="absolute top-0 left-0 w-64 h-64 bg-blue-500/5 blur-[80px] rounded-full group-hover:bg-blue-500/10 transition-colors" />
+
+                        <div className="relative z-10">
+                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-transparent border border-blue-500/20 flex items-center justify-center mb-8">
+                                <Package size={32} className="text-blue-400" />
+                            </div>
+
+                            <h2 className="text-3xl font-bold mb-4">Physical Merchandise</h2>
+                            <p className="text-gray-400 mb-8 leading-relaxed">
+                                Certificates, welcome kits, and swag packs are shipped via our courier partners.
+                            </p>
+
+                            <div className="space-y-4">
+                                <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
+                                    <Truck className="text-blue-400 mt-1" />
+                                    <div>
+                                        <h4 className="font-bold text-sm">Processing Time</h4>
+                                        <p className="text-xs text-gray-500 mt-1">Orders processed within 24-48 hours.</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
+                                    <Globe className="text-blue-400 mt-1" />
+                                    <div>
+                                        <h4 className="font-bold text-sm">Delivery Estimates</h4>
+                                        <p className="text-xs text-gray-500 mt-1">Domestic: 3-5 days. International: 7-14 days.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+
+                {/* Improved Tracking Section */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="max-w-4xl mx-auto"
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="rounded-3xl bg-gradient-to-br from-gray-900 to-black border border-white/10 p-8 md:p-12 relative overflow-hidden text-center"
                 >
-                    <h1 className="text-4xl md:text-6xl font-black mb-8 tracking-tight">
-                        Shipping <span className="text-[#FF7A00]">Policy</span>
-                    </h1>
+                    <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
-                    <div className="space-y-8 text-gray-300 leading-relaxed">
-                        <div className="p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                            <p className="mb-4">Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-                            <p>
-                                This Shipping Policy describes Our policies and procedures on the shipping of goods purchased on Our Service.
-                            </p>
+                    <div className="relative z-10 max-w-2xl mx-auto">
+                        <AlertTriangle className="mx-auto text-amber-500 mb-6" size={40} />
+                        <h2 className="text-2xl font-bold mb-4">Shipping Delays & Issues</h2>
+                        <p className="text-gray-400 mb-8">
+                            While we strive for perfection, external factors may cause delays. If you haven't received your tracking number within 48 hours or your package is delayed, please reach out.
+                        </p>
+
+                        <div className="flex justify-center gap-4">
+                            <Link href="/contact" className="px-8 py-3 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-colors">
+                                Report Issue
+                            </Link>
+                            <Link href="/dashboard" className="px-8 py-3 border border-white/10 rounded-xl hover:bg-white/5 transition-colors font-semibold">
+                                Track Order
+                            </Link>
                         </div>
-
-                        <section>
-                            <h2 className="text-2xl font-bold text-white mb-4">1. Processing Time</h2>
-                            <p className="mb-4">
-                                All orders are processed within 2-3 business days. Orders are not shipped or delivered on weekends or holidays.
-                            </p>
-                            <p>
-                                If We are experiencing a high volume of orders, shipments may be delayed by a few days. Please allow additional days in transit for delivery. If there will be a significant delay in shipment of Your Order, We will contact You via email or telephone.
-                            </p>
-                        </section>
-
-                        <section>
-                            <h2 className="text-2xl font-bold text-white mb-4">2. Shipping Rates & Delivery Estimates</h2>
-                            <p className="mb-4">
-                                Shipping charges for Your Orders will be calculated and displayed at checkout.
-                            </p>
-                            <ul className="list-disc pl-6 space-y-2 marker:text-[#FF7A00]">
-                                <li><strong>Standard Shipping:</strong> 5-7 business days.</li>
-                                <li><strong>Express Shipping:</strong> 2-3 business days.</li>
-                            </ul>
-                            <p className="mt-4 text-sm text-gray-400">
-                                * Delivery delays can occasionally occur.
-                            </p>
-                        </section>
-
-                        <section>
-                            <h2 className="text-2xl font-bold text-white mb-4">3. Shipment Confirmation & Order Tracking</h2>
-                            <p>
-                                You will receive a Shipment Confirmation email once Your Order has shipped containing your tracking number(s). The tracking number will be active within 24 hours.
-                            </p>
-                        </section>
-
-                        <section>
-                            <h2 className="text-2xl font-bold text-white mb-4">4. Customs, Duties and Taxes</h2>
-                            <p>
-                                Shivkara Digital is not responsible for any customs and taxes applied to Your Order. All fees imposed during or after shipping are the responsibility of the customer (tariffs, taxes, etc.).
-                            </p>
-                        </section>
-
-                        <section>
-                            <h2 className="text-2xl font-bold text-white mb-4">5. Damages</h2>
-                            <p>
-                                Shivkara Digital is not liable for any products damaged or lost during shipping. If You received Your Order damaged, please contact the shipment carrier to file a claim.
-                            </p>
-                            <p className="mt-2">
-                                Please save all packaging materials and damaged goods before filing a claim.
-                            </p>
-                        </section>
-
-                        <section>
-                            <h2 className="text-2xl font-bold text-white mb-4">6. Contact Us</h2>
-                            <p>
-                                If you have any questions about our Shipping Policy, please contact us:
-                            </p>
-                            <div className="mt-4 p-6 rounded-2xl bg-white/5 border border-white/10 inline-block">
-                                <p className="font-bold text-white">Shivkara Digital</p>
-                                <p>Email: info@shivkaradigital.com</p>
-                                <p>Phone: +91 78772 18473</p>
-                            </div>
-                        </section>
                     </div>
                 </motion.div>
-            </div>
 
+            </main>
             <Footer />
-        </main>
+        </div>
     );
 }

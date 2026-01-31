@@ -19,6 +19,9 @@ export const COLLECTIONS = {
   CERTIFICATES: 'certificates',
   AUDIT_LOGS: 'audit_logs',
   VERIFICATION_STATS: 'verification_stats',
+
+  // User Reviews
+  REVIEWS: 'reviews',
 } as const;
 
 export type CollectionName = typeof COLLECTIONS[keyof typeof COLLECTIONS];

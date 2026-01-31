@@ -11,9 +11,17 @@ export default function ScrollProgress() {
     });
 
     return (
-        <motion.div
-            className="fixed top-0 left-0 right-0 h-1 bg-shivkara-orange origin-left z-[100]"
-            style={{ scaleX }}
-        />
+        <div className="fixed top-0 left-0 right-0 h-1 z-[9999] pointer-events-none">
+            {/* Glow Layer */}
+            <motion.div
+                className="absolute inset-0 bg-shivkara-orange blur-[4px] opacity-70 origin-left"
+                style={{ scaleX }}
+            />
+            {/* Main Bar */}
+            <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-shivkara-orange to-red-500 origin-left"
+                style={{ scaleX }}
+            />
+        </div>
     );
 }

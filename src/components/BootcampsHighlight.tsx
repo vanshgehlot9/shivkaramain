@@ -1,73 +1,138 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Calendar, Users, Trophy } from "lucide-react";
+import { ArrowRight, Calendar, Users, Trophy, Sparkles, Cpu } from "lucide-react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
 
 export default function BootcampsHighlight() {
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
-
-    function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
-        const { left, top, width, height } = currentTarget.getBoundingClientRect();
-        mouseX.set(clientX - left - width / 2);
-        mouseY.set(clientY - top - height / 2);
-    }
-
     return (
-        <section className="relative py-24 bg-black overflow-hidden transform-gpu" onMouseMove={handleMouseMove}>
-            {/* Background Elements */}
-            <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:32px_32px] pointer-events-none" />
-            <motion.div
-                className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-shivkara-orange/5 to-transparent pointer-events-none"
-                animate={{
-                    x: [0, 50, 0],
-                    opacity: [0.5, 0.8, 0.5]
-                }}
-                transition={{
-                    duration: 10,
-                    repeat: Infinity,
-                    ease: "linear"
-                }}
-            />
+        <section className="relative py-32 bg-black overflow-hidden">
+            {/* Liquid Fluid Background */}
+            <div className="absolute inset-0 bg-black">
+                <div className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-purple-600/20 blur-[150px] rounded-full mix-blend-screen animate-pulse duration-[5000ms]" />
+                <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-shivkara-orange/20 blur-[150px] rounded-full mix-blend-screen animate-pulse duration-[7000ms]" />
+            </div>
+
+            {/* Tech Grid Overlay */}
+            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] opacity-20 pointer-events-none" />
 
             <div className="max-w-7xl mx-auto px-6 relative z-10">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+                {/* Liquid Glass Container */}
+                <div className="relative rounded-[2.5rem] overflow-hidden bg-white/[0.03] border border-white/10 backdrop-blur-3xl shadow-2xl">
+                    {/* Internal Gloss Highlight */}
+                    <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-50" />
 
-                    {/* Text Content */}
-                    <div className="flex-1 space-y-6">
-                        <MagneticBadge>
-                            <Trophy className="w-4 h-4" />
-                            <span>Training Initiatives</span>
-                        </MagneticBadge>
+                    <div className="p-8 md:p-12 relative">
+                        {/* Decorative Circuit Lines */}
+                        <div className="absolute top-12 left-12 w-24 h-24 border-l border-t border-white/10 rounded-tl-3xl pointer-events-none opacity-50" />
+                        <div className="absolute bottom-12 right-12 w-24 h-24 border-r border-b border-white/10 rounded-br-3xl pointer-events-none opacity-50" />
 
-                        <motion.h2
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.1 }}
-                            className="text-4xl md:text-5xl font-bold text-white tracking-tight"
-                        >
-                            Building Future <span className="text-transparent bg-clip-text bg-gradient-to-r from-shivkara-orange to-yellow-500">Design Leaders</span>
-                        </motion.h2>
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                            {/* Text Content */}
+                            <div className="lg:col-span-4 space-y-8 relative z-10 lg:sticky lg:top-12 text-center lg:text-left">
+                                <div className="mb-8 p-4 rounded-xl bg-purple-900/20 border border-purple-500/20 backdrop-blur-sm flex items-start sm:items-center gap-4 relative overflow-hidden group mx-auto lg:mx-0 max-w-md lg:max-w-none text-left">
+                                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                    <div className="relative flex h-3 w-3 shrink-0 mt-1 sm:mt-0">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-purple-500"></span>
+                                    </div>
+                                    <p className="text-sm text-purple-200 font-light leading-relaxed">
+                                        <span className="font-bold text-white uppercase tracking-wider mr-2">Student Program Alert:</span>
+                                        Applications for Summer Internships, <span className="text-white font-medium">Industrial Training</span> & New Bootcamps opening soon.
+                                    </p>
+                                </div>
 
-                        <motion.p
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.2 }}
-                            className="text-lg text-gray-400 max-w-xl"
-                        >
-                            Shivkara Digital & Tech Lab regularly organizes specialized bootcamps and training programs to bridge the gap between academic learning and industry demands.
-                        </motion.p>
+                                <div className="flex justify-center lg:justify-start">
+                                    <MagneticBadge>
+                                        <Sparkles className="w-3.5 h-3.5" />
+                                        <span className="tracking-widest">Future Academy</span>
+                                    </MagneticBadge>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <motion.h2
+                                        initial={{ opacity: 0, y: 20 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true }}
+                                        className="text-4xl md:text-5xl font-black text-white tracking-tighter leading-tight"
+                                    >
+                                        Forge Your <br />
+                                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-shivkara-orange to-purple-500">Digital Legacy</span>
+                                    </motion.h2>
+                                    <p className="text-lg text-gray-400 font-light leading-relaxed max-w-lg mx-auto lg:mx-0">
+                                        Join elite training programs designed to bridge the gap between academic theory and high-impact industry execution.
+                                    </p>
+                                </div>
+
+                                <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+                                    <Tag icon={Cpu} label="Product Design" />
+                                    <Tag icon={Trophy} label="Elite Mentorship" />
+                                </div>
+                            </div>
+
+                            {/* Cards Container - Desktop (Grid/Flex) */}
+                            <div className="hidden lg:col-span-8 lg:flex flex-col md:flex-row gap-6 justify-end">
+                                {/* SPUNK 2025 Card */}
+                                <TiltCard
+                                    title="SPUNK 2025"
+                                    badge="Completed"
+                                    badgeColor="bg-green-500"
+                                    image="/bootcamp/bootcampheader.jpeg"
+                                    description="Master modern product design workflows in this intensive, hands-on bootcamp."
+                                    link="/bootcamps/spunk-2025"
+                                />
+
+                                {/* NEW UI/UX Virtual Card */}
+                                <TiltCard
+                                    title="UI / UX Virtual"
+                                    badge="Coming Soon"
+                                    badgeColor="bg-yellow-500"
+                                    image="/bootcamp/bootcampheader.jpeg"
+                                    description="A comprehensive virtual bootcamp mastering the art of User Interface and Experience Design."
+                                    link="#"
+                                    isComingSoon={true}
+                                />
+                            </div>
+
+                            {/* Cards Container - Mobile (Manual Scroll) */}
+                            <div className="lg:hidden w-full overflow-x-auto snap-x snap-mandatory -mx-6 px-6 pb-8 no-scrollbar flex gap-4">
+                                <div className="min-w-[85vw] snap-center">
+                                    <TiltCard
+                                        title="SPUNK 2025"
+                                        badge="Completed"
+                                        badgeColor="bg-green-500"
+                                        image="/bootcamp/bootcampheader.jpeg"
+                                        description="Master modern product design workflows in this intensive, hands-on bootcamp."
+                                        link="/bootcamps/spunk-2025"
+                                    />
+                                </div>
+                                <div className="min-w-[85vw] snap-center">
+                                    <TiltCard
+                                        title="UI / UX Virtual"
+                                        badge="Coming Soon"
+                                        badgeColor="bg-yellow-500"
+                                        image="/bootcamp/bootcampheader.jpeg"
+                                        description="A comprehensive virtual bootcamp mastering the art of User Interface and Experience Design."
+                                        link="#"
+                                        isComingSoon={true}
+                                    />
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    {/* Card */}
-                    <TiltCard />
                 </div>
             </div>
         </section>
+    );
+}
+
+function Tag({ icon: Icon, label }: { icon: any, label: string }) {
+    return (
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs font-mono text-gray-300 uppercase tracking-wider">
+            <Icon className="w-3 h-3 text-shivkara-orange" />
+            {label}
+        </div>
     );
 }
 
@@ -92,21 +157,28 @@ function MagneticBadge({ children }: { children: React.ReactNode }) {
             onMouseLeave={reset}
             animate={{ x: position.x, y: position.y }}
             transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="cursor-pointer inline-flex items-center gap-2 px-3 py-1 rounded-full border border-shivkara-orange/30 bg-shivkara-orange/10 text-shivkara-orange text-sm font-medium hover:bg-shivkara-orange/20 transition-colors"
+            className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 bg-white/5 backdrop-blur-md text-white text-xs font-bold uppercase hover:bg-white/10 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.1)]"
         >
             {children}
         </motion.div>
     );
 }
 
-function TiltCard() {
+interface TiltCardProps {
+    title: string;
+    badge: string;
+    badgeColor: string;
+    image: string;
+    description: string;
+    link: string;
+    isComingSoon?: boolean;
+}
+
+function TiltCard({ title, badge, badgeColor, image, description, link, isComingSoon = false }: TiltCardProps) {
     const x = useMotionValue(0);
     const y = useMotionValue(0);
-    const rotateX = useTransform(y, [-100, 100], [30, -30]);
-    const rotateY = useTransform(x, [-100, 100], [-30, 30]);
+    const rotateX = useTransform(y, [-100, 100], [20, -20]);
+    const rotateY = useTransform(x, [-100, 100], [-20, 20]);
 
     function handleMouse(event: React.MouseEvent<HTMLDivElement>) {
         const rect = event.currentTarget.getBoundingClientRect();
@@ -116,7 +188,7 @@ function TiltCard() {
         const mouseY = event.clientY - rect.top;
         const xPct = mouseX / width - 0.5;
         const yPct = mouseY / height - 0.5;
-        x.set(xPct * 200); // reduced sensitivity
+        x.set(xPct * 200);
         y.set(yPct * 200);
     }
 
@@ -125,14 +197,65 @@ function TiltCard() {
         y.set(0);
     }
 
+    const CardContent = (
+        <div
+            style={{ transform: "translateZ(0px)" }}
+            className="relative rounded-2xl overflow-hidden border border-white/10 bg-[#0A0A0A]/80 backdrop-blur-xl shadow-2xl group-hover:border-shivkara-orange/50 transition-colors duration-500 h-full flex flex-col"
+        >
+            {/* Image */}
+            <div className="relative h-48 w-full overflow-hidden shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                    src={image}
+                    alt={title}
+                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] to-transparent" />
+
+                <div className="absolute top-4 right-4 px-3 py-1 bg-black/50 backdrop-blur-md rounded-lg text-xs font-mono text-white border border-white/10 flex items-center gap-2">
+                    <div className={`w-1.5 h-1.5 rounded-full ${badgeColor} animate-pulse`} />
+                    {badge}
+                </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 relative flex-1 flex flex-col">
+                <div className="space-y-1 mb-4">
+                    <span className="text-[10px] font-bold text-shivkara-orange uppercase tracking-widest">
+                        {isComingSoon ? "Upcoming" : "Flagship Event"}
+                    </span>
+                    <h3 className="text-xl font-bold text-white group-hover:text-shivkara-orange transition-colors">{title}</h3>
+                </div>
+
+                <p className="text-sm text-gray-400 mb-6 line-clamp-3 leading-relaxed">
+                    {description}
+                </p>
+
+                <div className="flex items-center justify-between pt-4 border-t border-white/5 mt-auto">
+                    {!isComingSoon && (
+                        <div className="flex -space-x-2">
+                            {[...Array(3)].map((_, i) => (
+                                <div key={i} className="w-6 h-6 rounded-full bg-gray-800 border border-black flex items-center justify-center text-[8px] text-white">
+                                    {i + 1}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    <span className="flex items-center gap-2 text-xs font-bold text-white uppercase tracking-wider group-hover:translate-x-1 transition-transform ml-auto">
+                        {isComingSoon ? "Notify Me" : "Explore"} <ArrowRight className="w-3 h-3" />
+                    </span>
+                </div>
+            </div>
+        </div>
+    );
+
     return (
         <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            style={{ perspective: 1000 }}
-            className="flex-shrink-0 w-full md:w-auto"
+            style={{ perspective: 1200 }}
+            className="w-full md:w-[350px] shrink-0"
         >
             <motion.div
                 style={{
@@ -142,55 +265,17 @@ function TiltCard() {
                 }}
                 onMouseMove={handleMouse}
                 onMouseLeave={handleMouseLeave}
-                className="relative group block w-full md:w-[450px]"
+                className="relative group cursor-pointer h-full"
             >
-                <Link href="/bootcamps/spunk-2025" className="block h-full">
-                    <div
-                        style={{ transform: "translateZ(0px)" }}
-                        className="absolute -inset-0.5 bg-gradient-to-r from-shivkara-orange to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-75 transition duration-500"
-                    />
-                    <div
-                        style={{ transform: "translateZ(20px)" }}
-                        className="relative bg-zinc-900 border border-white/10 rounded-2xl h-full bg-opacity-90 backdrop-blur-sm overflow-hidden flex flex-col"
-                    >
-                        {/* Image Header */}
-                        <div className="relative h-48 w-full">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src="/bootcamp/bootcampheader.jpeg"
-                                alt="Bootcamp Header"
-                                className="w-full h-full object-cover"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent" />
-                        </div>
-
-                        <div className="p-8 pt-4 flex-1 flex flex-col">
-                            <div className="flex items-start justify-between mb-6">
-                                <div className="space-y-1">
-                                    <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Completed Event</span>
-                                    <h3 className="text-2xl font-bold text-white group-hover:text-shivkara-orange transition-colors">SPUNK 2025</h3>
-                                </div>
-                                <span className="px-3 py-1 bg-white/5 border border-white/10 rounded text-xs font-medium text-white flex items-center gap-1">
-                                    <Calendar className="w-3 h-3" />
-                                    2025
-                                </span>
-                            </div>
-
-                            <p className="text-zinc-400 mb-6 line-clamp-2">
-                                A focused product design bootcamp emphasizing modern design thinking, UI/UX workflows, and practical problem solving.
-                            </p>
-
-                            <div className="flex items-center justify-between pt-6 border-t border-white/5 mt-auto">
-                                <div className="flex items-center gap-4 text-sm text-zinc-500">
-                                    <span className="flex items-center gap-1.5"><Users className="w-4 h-4" /> Product Design</span>
-                                </div>
-                                <span className="flex items-center gap-2 text-sm font-medium text-white group-hover:text-shivkara-orange transition-colors group-hover:translate-x-1 duration-200">
-                                    View Details <ArrowRight className="w-4 h-4" />
-                                </span>
-                            </div>
-                        </div>
+                {isComingSoon ? (
+                    <div className="block h-full relative cursor-default">
+                        {CardContent}
                     </div>
-                </Link>
+                ) : (
+                    <Link href={link} className="block h-full relative">
+                        {CardContent}
+                    </Link>
+                )}
             </motion.div>
         </motion.div>
     );

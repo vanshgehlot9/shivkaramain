@@ -15,19 +15,19 @@ export const metadata: Metadata = {
         "Product Design Workshop",
         "Shivkara Tech Lab"
     ],
-    authors: [{ name: "Shivkara Digital & Tech Lab", url: "https://shivkara.com" }],
+    authors: [{ name: "Shivkara Digital & Tech Lab", url: "https://www.shivkaradigital.com" }],
     creator: "Shivkara Digital",
     publisher: "Shivkara Digital",
     openGraph: {
         title: "SPUNK 2025: Premium Product Design Bootcamp",
         description: "Master modern product design with field-tested workflows. A focused initiative by Shivkara Digital & Tech Lab.",
-        url: "https://shivkara.com/bootcamps/spunk-2025",
+        url: "https://www.shivkaradigital.com/bootcamps/spunk-2025",
         siteName: "Shivkara Digital",
         locale: "en_US",
         type: "website",
         images: [
             {
-                url: "/bootcamp/bootcampheader.jpeg", // Ensure this path is accessible publicly in prod
+                url: "https://www.shivkaradigital.com/bootcamp/bootcampheader.jpeg",
                 width: 1200,
                 height: 630,
                 alt: "SPUNK 2025 Product Design Bootcamp",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "SPUNK 2025: Product Design Bootcamp",
         description: "Join the next generation of design leaders at SPUNK 2025.",
-        images: ["/bootcamp/bootcampheader.jpeg"],
+        images: ["https://www.shivkaradigital.com/bootcamp/bootcampheader.jpeg"],
     },
     robots: {
         index: true,
@@ -51,36 +51,49 @@ export const metadata: Metadata = {
             "max-snippet": -1,
         },
     },
+    alternates: {
+        canonical: "https://www.shivkaradigital.com/bootcamps/spunk-2025",
+    },
 };
 
 const jsonLd = {
     "@context": "https://schema.org",
     "@type": "EducationEvent",
     "name": "SPUNK 2025 Product Design Bootcamp",
-    "startDate": "2025-01-01", // Approximate/Placeholder date
-    "endDate": "2025-01-05",   // Approximate/Placeholder date
+    "startDate": "2025-01-01",
+    "endDate": "2025-01-05",
     "eventStatus": "https://schema.org/EventScheduled",
     "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
     "location": {
         "@type": "Place",
-        "name": "Shivkara Digital & Tech Lab HQ", // Or specific venue if known
+        "name": "Shivkara Digital & Tech Lab HQ",
         "address": {
             "@type": "PostalAddress",
+            "addressLocality": "Jodhpur",
+            "addressRegion": "RJ",
             "addressCountry": "IN"
         }
     },
     "image": [
-        "https://shivkara.com/bootcamp/bootcampheader.jpeg"
+        "https://www.shivkaradigital.com/bootcamp/bootcampheader.jpeg"
     ],
     "description": "A focused product design bootcamp emphasizing modern design thinking, UI/UX workflows, and practical problem solving.",
     "organizer": {
         "@type": "Organization",
         "name": "Shivkara Digital & Tech Lab",
-        "url": "https://shivkara.com"
+        "url": "https://www.shivkaradigital.com"
     },
     "performer": {
         "@type": "Organization",
         "name": "Shivkara Digital & Tech Lab"
+    },
+    "offers": {
+        "@type": "Offer",
+        "url": "https://www.shivkaradigital.com/bootcamps/spunk-2025",
+        "price": "0",
+        "priceCurrency": "INR",
+        "availability": "https://schema.org/InStock",
+        "validFrom": "2024-12-01"
     }
 };
 

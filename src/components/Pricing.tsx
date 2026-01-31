@@ -205,10 +205,10 @@ export default function Pricing() {
                     </p>
                 </div>
 
-                {/* Responsive Flex Layout */}
-                <div className="flex md:flex-wrap overflow-x-auto md:overflow-visible justify-start md:justify-center gap-6 lg:gap-8 max-w-[1400px] mx-auto snap-x snap-mandatory md:snap-none pb-8 md:pb-0 -mx-4 px-4 md:mx-auto md:px-0 scrollbar-hide">
+                {/* Responsive Grid Layout */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-[1400px] mx-auto">
                     {plans.map((plan, index) => (
-                        <div key={index} className="w-[85vw] md:w-[calc(50%-1.5rem)] lg:w-[calc(33.33%-2rem)] xl:w-[calc(20%-1.5rem)] min-w-[260px] md:max-w-[320px] snap-center shrink-0">
+                        <div key={index} className="w-full h-full min-w-0">
                             <PricingCard
                                 plan={plan}
                                 index={index}

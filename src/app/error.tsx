@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { AlertTriangle, RefreshCw, Home } from "lucide-react";
+import { motion } from "framer-motion";
+import { AlertTriangle, RefreshCw, Home, Zap } from "lucide-react";
 
 export default function Error({
     error,
@@ -12,41 +13,59 @@ export default function Error({
     reset: () => void;
 }) {
     useEffect(() => {
-        // Log the error to an error reporting service
         console.error(error);
     }, [error]);
 
     return (
-        <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6 text-center selection:bg-[#FF7A00] selection:text-black">
-            <div className="w-24 h-24 bg-[#FF7A00]/10 rounded-full flex items-center justify-center mb-8 border border-[#FF7A00]/20">
-                <AlertTriangle className="w-12 h-12 text-[#FF7A00]" />
+        <div className="min-h-screen bg-[#030303] text-white flex flex-col items-center justify-center p-6 text-center selection:bg-shivkara-orange/30 relative overflow-hidden">
+            {/* Background Ambience */}
+            <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-red-600/10 to-orange-600/5 blur-[150px] rounded-full animate-pulse" />
             </div>
 
-            <h2 className="text-3xl md:text-4xl font-black mb-4 tracking-tight">
-                Something went <span className="text-[#FF7A00]">wrong!</span>
-            </h2>
+            <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="relative z-10"
+            >
+                <div className="w-28 h-28 bg-gradient-to-br from-red-500/20 to-orange-500/10 backdrop-blur-xl rounded-full flex items-center justify-center mb-8 border border-red-500/20 mx-auto shadow-2xl shadow-red-500/10">
+                    <AlertTriangle className="w-14 h-14 text-red-500" />
+                </div>
 
-            <p className="text-gray-400 max-w-md mb-8 text-lg">
-                We apologize for the inconvenience. An unexpected error has occurred.
-            </p>
+                <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">
+                    Something <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Broke</span>
+                </h2>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-                <button
-                    onClick={() => reset()}
-                    className="px-8 py-3 bg-[#FF7A00] text-black font-bold rounded-xl hover:bg-[#FF7A00]/90 transition-colors flex items-center justify-center gap-2"
-                >
-                    <RefreshCw size={20} />
-                    Try again
-                </button>
+                <p className="text-gray-400 max-w-md mb-10 text-lg mx-auto leading-relaxed">
+                    An unexpected error occurred. Don't worry, our systems are on it.
+                </p>
 
-                <Link
-                    href="/"
-                    className="px-8 py-3 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-colors flex items-center justify-center gap-2"
-                >
-                    <Home size={20} />
-                    Back to Home
-                </Link>
-            </div>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => reset()}
+                        className="px-8 py-4 bg-white text-black font-bold rounded-2xl hover:bg-gray-200 transition-colors flex items-center justify-center gap-3 shadow-xl"
+                    >
+                        <RefreshCw size={20} />
+                        Try Again
+                    </motion.button>
+
+                    <Link
+                        href="/"
+                        className="px-8 py-4 bg-white/5 border border-white/10 text-white font-bold rounded-2xl hover:bg-white/10 transition-colors flex items-center justify-center gap-3"
+                    >
+                        <Home size={20} />
+                        Go Home
+                    </Link>
+                </div>
+
+                {error.digest && (
+                    <p className="mt-8 text-xs text-gray-600 font-mono">
+                        Error Reference: {error.digest}
+                    </p>
+                )}
+            </motion.div>
         </div>
     );
 }

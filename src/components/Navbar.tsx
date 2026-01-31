@@ -22,10 +22,11 @@ export default function Navbar() {
     }, []);
 
     const navLinks = [
-        { name: "Services", href: "#services" },
-        { name: "Work", href: "#work" },
-        { name: "Process", href: "#process" },
-        { name: "Agency", href: "#agency" },
+        { name: "Bootcamps", href: "/bootcamps/spunk-2025", highlight: true, badge: "New" },
+        { name: "Careers", href: "/careers" },
+        { name: "Insights", href: "/blog" },
+        { name: "Budget Planner", href: "/#estimator" },
+        { name: "Contact Us", href: "/#contact" },
     ];
 
     return (
@@ -48,6 +49,7 @@ export default function Navbar() {
                     {/* Logo */}
                     <Link href="/" className="relative z-10 flex items-center gap-3 group pl-2">
                         <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-lg border border-white/10 group-hover:border-shivkara-orange/50 transition-colors duration-300">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img src="/shivkaralogo.jpg" alt="Shivkara" className="w-full h-full object-cover" />
                         </div>
                         <span className="text-xl font-bold tracking-tight text-white group-hover:text-shivkara-orange transition-colors duration-300">
@@ -63,7 +65,7 @@ export default function Navbar() {
                                 href={item.href}
                                 onMouseEnter={() => setHoveredIndex(index)}
                                 onMouseLeave={() => setHoveredIndex(null)}
-                                className="relative px-5 py-2 text-sm font-medium text-gray-400 transition-colors hover:text-white"
+                                className={`relative px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2 ${item.highlight ? "text-shivkara-orange hover:text-white" : "text-gray-400 hover:text-white"}`}
                             >
                                 {hoveredIndex === index && (
                                     <motion.div
@@ -78,6 +80,11 @@ export default function Navbar() {
                                 <span className={`relative z-10 transition-colors duration-300 ${hoveredIndex === index ? "text-white" : ""}`}>
                                     {item.name}
                                 </span>
+                                {item.badge && (
+                                    <span className="relative z-10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-black bg-shivkara-orange rounded-full">
+                                        {item.badge}
+                                    </span>
+                                )}
                             </Link>
                         ))}
                     </nav>

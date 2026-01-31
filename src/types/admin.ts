@@ -39,6 +39,7 @@ export interface Client {
     status: 'active' | 'inactive' | 'pending';
     totalProjects?: number;
     totalRevenue?: number;
+    outstandingBalance?: number;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 }
@@ -80,6 +81,10 @@ export interface Transaction {
     cashOut: number;
     runningBalance: number;
     note: string;
+    clientId?: string;
+    clientName?: string;
+    entityName?: string;
+    category?: string;
     incomeId?: string;
     expenseId?: string;
     invoiceId?: string;

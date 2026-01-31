@@ -33,8 +33,7 @@ const supportOptions = [
 
 export default function WhatsAppWidget() {
     const [isOpen, setIsOpen] = useState(false);
-    const [isHovered, setIsHovered] = useState(false);
-    const phoneNumber = "919521699090"; // Replace with actual number
+    const phoneNumber = "919521699090";
 
     const handleOptionClick = (message: string) => {
         const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
@@ -42,91 +41,91 @@ export default function WhatsAppWidget() {
     };
 
     return (
-        <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end">
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
                         initial={{ opacity: 0, y: 20, scale: 0.9 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.9 }}
-                        className="mb-4 w-[350px] bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 font-sans"
+                        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                        className="mb-4 w-[340px] md:w-[380px] bg-[#0a0a0a] backdrop-blur-2xl rounded-3xl shadow-2xl overflow-hidden border border-white/10 font-sans"
                     >
                         {/* Header */}
-                        <div className="bg-[#075E54] p-6 flex justify-between items-start relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
+                        <div className="bg-gradient-to-r from-[#25D366] to-[#128C7E] p-5 flex justify-between items-center relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
 
                             <div className="flex items-center gap-3 relative z-10">
-                                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden">
+                                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden shadow-lg">
                                     <img src="/shivkaralogo.jpg" alt="Shivkara Logo" className="w-full h-full object-cover" />
                                 </div>
                                 <div>
-                                    <h3 className="text-white font-bold text-lg leading-tight">Shivkara Digitals</h3>
+                                    <h3 className="text-white font-bold text-lg leading-tight">Shivkara Digital</h3>
                                     <div className="flex items-center gap-1.5">
-                                        <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                                        <span className="text-white/80 text-xs font-medium">Online</span>
+                                        <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                                        <span className="text-white/80 text-xs font-medium">Online Now</span>
                                     </div>
                                 </div>
                             </div>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="text-white/80 hover:text-white transition-colors relative z-10"
+                                className="text-white/80 hover:text-white transition-colors relative z-10 p-2 hover:bg-white/10 rounded-full"
                             >
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
 
                         {/* Body */}
-                        <div className="p-6 bg-[#E5DDD5] bg-opacity-30 min-h-[300px] max-h-[500px] overflow-y-auto custom-scrollbar">
+                        <div className="p-5 max-h-[400px] overflow-y-auto custom-scrollbar space-y-4">
                             {/* Welcome Message */}
-                            <div className="bg-white p-4 rounded-tr-2xl rounded-bl-2xl rounded-br-2xl shadow-sm mb-6 max-w-[90%] border border-gray-100">
-                                <p className="text-gray-800 text-sm leading-relaxed">
-                                    👋 Hi! Welcome to Shivkara Digitals. How can we help you today?
+                            <div className="bg-white/[0.03] border border-white/5 p-4 rounded-2xl rounded-tl-none">
+                                <p className="text-gray-300 text-sm leading-relaxed">
+                                    👋 Hi! Welcome to Shivkara Digital. How can we help you today?
                                 </p>
-                                <span className="text-[10px] text-gray-400 mt-1 block text-right">Just now</span>
+                                <span className="text-[10px] text-gray-600 mt-2 block text-right font-mono">Just now</span>
                             </div>
 
-                            <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 ml-1">Choose an option:</p>
+                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Quick Actions</p>
 
                             <div className="space-y-2">
                                 {supportOptions.map((option) => (
                                     <button
                                         key={option.id}
                                         onClick={() => handleOptionClick(option.message)}
-                                        className="w-full bg-white hover:bg-gray-50 p-3 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between group transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
+                                        className="w-full bg-white/[0.03] hover:bg-white/[0.06] p-3 rounded-xl border border-white/5 hover:border-white/10 flex items-center justify-between group transition-all duration-200"
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-600 group-hover:bg-green-100 transition-colors">
+                                            <div className="w-9 h-9 rounded-xl bg-[#25D366]/10 flex items-center justify-center text-[#25D366] group-hover:scale-110 transition-transform">
                                                 <option.icon className="w-4 h-4" />
                                             </div>
-                                            <span className="text-sm font-medium text-gray-700 text-left">{option.text}</span>
+                                            <span className="text-sm font-medium text-gray-300 text-left group-hover:text-white transition-colors">{option.text}</span>
                                         </div>
-                                        <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-green-500 transition-colors" />
+                                        <ChevronRight className="w-4 h-4 text-gray-600 group-hover:text-[#25D366] transition-colors" />
                                     </button>
                                 ))}
                             </div>
 
                             <button
                                 onClick={() => handleOptionClick("Hi, I have a custom query.")}
-                                className="w-full mt-4 bg-[#25D366] hover:bg-[#128C7E] text-white font-bold py-3 rounded-xl shadow-lg shadow-green-500/20 flex items-center justify-center gap-2 transition-all duration-300 active:scale-95"
+                                className="w-full bg-[#25D366] hover:bg-[#20BA5C] text-white font-bold py-3.5 rounded-xl shadow-lg shadow-green-500/20 flex items-center justify-center gap-2 transition-all duration-300 active:scale-95"
                             >
                                 <Send className="w-4 h-4" />
                                 <span>Send Custom Message</span>
                             </button>
 
                             {/* Footer Info */}
-                            <div className="mt-6 space-y-3">
-                                <div className="bg-blue-50 p-3 rounded-lg flex items-start gap-3 border border-blue-100">
-                                    <Clock className="w-4 h-4 text-blue-500 mt-0.5" />
+                            <div className="pt-4 border-t border-white/5 space-y-3">
+                                <div className="bg-blue-500/10 p-3 rounded-xl flex items-start gap-3 border border-blue-500/10">
+                                    <Clock className="w-4 h-4 text-blue-400 mt-0.5" />
                                     <div>
-                                        <h4 className="text-xs font-bold text-blue-700 mb-0.5">Business Hours</h4>
-                                        <p className="text-[10px] text-blue-600">Mon - Sat: 9:00 AM - 6:00 PM</p>
-                                        <p className="text-[10px] text-blue-500 mt-1">Response time: Usually within 5 minutes</p>
+                                        <h4 className="text-xs font-bold text-blue-300 mb-0.5">Business Hours</h4>
+                                        <p className="text-[10px] text-blue-400/80">Mon - Sat: 9:00 AM - 6:00 PM IST</p>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center justify-center gap-1.5 text-[10px] text-gray-400">
+                                <div className="flex items-center justify-center gap-1.5 text-[10px] text-gray-600">
                                     <ShieldCheck className="w-3 h-3" />
-                                    <span>Your privacy is protected. We never share your info.</span>
+                                    <span>Your privacy is protected</span>
                                 </div>
                             </div>
                         </div>
@@ -142,28 +141,28 @@ export default function WhatsAppWidget() {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: 20 }}
-                            className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-white px-4 py-2 rounded-xl shadow-lg border border-gray-100 whitespace-nowrap hidden md:block"
+                            className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-[#0a0a0a] border border-white/10 px-4 py-2.5 rounded-xl shadow-xl whitespace-nowrap hidden md:block backdrop-blur-xl"
                         >
-                            <p className="text-sm font-medium text-gray-700">Need help? Chat with us!</p>
-                            <div className="absolute right-[-6px] top-1/2 -translate-y-1/2 w-3 h-3 bg-white transform rotate-45 border-r border-t border-gray-100" />
+                            <p className="text-sm font-medium text-white">Need help? Chat with us!</p>
+                            <div className="absolute right-[-6px] top-1/2 -translate-y-1/2 w-3 h-3 bg-[#0a0a0a] transform rotate-45 border-r border-t border-white/10" />
                         </motion.div>
                     )}
                 </AnimatePresence>
 
                 <motion.button
                     onClick={() => setIsOpen(!isOpen)}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="w-16 h-16 bg-[#25D366] rounded-full shadow-2xl shadow-green-500/30 flex items-center justify-center relative z-20 hover:bg-[#20BA5C] transition-colors"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="w-16 h-16 bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-full shadow-2xl shadow-green-500/30 flex items-center justify-center relative z-20 transition-colors"
                 >
                     {isOpen ? (
-                        <X className="w-8 h-8 text-white" />
+                        <X className="w-7 h-7 text-white" />
                     ) : (
-                        <MessageCircle className="w-8 h-8 text-white" />
+                        <MessageCircle className="w-7 h-7 text-white" />
                     )}
 
                     {!isOpen && (
-                        <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full border-2 border-white flex items-center justify-center">
+                        <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full border-2 border-[#030303] flex items-center justify-center">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                             <span className="text-[10px] font-bold text-white relative z-10">1</span>
                         </span>

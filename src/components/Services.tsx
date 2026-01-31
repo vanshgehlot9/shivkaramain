@@ -1,125 +1,112 @@
 "use client";
 
-import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Code, Smartphone, Globe, Database, Cpu, ArrowUpRight } from "lucide-react";
-import { MouseEvent, useRef } from "react";
+import { motion } from "framer-motion";
+import { Code, Smartphone, Globe, Database, Cpu, ArrowUpRight, Cloud, Layers } from "lucide-react";
 import SpotlightCard from "./ui/SpotlightCard";
 
 const services = [
     {
         title: "Custom Software",
-        description: "Tailored enterprise solutions that solve complex business challenges with precision allowing for massive scalability.",
+        description: "Tailored enterprise solutions for massive scalability.",
         icon: Code,
         colSpan: "md:col-span-2",
-        tech: ["React", "Node.js", "Python"]
+        tech: ["React", "Node", "Go"]
     },
     {
-        title: "Mobile Evolution",
-        description: "Native and cross-platform apps designed for maximum user engagement.",
+        title: "Mobile Apps",
+        description: "Native & cross-platform engagement.",
         icon: Smartphone,
         colSpan: "md:col-span-1",
-        tech: ["Flutter", "Swift", "Kotlin"]
+        tech: ["Flutter", "Swift"]
     },
     {
         title: "Web Platforms",
-        description: "High-performance web applications built with Next.js and modern edge technologies.",
+        description: "High-performance Next.js applications.",
         icon: Globe,
         colSpan: "md:col-span-1",
-        tech: ["Next.js", "Vercel", "Tailwind"]
+        tech: ["Next.js", "Vercel"]
     },
     {
-        title: "Cloud Infrastructure",
-        description: "Scalable cloud architectures ensuring 99.99% uptime and security.",
-        icon: Database,
+        title: "Cloud Infra",
+        description: "Scalable, secure 99.99% uptime architectures.",
+        icon: Cloud,
         colSpan: "md:col-span-2",
-        tech: ["AWS", "Docker", "Kubernetes"]
+        tech: ["AWS", "K8s"]
     },
     {
         title: "AI Integration",
-        description: "Leveraging LLMs and machine learning to automate workflows and generate business insights.",
+        description: "Automating workflows with LLMs and ML.",
         icon: Cpu,
         colSpan: "md:col-span-3",
-        tech: ["OpenAI", "TensorFlow", "PyTorch"]
+        tech: ["OpenAI", "Python"]
     },
 ];
 
-function ServiceCard({ service, index }: { service: any; index: number }) {
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.1, duration: 0.8, ease: "easeOut" }}
-            className={`group relative ${service.colSpan} min-w-[85vw] md:min-w-0 snap-center h-full`}
-        >
-            <SpotlightCard className="h-full rounded-3xl p-8 md:p-10 transition-colors duration-500 hover:bg-white/[0.05]">
-                <div className="relative z-10 h-full flex flex-col justify-between">
-                    <div>
-                        <div className="w-14 h-14 rounded-2xl bg-white/[0.05] border border-white/10 flex items-center justify-center mb-8 text-white group-hover:text-shivkara-orange group-hover:scale-110 group-hover:bg-shivkara-orange/10 group-hover:border-shivkara-orange/20 transition-all duration-500 shadow-xl">
-                            <service.icon className="w-7 h-7" />
-                        </div>
-
-                        <h3 className="text-2xl md:text-3xl font-bold uppercase mb-4 tracking-tight text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all duration-300">
-                            {service.title}
-                        </h3>
-
-                        <p className="text-gray-400 leading-relaxed max-w-lg group-hover:text-gray-300 transition-colors duration-300 font-light text-lg">
-                            {service.description}
-                        </p>
-                    </div>
-
-                    <div className="mt-10 border-t border-white/5 pt-6 flex justify-between items-end">
-                        <div className="flex flex-wrap gap-2">
-                            {service.tech.map((t: string) => (
-                                <span key={t} className="text-xs font-mono px-2 py-1 rounded bg-white/[0.03] border border-white/[0.05] text-gray-500 group-hover:text-white group-hover:border-white/20 transition-colors">
-                                    {t}
-                                </span>
-                            ))}
-                        </div>
-                        <div className="opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-300">
-                            <ArrowUpRight className="w-6 h-6 text-shivkara-orange" />
-                        </div>
-                    </div>
-                </div>
-            </SpotlightCard>
-        </motion.div>
-    );
-}
-
 export default function Services() {
     return (
-        <section id="services" className="py-32 bg-[#030303] relative overflow-hidden">
-            {/* Background Noise */}
-            <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay pointer-events-none" />
-
-            <div className="container mx-auto px-6 relative z-10">
-                <div className="mb-20 flex flex-col md:flex-row justify-between items-end gap-8">
+        <section id="services" className="py-20 bg-[#030303] relative overflow-hidden border-t border-white/5">
+            <div className="container mx-auto px-4 relative z-10">
+                <div className="mb-12 flex flex-col md:flex-row justify-between items-end gap-6">
                     <motion.div
-                        initial={{ opacity: 0, x: -50 }}
+                        initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
                     >
-                        <span className="text-shivkara-orange font-mono text-xs tracking-widest uppercase mb-4 block">/// Capabilities</span>
-                        <h2 className="text-5xl md:text-7xl font-black uppercase text-white tracking-tighter leading-none">
-                            System <br /><span className="text-gray-500">Architecture</span>
+                        <span className="text-shivkara-orange font-mono text-[10px] tracking-widest uppercase mb-2 block">/// Capabilities</span>
+                        <h2 className="text-3xl md:text-5xl font-black uppercase text-white tracking-tighter leading-none">
+                            System <span className="text-gray-600">Architecture</span>
                         </h2>
                     </motion.div>
 
                     <motion.p
-                        initial={{ opacity: 0, x: 50 }}
+                        initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                        className="text-gray-400 max-w-md text-lg font-light leading-relaxed border-l border-shivkara-orange/30 pl-6"
+                        transition={{ delay: 0.1 }}
+                        className="text-gray-400 max-w-sm text-sm md:text-base font-light leading-relaxed border-l border-shivkara-orange/30 pl-4"
                     >
-                        Engineering digital dominance through cutting-edge technology and precision design. We build what others can't.
+                        Precision engineering for digital dominance. We build the systems that others can't.
                     </motion.p>
                 </div>
 
-                <div className="flex md:grid md:grid-cols-3 overflow-x-auto md:overflow-visible gap-6 snap-x snap-mandatory -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide pb-8 md:pb-0">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {services.map((service, index) => (
-                        <ServiceCard key={index} service={service} index={index} />
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: index * 0.05 }}
+                            className={`${service.colSpan} h-full`}
+                        >
+                            <SpotlightCard className="h-full rounded-2xl p-6 bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all group">
+                                <div className="flex flex-col h-full justify-between">
+                                    <div>
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className="p-2.5 rounded-lg bg-white/5 text-white group-hover:text-shivkara-orange group-hover:bg-shivkara-orange/10 transition-colors">
+                                                <service.icon className="w-5 h-5" />
+                                            </div>
+                                            <ArrowUpRight className="w-4 h-4 text-gray-600 group-hover:text-shivkara-orange transition-colors opacity-0 group-hover:opacity-100" />
+                                        </div>
+
+                                        <h3 className="text-lg font-bold text-white mb-2 group-hover:text-gray-200 transition-colors">
+                                            {service.title}
+                                        </h3>
+                                        <p className="text-sm text-gray-500 leading-relaxed font-light">
+                                            {service.description}
+                                        </p>
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-2 mt-6">
+                                        {service.tech.map(t => (
+                                            <span key={t} className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/5 text-gray-400 border border-white/5">
+                                                {t}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            </SpotlightCard>
+                        </motion.div>
                     ))}
                 </div>
             </div>

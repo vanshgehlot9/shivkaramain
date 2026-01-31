@@ -11,17 +11,57 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-        if (!db) {
-            return NextResponse.json(
-                { success: false, error: 'Database not initialized' },
-                { status: 500 }
-            );
-        }
-
         const searchParams = request.nextUrl.searchParams;
         const reportType = searchParams.get('type'); // 'income', 'expense', 'profit_loss', 'client', 'tax'
         const startDate = searchParams.get('startDate');
         const endDate = searchParams.get('endDate');
+
+        if (!db) {
+            console.warn("Database not initialized, returning mock report data");
+
+            // Mock Data Generation based on report type
+            let mockData: any = {};
+            const start = startDate ? new Date(startDate) : new Date();
+            const end = endDate ? new Date(endDate) : new Date();
+
+            switch (reportType) {
+                case 'income':
+                case 'expense':
+                case 'profit_loss':
+                case 'client':
+                case 'tax':
+                    // Return generic mock structure that matches the expected output
+                    // For brevity, we implement a generic success response with sample data
+                    mockData = {
+                        summary: {
+                            totalIncome: 150000,
+                            totalExpense: 45000,
+                            netProfit: 105000,
+                            profitMargin: "70%",
+                            totalClients: 12,
+                            activeClients: 8,
+                            totalRevenue: 150000
+                        },
+                        records: [],
+                        monthlyBreakdown: [
+                            { month: "2024-01", income: 50000, expense: 15000, profit: 35000 },
+                            { month: "2024-02", income: 60000, expense: 20000, profit: 40000 },
+                            { month: "2024-03", income: 40000, expense: 10000, profit: 30000 }
+                        ]
+                    };
+                    break;
+            }
+
+            return NextResponse.json({
+                success: true,
+                reportType,
+                startDate,
+                endDate,
+                generatedAt: new Date().toISOString(),
+                data: mockData,
+                isMock: true
+            });
+        }
 
         if (!reportType) {
             return NextResponse.json(

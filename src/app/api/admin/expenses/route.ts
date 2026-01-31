@@ -5,7 +5,38 @@ import { Expense } from '@/types/admin';
 import { verifyAuth, unauthorizedResponse } from '@/lib/auth-admin';
 
 // In-memory fallback if DB is not available
-let mockExpenses: Expense[] = [];
+let mockExpenses: Expense[] = [
+  {
+    id: 'exp_1',
+    date: new Date(),
+    purpose: 'Server Hosting',
+    category: 'software',
+    paymentMode: 'card',
+    amount: 5000,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    id: 'exp_2',
+    date: new Date(Date.now() - 86400000),
+    purpose: 'Office Supplies',
+    category: 'office',
+    paymentMode: 'upi',
+    amount: 1200,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    id: 'exp_3',
+    date: new Date(Date.now() - 172800000),
+    purpose: 'Team Lunch',
+    category: 'other',
+    paymentMode: 'cash',
+    amount: 3500,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
+];
 
 // GET - Fetch all expense records with filtering and pagination
 export async function GET(request: NextRequest) {

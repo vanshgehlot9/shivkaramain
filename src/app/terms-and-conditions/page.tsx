@@ -1,100 +1,127 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
+import {
+    Scale,
+    FileText,
+    AlertCircle,
+    Copyright,
+    Users,
+    Ban,
+    Globe2,
+    ArrowRight
+} from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { motion } from "framer-motion";
 
 export default function TermsAndConditions() {
+    const termsSections = [
+        {
+            title: "Agreement to Terms",
+            icon: Scale,
+            content: "By accessing and using the Shivkara Digital platform, you agree to be legally bound by these Terms and Conditions. If you do not agree to any of these terms, you are prohibited from using or accessing this site."
+        },
+        {
+            title: "Intellectual Property",
+            icon: Copyright,
+            content: "All content included on this site, such as text, graphics, logos, images, audio clips, digital downloads, and software, is the property of Shivkara Digital or its content suppliers and protected by international copyright laws."
+        },
+        {
+            title: "User Representatives",
+            icon: Users,
+            content: "By using the Site, you represent and warrant that: (1) all registration information you submit will be true, accurate, current, and complete; (2) you will maintain the accuracy of such information."
+        },
+        {
+            title: "Prohibited Activities",
+            icon: Ban,
+            content: "You may not access or use the Site for any purpose other than that for which we make the Site available. The Site may not be used in connection with any commercial endeavors except those that are specifically endorsed or approved by us."
+        },
+        {
+            title: "Limitation of Liability",
+            icon: AlertCircle,
+            content: "In no event shall Shivkara Digital, nor any of its officers, directors, and employees, be liable to you for anything arising out of or in any way connected with your use of this Website, whether such liability is under contract, tort or otherwise."
+        },
+        {
+            title: "Governing Law",
+            icon: Globe2,
+            content: "These Terms shall be governed by and defined following the laws of India. Shivkara Digital and yourself irrevocably consent that the courts of India shall have exclusive jurisdiction to resolve any dispute which may arise in connection with these terms."
+        }
+    ];
+
     return (
-        <main className="min-h-screen bg-black text-white selection:bg-[#FF7A00] selection:text-white">
+        <div className="min-h-screen bg-[#030303] text-white font-sans selection:bg-orange-500/30">
             <Navbar />
 
-            <div className="pt-32 pb-20 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="max-w-4xl mx-auto"
-                >
-                    <h1 className="text-4xl md:text-6xl font-black mb-8 tracking-tight">
-                        Terms & <span className="text-[#FF7A00]">Conditions</span>
-                    </h1>
+            <main className="relative pt-32 pb-20 px-6 max-w-7xl mx-auto">
 
-                    <div className="space-y-8 text-gray-300 leading-relaxed">
-                        <div className="p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                            <p className="mb-4">Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-                            <p>
-                                Welcome to Shivkara Digital. These Terms and Conditions constitute a legally binding agreement made between you, whether personally or on behalf of an entity ("you") and Shivkara Digital ("we," "us" or "our"), concerning your access to and use of our website and services.
-                            </p>
+                {/* Header */}
+                <div className="text-center mb-20">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-xs font-mono text-orange-400 mb-6 backdrop-blur-md">
+                            <FileText size={14} />
+                            <span>LEGAL AGREEMENT</span>
+                        </div>
+                        <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-8">
+                            Terms & <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">Conditions</span>
+                        </h1>
+                        <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+                            Please read these terms carefully before using our services. They outline your rights, obligations, and the rules of engagement for using the Shivkara platform.
+                        </p>
+                    </motion.div>
+                </div>
+
+                {/* Terms Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+                    {termsSections.map((section, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.1 }}
+                        >
+                            <div className="h-full bg-white/[0.03] border border-white/5 rounded-3xl p-8 hover:bg-white/[0.05] hover:border-orange-500/30 transition-all duration-300 group">
+                                <div className="flex items-center gap-4 mb-6">
+                                    <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-400 group-hover:scale-110 transition-transform">
+                                        <section.icon size={20} />
+                                    </div>
+                                    <h3 className="text-lg font-bold group-hover:text-orange-400 transition-colors">{section.title}</h3>
+                                </div>
+                                <p className="text-sm text-gray-400 leading-relaxed text-justify">
+                                    {section.content}
+                                </p>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+
+                {/* Final Statement */}
+                <div className="border-t border-white/10 pt-12">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+                        <div>
+                            <p className="text-sm text-gray-500 uppercase tracking-widest mb-1">Effective Date</p>
+                            <p className="font-mono text-white">January 1, 2026</p>
                         </div>
 
-                        <section>
-                            <h2 className="text-2xl font-bold text-white mb-4">1. Agreement to Terms</h2>
-                            <p>
-                                By accessing the Site, you have read, understood, and agreed to be bound by all of these Terms and Conditions. If you do not agree with all of these Terms and Conditions, then you are expressly prohibited from using the Site and you must discontinue use immediately.
+                        <div className="flex items-center gap-8">
+                            <p className="text-sm text-gray-500 max-w-md hidden md:block text-right">
+                                We reserve the right to modify these terms at any time. Continued use of the platform constitutes acceptance of updated terms.
                             </p>
-                        </section>
-
-                        <section>
-                            <h2 className="text-2xl font-bold text-white mb-4">2. Intellectual Property Rights</h2>
-                            <p>
-                                Unless otherwise indicated, the Site and our services are our proprietary property and all source code, databases, functionality, software, website designs, audio, video, text, photographs, and graphics on the Site (collectively, the "Content") and the trademarks, service marks, and logos contained therein (the "Marks") are owned or controlled by us or licensed to us, and are protected by copyright and trademark laws.
-                            </p>
-                        </section>
-
-                        <section>
-                            <h2 className="text-2xl font-bold text-white mb-4">3. User Representations</h2>
-                            <p className="mb-4">
-                                By using the Site, you represent and warrant that:
-                            </p>
-                            <ul className="list-disc pl-6 space-y-2 marker:text-[#FF7A00]">
-                                <li>All registration information you submit will be true, accurate, current, and complete.</li>
-                                <li>You will maintain the accuracy of such information and promptly update such registration information as necessary.</li>
-                                <li>You have the legal capacity and you agree to comply with these Terms and Conditions.</li>
-                                <li>You are not a minor in the jurisdiction in which you reside.</li>
-                                <li>You will not access the Site through automated or non-human means, whether through a bot, script or otherwise.</li>
-                                <li>You will not use the Site for any illegal or unauthorized purpose.</li>
-                            </ul>
-                        </section>
-
-                        <section>
-                            <h2 className="text-2xl font-bold text-white mb-4">4. Prohibited Activities</h2>
-                            <p>
-                                You may not access or use the Site for any purpose other than that for which we make the Site available. The Site may not be used in connection with any commercial endeavors except those that are specifically endorsed or approved by us.
-                            </p>
-                        </section>
-
-                        <section>
-                            <h2 className="text-2xl font-bold text-white mb-4">5. Payment and Refunds</h2>
-                            <p>
-                                We accept various forms of payment including credit cards, debit cards, and UPI. You agree to provide current, complete, and accurate purchase and account information for all purchases made via the Site. You further agree to promptly update account and payment information, including email address, payment method, and payment card expiration date, so that we can complete your transactions and contact you as needed.
-                            </p>
-                        </section>
-
-                        <section>
-                            <h2 className="text-2xl font-bold text-white mb-4">6. Limitation of Liability</h2>
-                            <p>
-                                In no event will we or our directors, employees, or agents be liable to you or any third party for any direct, indirect, consequential, exemplary, incidental, special, or punitive damages, including lost profit, lost revenue, loss of data, or other damages arising from your use of the site, even if we have been advised of the possibility of such damages.
-                            </p>
-                        </section>
-
-                        <section>
-                            <h2 className="text-2xl font-bold text-white mb-4">7. Contact Us</h2>
-                            <p>
-                                In order to resolve a complaint regarding the Site or to receive further information regarding use of the Site, please contact us at:
-                            </p>
-                            <div className="mt-4 p-6 rounded-2xl bg-white/5 border border-white/10 inline-block">
-                                <p className="font-bold text-white">Shivkara Digital</p>
-                                <p>Email: info@shivkaradigital.com</p>
-                                <p>Phone: +91 78772 18473</p>
-                            </div>
-                        </section>
+                            <button className="flex items-center gap-2 px-6 py-3 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-colors">
+                                Accept & Continue
+                                <ArrowRight size={18} />
+                            </button>
+                        </div>
                     </div>
-                </motion.div>
-            </div>
+                </div>
 
+            </main>
             <Footer />
-        </main>
+        </div>
     );
 }

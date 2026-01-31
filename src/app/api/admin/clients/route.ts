@@ -65,13 +65,29 @@ export async function GET(request: NextRequest) {
 
       client.totalRevenue = totalRevenue;
       client.totalProjects = incomeSnapshot.size;
+
+      // Calculate outstanding balance from Invoices
+      const invoicesSnapshot = await db
+        .collection(COLLECTIONS.INVOICES)
+        .where('clientId', '==', client.id)
+        .get();
+
+      const outstandingBalance = invoicesSnapshot.docs.reduce((sum, doc) => {
+        const data = doc.data();
+        if (data.status === 'paid') return sum;
+        // Assuming total and paidAmount exist. If paidAmount is missing, assume 0.
+        return sum + (data.total || 0) - (data.paidAmount || 0);
+      }, 0);
+
+      client.outstandingBalance = outstandingBalance;
     }
 
     // Calculate global summary
     const totalRevenue = clients.reduce((sum, client) => sum + (client.totalRevenue || 0), 0);
+    const totalOutstanding = clients.reduce((sum, client) => sum + (client.outstandingBalance || 0), 0);
     const summary = {
       totalClients: clients.length,
-      totalOutstanding: 0, // TODO: Calculate from invoices
+      totalOutstanding,
       totalRevenue,
     };
 

@@ -49,7 +49,8 @@ export default function Stats() {
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_70%)]" />
 
             <div className="container mx-auto px-6 relative z-10">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+                {/* Desktop View (Grid) */}
+                <div className="hidden md:grid md:grid-cols-4 gap-8">
                     {stats.map((stat, index) => (
                         <motion.div
                             key={index}
@@ -60,7 +61,7 @@ export default function Stats() {
                             className="group relative"
                         >
                             {/* Card Content */}
-                            <div className="glass-card-premium rounded-2xl p-8 md:p-10 flex flex-col items-center justify-center relative overflow-hidden transition-all duration-500 hover:bg-white/[0.05] hover:border-white/[0.15]">
+                            <div className="glass-card-premium rounded-2xl p-10 flex flex-col items-center justify-center relative overflow-hidden transition-all duration-500 hover:bg-white/[0.05] hover:border-white/[0.15]">
 
                                 {/* Holographic Top Border Highlight */}
                                 <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -74,12 +75,39 @@ export default function Stats() {
 
                                 <div className="mt-6 h-px w-12 bg-white/10 group-hover:w-full group-hover:bg-shivkara-orange/30 transition-all duration-500" />
 
-                                <p className="mt-4 text-gray-400 font-medium text-sm md:text-base tracking-wide group-hover:text-white transition-colors duration-300">
+                                <p className="mt-4 text-gray-400 font-medium text-base tracking-wide group-hover:text-white transition-colors duration-300">
                                     {stat.label}
                                 </p>
                             </div>
                         </motion.div>
                     ))}
+                </div>
+
+                {/* Mobile View (Infinite Slider) */}
+                <div className="md:hidden overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
+                    <motion.div
+                        className="flex gap-4 w-max"
+                        animate={{ x: "-50%" }}
+                        transition={{
+                            duration: 20,
+                            repeat: Infinity,
+                            ease: "linear",
+                            repeatType: "loop"
+                        }}
+                    >
+                        {[...stats, ...stats].map((stat, index) => (
+                            <div
+                                key={`mobile-stat-${index}`}
+                                className="w-[280px] glass-card-premium rounded-2xl p-8 flex flex-col items-center justify-center relative overflow-hidden border border-white/10 bg-white/5"
+                            >
+                                <Counter value={stat.value} suffix={stat.suffix} />
+                                <div className="mt-4 h-px w-12 bg-white/10" />
+                                <p className="mt-3 text-gray-400 font-medium text-sm tracking-wide">
+                                    {stat.label}
+                                </p>
+                            </div>
+                        ))}
+                    </motion.div>
                 </div>
             </div>
         </section>

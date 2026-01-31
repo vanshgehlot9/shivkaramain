@@ -2,17 +2,13 @@
  * Public Certificate Verification Page
  * 
  * This page displays the verification result for a certificate.
- * It follows a government-style authoritative design with:
- * - Clear verification status (VERIFIED / INVALID / REVOKED)
- * - Certificate details
- * - Trust indicators
- * - Mobile-first responsive design
+ * Ultimate Tech Design with glassmorphism and modern aesthetics.
  */
 
 import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { Shield, CheckCircle, XCircle, AlertTriangle, Award, Calendar, Building2, User } from 'lucide-react';
+import { Shield, CheckCircle, XCircle, AlertTriangle, Award, Calendar, Building2, User, ExternalLink, Fingerprint } from 'lucide-react';
 import { VerificationResult, CertificateStatus } from '@/lib/certificate-types';
+import Link from 'next/link';
 
 interface PageProps {
     params: Promise<{ certificateId: string }>;
@@ -24,11 +20,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     return {
         title: `Certificate Verification - ${certificateId} | Shivkara Digital`,
-        description: 'Verify the authenticity of this certificate issued by Shivkara Digital.',
+        description: 'Verify the authenticity of this certificate issued by Shivkara Digital. Secure, instant, and tamper-proof verification.',
         openGraph: {
             title: 'Certificate Verification | Shivkara Digital',
             description: 'Verify the authenticity of certificates issued by Shivkara Digital.',
             type: 'website',
+        },
+        robots: {
+            index: true,
+            follow: true,
         },
     };
 }
@@ -60,42 +60,50 @@ export default async function VerifyPage({ params }: PageProps) {
     }
 
     return (
-        <main className="min-h-screen py-8 px-4">
-            <div className="max-w-2xl mx-auto">
+        <main className="min-h-screen bg-[#030303] text-white font-sans selection:bg-emerald-500/30 py-12 px-4 relative overflow-hidden">
+            {/* Background Ambience */}
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-to-b from-emerald-600/10 to-transparent blur-[150px] rounded-full" />
+                <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-600/5 blur-[100px] rounded-full" />
+            </div>
+
+            <div className="max-w-3xl mx-auto relative z-10">
                 {/* Header */}
-                <header className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-900 rounded-2xl mb-4">
-                        <Shield className="w-8 h-8 text-white" />
+                <header className="text-center mb-12">
+                    <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/10 rounded-3xl mb-6 shadow-2xl">
+                        <Shield className="w-10 h-10 text-white" />
                     </div>
-                    <h1 className="text-2xl font-bold text-slate-900 mb-1">Certificate Verification</h1>
-                    <p className="text-slate-500 text-sm">Shivkara Digital</p>
+                    <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">
+                        Certificate <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Verification</span>
+                    </h1>
+                    <p className="text-gray-500 text-sm font-mono uppercase tracking-widest">Shivkara Digital</p>
                 </header>
 
                 {/* Verification Card */}
-                <div className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+                <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[32px] overflow-hidden shadow-2xl">
                     {/* Status Banner */}
                     <StatusBanner status={result.status} valid={result.valid} />
 
                     {/* Certificate Details */}
                     {result.certificate && (
-                        <div className="p-6 space-y-6">
+                        <div className="p-8 space-y-6">
                             <CertificateDetails certificate={result.certificate} />
                         </div>
                     )}
 
                     {/* Message */}
-                    <div className="px-6 pb-6">
-                        <div className={`p-4 rounded-xl ${result.valid
-                            ? 'bg-emerald-50 border border-emerald-100'
+                    <div className="px-8 pb-8">
+                        <div className={`p-5 rounded-2xl border ${result.valid
+                            ? 'bg-emerald-500/10 border-emerald-500/20'
                             : (result.status === CertificateStatus.REVOKED || result.status as string === 'REVOKED' || result.status as string === 'revoked')
-                                ? 'bg-amber-50 border border-amber-100'
-                                : 'bg-red-50 border border-red-100'
+                                ? 'bg-amber-500/10 border-amber-500/20'
+                                : 'bg-red-500/10 border-red-500/20'
                             }`}>
-                            <p className={`text-sm ${result.valid
-                                ? 'text-emerald-700'
+                            <p className={`text-sm font-medium ${result.valid
+                                ? 'text-emerald-400'
                                 : (result.status === CertificateStatus.REVOKED || result.status as string === 'REVOKED' || result.status as string === 'revoked')
-                                    ? 'text-amber-700'
-                                    : 'text-red-700'
+                                    ? 'text-amber-400'
+                                    : 'text-red-400'
                                 }`}>
                                 {result.message}
                             </p>
@@ -103,29 +111,33 @@ export default async function VerifyPage({ params }: PageProps) {
                     </div>
 
                     {/* Footer */}
-                    <footer className="bg-slate-50 px-6 py-4 border-t border-slate-100">
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-slate-500">
-                            <span>Certificate ID: {certificateId}</span>
-                            <span>Verified: {new Date(result.verifiedAt).toLocaleString()}</span>
+                    <footer className="bg-white/[0.02] px-8 py-5 border-t border-white/5">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-gray-500 font-mono">
+                            <div className="flex items-center gap-2">
+                                <Fingerprint size={14} className="text-gray-600" />
+                                <span className="uppercase tracking-wider">{certificateId}</span>
+                            </div>
+                            <span>Verified: {new Date(result.verifiedAt).toLocaleString('en-IN')}</span>
                         </div>
                     </footer>
                 </div>
 
                 {/* Trust Footer */}
-                <div className="mt-8 text-center space-y-3">
-                    <a
+                <div className="mt-12 text-center space-y-6">
+                    <Link
                         href="https://www.shivkaradigital.com"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-6 py-2.5 bg-slate-900 text-white text-sm font-medium rounded-xl hover:bg-slate-800 transition-colors"
+                        className="inline-flex items-center gap-2 px-8 py-3 bg-white text-black text-sm font-bold rounded-xl hover:bg-gray-200 transition-colors"
                     >
                         Visit Our Website
-                    </a>
-                    <p className="text-xs text-slate-400">
+                        <ExternalLink size={16} />
+                    </Link>
+                    <p className="text-xs text-gray-600 max-w-md mx-auto leading-relaxed">
                         This verification system is operated by Shivkara Digital.
                         <br />
                         For inquiries, contact{' '}
-                        <a href="mailto:info@shivkaradigital.com" className="text-slate-600 hover:underline">
+                        <a href="mailto:info@shivkaradigital.com" className="text-gray-400 hover:text-white transition-colors">
                             info@shivkaradigital.com
                         </a>
                     </p>
@@ -142,35 +154,44 @@ export default async function VerifyPage({ params }: PageProps) {
 function StatusBanner({ status, valid }: { status: string; valid: boolean }) {
     if (valid) {
         return (
-            <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-8 text-center">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 rounded-full mb-4">
-                    <CheckCircle className="w-12 h-12 text-white" />
+            <div className="bg-gradient-to-br from-emerald-600/80 to-emerald-700/80 backdrop-blur-sm px-8 py-12 text-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+                <div className="relative z-10">
+                    <div className="inline-flex items-center justify-center w-24 h-24 bg-white/20 backdrop-blur-md rounded-full mb-6 border border-white/20 shadow-xl">
+                        <CheckCircle className="w-14 h-14 text-white" />
+                    </div>
+                    <h2 className="text-4xl font-black text-white mb-3 tracking-tight">VERIFIED</h2>
+                    <p className="text-emerald-100 text-sm font-medium uppercase tracking-widest">This certificate is authentic and valid</p>
                 </div>
-                <h2 className="text-3xl font-bold text-white mb-2">VERIFIED</h2>
-                <p className="text-emerald-100 text-sm">This certificate is authentic and valid</p>
             </div>
         );
     }
 
     if (status === CertificateStatus.REVOKED || status === 'REVOKED') {
         return (
-            <div className="bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-8 text-center">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 rounded-full mb-4">
-                    <AlertTriangle className="w-12 h-12 text-white" />
+            <div className="bg-gradient-to-br from-amber-600/80 to-amber-700/80 backdrop-blur-sm px-8 py-12 text-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+                <div className="relative z-10">
+                    <div className="inline-flex items-center justify-center w-24 h-24 bg-white/20 backdrop-blur-md rounded-full mb-6 border border-white/20 shadow-xl">
+                        <AlertTriangle className="w-14 h-14 text-white" />
+                    </div>
+                    <h2 className="text-4xl font-black text-white mb-3 tracking-tight">REVOKED</h2>
+                    <p className="text-amber-100 text-sm font-medium uppercase tracking-widest">This certificate has been revoked</p>
                 </div>
-                <h2 className="text-3xl font-bold text-white mb-2">REVOKED</h2>
-                <p className="text-amber-100 text-sm">This certificate has been revoked by the issuer</p>
             </div>
         );
     }
 
     return (
-        <div className="bg-gradient-to-r from-red-500 to-red-600 px-6 py-8 text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 rounded-full mb-4">
-                <XCircle className="w-12 h-12 text-white" />
+        <div className="bg-gradient-to-br from-red-600/80 to-red-700/80 backdrop-blur-sm px-8 py-12 text-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+            <div className="relative z-10">
+                <div className="inline-flex items-center justify-center w-24 h-24 bg-white/20 backdrop-blur-md rounded-full mb-6 border border-white/20 shadow-xl">
+                    <XCircle className="w-14 h-14 text-white" />
+                </div>
+                <h2 className="text-4xl font-black text-white mb-3 tracking-tight">NOT VERIFIED</h2>
+                <p className="text-red-100 text-sm font-medium uppercase tracking-widest">Certificate could not be verified</p>
             </div>
-            <h2 className="text-3xl font-bold text-white mb-2">NOT VERIFIED</h2>
-            <p className="text-red-100 text-sm">This certificate could not be verified</p>
         </div>
     );
 }
@@ -187,7 +208,7 @@ function CertificateDetails({ certificate }: {
     }
 }) {
     return (
-        <div className="space-y-4">
+        <div className="space-y-5">
             {/* Recipient */}
             <DetailRow
                 icon={<User className="w-5 h-5" />}
@@ -221,7 +242,7 @@ function CertificateDetails({ certificate }: {
 
             {/* Revocation Date if applicable */}
             {certificate.revokedAt && (
-                <div className="pt-4 border-t border-slate-200">
+                <div className="pt-5 border-t border-white/10">
                     <DetailRow
                         icon={<AlertTriangle className="w-5 h-5 text-amber-500" />}
                         label="Revoked On"
@@ -247,19 +268,19 @@ function DetailRow({
     highlight?: boolean;
 }) {
     return (
-        <div className="flex items-start gap-4">
-            <div className="flex-shrink-0 w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-500">
+        <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors">
+            <div className="flex-shrink-0 w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-gray-400">
                 {icon}
             </div>
             <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-0.5">
+                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">
                     {label}
                 </p>
-                <p className={`${highlight ? 'text-lg font-semibold text-slate-900' : 'text-slate-800'}`}>
+                <p className={`${highlight ? 'text-xl font-bold text-white' : 'text-white font-medium'}`}>
                     {value}
                 </p>
                 {sublabel && (
-                    <p className="text-xs text-slate-500 mt-0.5">{sublabel}</p>
+                    <p className="text-xs text-gray-500 mt-1">{sublabel}</p>
                 )}
             </div>
         </div>
@@ -268,13 +289,23 @@ function DetailRow({
 
 function ErrorState({ message }: { message: string }) {
     return (
-        <main className="min-h-screen flex items-center justify-center py-8 px-4">
-            <div className="max-w-md mx-auto text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
-                    <XCircle className="w-8 h-8 text-red-500" />
+        <main className="min-h-screen bg-[#030303] flex items-center justify-center py-8 px-4 relative overflow-hidden">
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/10 blur-[150px] rounded-full" />
+            </div>
+
+            <div className="max-w-md mx-auto text-center relative z-10">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-red-500/10 border border-red-500/20 rounded-full mb-6">
+                    <XCircle className="w-10 h-10 text-red-500" />
                 </div>
-                <h1 className="text-xl font-bold text-slate-900 mb-2">Verification Error</h1>
-                <p className="text-slate-500">{message}</p>
+                <h1 className="text-2xl font-bold text-white mb-3">Verification Error</h1>
+                <p className="text-gray-400 mb-8">{message}</p>
+                <Link
+                    href="/"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-colors"
+                >
+                    Go to Homepage
+                </Link>
             </div>
         </main>
     );

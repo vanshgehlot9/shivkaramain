@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
     const type = searchParams.get('type'); // 'income' or 'expense'
+    const clientId = searchParams.get('clientId');
 
     let query: any = db.collection(COLLECTIONS.TRANSACTIONS).orderBy('date', 'desc');
 
@@ -37,6 +38,10 @@ export async function GET(request: NextRequest) {
       query = query.where('type', '==', type);
     }
 
+    if (clientId) {
+      query = query.where('clientId', '==', clientId);
+    }
+
     query = query.limit(limit);
 
     const snapshot = await query.get();
@@ -47,7 +52,8 @@ export async function GET(request: NextRequest) {
       createdAt: doc.data().createdAt?.toDate?.()?.toISOString() || doc.data().createdAt,
     })) as Transaction[];
 
-    // Calculate statistics
+    // Calculate statistics (Global, not just filtered view, ideally, but for now filtered is fine or we can separate)
+    // For specific stats we might want a separate aggregation query, but for now using loaded data
     const totalCashIn = transactions.reduce((sum, t) => sum + (t.cashIn || 0), 0);
     const totalCashOut = transactions.reduce((sum, t) => sum + (t.cashOut || 0), 0);
     const currentBalance = transactions.length > 0 ? transactions[0].runningBalance : 0;
@@ -88,7 +94,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { date, type, amount, note } = body;
+    const { date, type, amount, note, clientId, clientName, entityName, category } = body;
 
     // Validate required fields
     if (!date || !type || !amount || !note) {
@@ -132,6 +138,10 @@ export async function POST(request: NextRequest) {
       cashOut,
       runningBalance: Math.max(0, runningBalance),
       note,
+      clientId: clientId || null,
+      clientName: clientName || null,
+      entityName: entityName || null,
+      category: category || null,
       createdAt: new Date(),
     };
 

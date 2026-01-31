@@ -1,25 +1,14 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-    Award,
-    Plus,
-    Eye,
-    XCircle,
-    Download,
-    QrCode,
-    CheckCircle,
-    AlertTriangle,
-    Search,
-    Filter,
-    X,
-    ExternalLink,
-    BarChart3,
-    Loader2,
-    FileText
+    Award, Plus, Eye, XCircle, Download, QrCode, CheckCircle,
+    AlertTriangle, Search, Filter, X, ExternalLink, FileText,
+    ShieldCheck, AlertOctagon, Sparkles, ChevronRight, Loader2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { TiltCard } from "@/components/admin/TiltCard";
 
 interface Certificate {
     id: string;
@@ -116,7 +105,6 @@ export default function CertificatesPage() {
                 fetchData();
                 setShowIssueModal(false);
                 setIssueForm({ studentId: '', bootcampId: '', completionDate: '' });
-                alert('Certificate issued successfully!');
             } else {
                 alert(data.error || 'Failed to issue certificate');
             }
@@ -146,7 +134,6 @@ export default function CertificatesPage() {
                 setShowRevokeModal(false);
                 setSelectedCertificate(null);
                 setRevokeReason('');
-                alert('Certificate revoked successfully');
             } else {
                 alert(data.error || 'Failed to revoke certificate');
             }
@@ -170,11 +157,9 @@ export default function CertificatesPage() {
         setQrLoading(true);
         setShowQRModal(true);
 
-        // Generate QR code dynamically
         const verifyUrl = `${window.location.origin}/verify/${cert.id}`;
 
         try {
-            // Use a simple QR code API for reliable generation
             const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(verifyUrl)}&ecc=H`;
             setGeneratedQR(qrApiUrl);
         } catch (error) {
@@ -189,7 +174,6 @@ export default function CertificatesPage() {
         const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(verifyUrl)}&ecc=H&format=png`;
 
         try {
-            // Fetch the QR image and download it
             const response = await fetch(qrApiUrl);
             const blob = await response.blob();
             const url = URL.createObjectURL(blob);
@@ -203,26 +187,7 @@ export default function CertificatesPage() {
             URL.revokeObjectURL(url);
         } catch (error) {
             console.error('Error downloading QR:', error);
-            // Fallback: open in new tab
             window.open(qrApiUrl, '_blank');
-        }
-    };
-
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'valid': return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
-            case 'revoked': return 'bg-red-500/10 text-red-400 border-red-500/20';
-            case 'expired': return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
-            default: return 'bg-gray-500/10 text-gray-400 border-gray-500/20';
-        }
-    };
-
-    const getStatusIcon = (status: string) => {
-        switch (status) {
-            case 'valid': return <CheckCircle size={14} />;
-            case 'revoked': return <XCircle size={14} />;
-            case 'expired': return <AlertTriangle size={14} />;
-            default: return null;
         }
     };
 
@@ -242,236 +207,258 @@ export default function CertificatesPage() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-64">
-                <div className="w-8 h-8 border-2 border-shivkara-orange/30 border-t-shivkara-orange rounded-full animate-spin" />
+            <div className="flex items-center justify-center h-screen">
+                <div className="relative w-16 h-16">
+                    <div className="absolute inset-0 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
+                    <Award className="absolute inset-0 m-auto w-6 h-6 text-amber-400" />
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="space-y-8">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold">Certificates</h1>
-                    <p className="text-gray-400 mt-1">Issue and manage verification certificates</p>
-                </div>
-                <button
-                    onClick={() => setShowIssueModal(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-shivkara-orange text-black font-medium rounded-xl hover:bg-shivkara-orange/90 transition-colors"
-                >
-                    <Plus size={18} />
-                    Issue Certificate
-                </button>
+        <div className="min-h-screen text-white font-sans p-6 pb-20">
+
+            {/* Dynamic Background */}
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#111_1px,transparent_1px),linear-gradient(to_bottom,#111_1px,transparent_1px)] bg-[size:2rem_2rem] opacity-10" />
+                <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-amber-600/10 rounded-full blur-[150px]" />
+                <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-yellow-600/10 rounded-full blur-[120px]" />
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center">
-                            <CheckCircle className="text-emerald-400" size={20} />
-                        </div>
-                        <div>
-                            <div className="text-2xl font-bold">{certificates.filter(c => c.status === 'valid').length}</div>
-                            <div className="text-sm text-gray-400">Valid Certificates</div>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center">
-                            <XCircle className="text-red-400" size={20} />
-                        </div>
-                        <div>
-                            <div className="text-2xl font-bold">{certificates.filter(c => c.status === 'revoked').length}</div>
-                            <div className="text-sm text-gray-400">Revoked</div>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center">
-                            <Award className="text-blue-400" size={20} />
-                        </div>
-                        <div>
-                            <div className="text-2xl font-bold">{certificates.length}</div>
-                            <div className="text-sm text-gray-400">Total Issued</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div className="relative z-10 max-w-7xl mx-auto space-y-10">
 
-            {/* Search and Filter */}
-            <div className="flex flex-col sm:flex-row gap-4">
-                <div className="relative flex-1">
-                    <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
-                    <input
-                        type="text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search by name, bootcamp, or certificate ID..."
-                        className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-shivkara-orange"
-                    />
-                </div>
-                <div className="flex items-center gap-2">
-                    <Filter size={18} className="text-gray-500" />
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-shivkara-orange"
-                    >
-                        <option value="all" className="bg-[#0a0a0a]">All Status</option>
-                        <option value="valid" className="bg-[#0a0a0a]">Valid</option>
-                        <option value="revoked" className="bg-[#0a0a0a]">Revoked</option>
-                    </select>
-                </div>
-            </div>
+                {/* Header */}
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                    <div className="relative">
+                        <div className="absolute -left-6 top-2 bottom-2 w-1 bg-gradient-to-b from-amber-500 to-transparent rounded-full opacity-50" />
+                        <motion.h1
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="text-5xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-amber-100 to-yellow-200 mb-2"
+                        >
+                            CERTIFICATES
+                        </motion.h1>
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.2 }}
+                            className="text-gray-400 flex items-center gap-2"
+                        >
+                            <Sparkles size={14} className="text-amber-400" />
+                            Manage Digital Credentials
+                        </motion.p>
+                    </div>
 
-            {/* Certificates Table */}
-            <div className="bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead>
-                            <tr className="border-b border-white/5">
-                                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Certificate</th>
-                                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Student</th>
-                                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Program</th>
-                                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
-                                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Issued</th>
-                                <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-white/5">
-                            {filteredCertificates.map((cert) => (
-                                <motion.tr
-                                    key={cert.id}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    className="hover:bg-white/[0.02] transition-colors"
-                                >
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 bg-shivkara-orange/10 rounded-xl flex items-center justify-center">
-                                                <Award className="text-shivkara-orange" size={18} />
+                    <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+                        {/* Search */}
+                        <div className="relative flex-1 sm:w-64">
+                            <input
+                                type="text"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                placeholder="Search certificates..."
+                                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors"
+                            />
+                            <Search className="absolute left-3 top-3.5 text-gray-500" size={18} />
+                        </div>
+
+                        {/* Filter */}
+                        <div className="relative">
+                            <Filter className="absolute left-3 top-3.5 text-gray-500" size={18} />
+                            <select
+                                value={statusFilter}
+                                onChange={(e) => setStatusFilter(e.target.value)}
+                                className="pl-10 pr-8 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-amber-500 appearance-none cursor-pointer hover:bg-white/10 transition-colors"
+                            >
+                                <option value="all" className="bg-[#0a0a0a]">All Status</option>
+                                <option value="valid" className="bg-[#0a0a0a]">Valid Only</option>
+                                <option value="revoked" className="bg-[#0a0a0a]">Revoked</option>
+                            </select>
+                        </div>
+
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => setShowIssueModal(true)}
+                            className="group flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-yellow-600 rounded-2xl font-bold text-black shadow-xl shadow-amber-500/20 hover:shadow-amber-500/40 transition-all"
+                        >
+                            <Plus size={20} />
+                            Issue New
+                            <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                        </motion.button>
+                    </div>
+                </div>
+
+                {/* Stats Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {[
+                        { label: 'Total Issued', value: certificates.length, color: 'blue', icon: Award },
+                        { label: 'Valid', value: certificates.filter(c => c.status === 'valid').length, color: 'emerald', icon: ShieldCheck },
+                        { label: 'Revoked', value: certificates.filter(c => c.status === 'revoked').length, color: 'red', icon: AlertOctagon },
+                    ].map((stat, i) => (
+                        <motion.div
+                            key={stat.label}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.1 }}
+                        >
+                            <TiltCard className="h-full">
+                                <div className="p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm relative overflow-hidden">
+                                    <div className={`absolute -right-6 -top-6 w-20 h-20 bg-${stat.color}-500/10 rounded-full blur-xl`} />
+                                    <div className="relative z-10">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <p className="text-xs text-gray-500 uppercase tracking-widest">{stat.label}</p>
+                                            <stat.icon size={16} className={`text-${stat.color}-400`} />
+                                        </div>
+                                        <p className="text-3xl font-black text-white">{stat.value}</p>
+                                    </div>
+                                </div>
+                            </TiltCard>
+                        </motion.div>
+                    ))}
+                </div>
+
+                {/* Certificates Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredCertificates.map((cert, i) => (
+                        <motion.div
+                            key={cert.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.05 }}
+                        >
+                            <TiltCard className="h-full">
+                                <div className={`h-full p-6 rounded-3xl border backdrop-blur-xl relative overflow-hidden group transition-all ${cert.status === 'revoked'
+                                        ? 'bg-red-950/20 border-red-500/20'
+                                        : 'bg-white/5 border-white/10 hover:border-amber-500/30'
+                                    }`}>
+
+                                    {/* Status Badge */}
+                                    <div className="absolute top-4 right-4">
+                                        {cert.status === 'valid' ? (
+                                            <div className="bg-emerald-500/20 text-emerald-400 p-1.5 rounded-full ring-1 ring-emerald-500/50">
+                                                <CheckCircle size={14} />
                                             </div>
-                                            <div>
-                                                <div className="font-mono text-sm">{cert.id.substring(0, 12)}...</div>
-                                                <a
-                                                    href={verificationUrl(cert.id)}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="text-xs text-shivkara-orange hover:underline flex items-center gap-1"
-                                                >
-                                                    View <ExternalLink size={10} />
-                                                </a>
+                                        ) : (
+                                            <div className="bg-red-500/20 text-red-400 p-1.5 rounded-full ring-1 ring-red-500/50">
+                                                <XCircle size={14} />
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* ID */}
+                                    <div className="font-mono text-[10px] text-gray-600 mb-4 tracking-widest uppercase">
+                                        ID: {cert.id.substring(0, 8)}...
+                                    </div>
+
+                                    {/* Content */}
+                                    <div className="mb-6">
+                                        <h3 className="text-lg font-bold text-white mb-1 group-hover:text-amber-200 transition-colors">
+                                            {cert.studentName}
+                                        </h3>
+                                        <p className="text-sm text-amber-500 font-medium mb-4">{cert.bootcampName}</p>
+
+                                        <div className="space-y-2 text-xs text-gray-400">
+                                            <div className="flex justify-between">
+                                                <span>Issued:</span>
+                                                <span className="text-gray-300">{new Date(cert.issuedAt).toLocaleDateString()}</span>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <span>Category:</span>
+                                                <span className="capitalize text-gray-300">{cert.bootcampCategory}</span>
                                             </div>
                                         </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="font-medium">{cert.studentName}</div>
-                                        <div className="text-xs text-gray-500">{cert.studentEmail}</div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div>{cert.bootcampName}</div>
-                                        <div className="text-xs text-gray-500 capitalize">{cert.bootcampCategory}</div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-full border ${getStatusColor(cert.status)}`}>
-                                            {getStatusIcon(cert.status)}
-                                            {cert.status}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-gray-400">
-                                        {new Date(cert.issuedAt).toLocaleDateString()}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center justify-end gap-2">
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                                        <a
+                                            href={verificationUrl(cert.id)}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-xs font-bold text-gray-500 hover:text-white flex items-center gap-1 transition-colors"
+                                        >
+                                            Verify <ExternalLink size={10} />
+                                        </a>
+
+                                        <div className="flex gap-2">
                                             <Link
                                                 href={`/certificate/${cert.id}`}
                                                 target="_blank"
-                                                className="p-2 text-gray-400 hover:text-shivkara-orange rounded-lg hover:bg-shivkara-orange/10 transition-colors"
-                                                title="Print Certificate"
+                                                className="p-1.5 text-gray-400 hover:text-amber-400 transition-colors"
+                                                title="View PDF"
                                             >
                                                 <FileText size={16} />
                                             </Link>
                                             <button
                                                 onClick={() => openQRModal(cert)}
-                                                className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
-                                                title="View QR Code"
+                                                className="p-1.5 text-gray-400 hover:text-white transition-colors"
+                                                title="QR Code"
                                             >
                                                 <QrCode size={16} />
-                                            </button>
-                                            <button
-                                                onClick={() => downloadQR(cert)}
-                                                className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
-                                                title="Download QR"
-                                            >
-                                                <Download size={16} />
                                             </button>
                                             {cert.status === 'valid' && (
                                                 <button
                                                     onClick={() => openRevokeModal(cert)}
-                                                    className="p-2 text-gray-400 hover:text-red-400 rounded-lg hover:bg-red-500/10 transition-colors"
+                                                    className="p-1.5 text-gray-400 hover:text-red-400 transition-colors"
                                                     title="Revoke"
                                                 >
                                                     <XCircle size={16} />
                                                 </button>
                                             )}
                                         </div>
-                                    </td>
-                                </motion.tr>
-                            ))}
+                                    </div>
 
-                            {filteredCertificates.length === 0 && (
-                                <tr>
-                                    <td colSpan={6} className="px-6 py-16 text-center text-gray-500">
-                                        <Award size={48} className="mx-auto mb-4 opacity-50" />
-                                        <p>
-                                            {searchTerm || statusFilter !== 'all'
-                                                ? 'No certificates match your filters.'
-                                                : 'No certificates issued yet.'}
-                                        </p>
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                                </div>
+                            </TiltCard>
+                        </motion.div>
+                    ))}
+
+                    {filteredCertificates.length === 0 && (
+                        <div className="col-span-full py-20 text-center text-gray-500 bg-white/5 border border-dashed border-white/10 rounded-3xl">
+                            <Award size={48} className="mx-auto mb-4 opacity-30" />
+                            <p>No certificates found matching your criteria.</p>
+                        </div>
+                    )}
                 </div>
+
             </div>
 
-            {/* Issue Certificate Modal */}
+            {/* Issue Modal */}
             <AnimatePresence>
                 {showIssueModal && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                        className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4"
                         onClick={() => setShowIssueModal(false)}
                     >
                         <motion.div
-                            initial={{ scale: 0.95, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.95, opacity: 0 }}
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
                             onClick={(e) => e.stopPropagation()}
-                            className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 w-full max-w-lg"
+                            className="bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 w-full max-w-lg shadow-2xl relative overflow-hidden"
                         >
-                            <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl font-bold">Issue Certificate</h2>
-                                <button onClick={() => setShowIssueModal(false)} className="text-gray-400 hover:text-white">
-                                    <X size={20} />
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-yellow-600" />
+
+                            <div className="flex items-center justify-between mb-8">
+                                <h2 className="text-2xl font-black text-white">Issue Certificate</h2>
+                                <button onClick={() => setShowIssueModal(false)} className="text-gray-500 hover:text-white transition-colors">
+                                    <X size={24} />
                                 </button>
                             </div>
 
-                            <form onSubmit={handleIssueCertificate} className="space-y-4">
+                            <form onSubmit={handleIssueCertificate} className="space-y-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-1">Student</label>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Student</label>
                                     <select
                                         value={issueForm.studentId}
                                         onChange={(e) => setIssueForm({ ...issueForm, studentId: e.target.value })}
                                         required
-                                        className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-shivkara-orange"
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-500 appearance-none"
                                     >
                                         <option value="" className="bg-[#0a0a0a]">Select a student...</option>
                                         {students.map((s) => (
@@ -483,12 +470,12 @@ export default function CertificatesPage() {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-1">Bootcamp</label>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Bootcamp</label>
                                     <select
                                         value={issueForm.bootcampId}
                                         onChange={(e) => setIssueForm({ ...issueForm, bootcampId: e.target.value })}
                                         required
-                                        className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-shivkara-orange"
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-500 appearance-none"
                                     >
                                         <option value="" className="bg-[#0a0a0a]">Select a bootcamp...</option>
                                         {bootcamps.map((b) => (
@@ -500,28 +487,28 @@ export default function CertificatesPage() {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-1">Completion Date</label>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Completion Date</label>
                                     <input
                                         type="date"
                                         value={issueForm.completionDate}
                                         onChange={(e) => setIssueForm({ ...issueForm, completionDate: e.target.value })}
                                         required
-                                        className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-shivkara-orange"
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-500"
                                     />
                                 </div>
 
-                                <div className="flex gap-3 pt-4">
+                                <div className="flex gap-4 pt-4">
                                     <button
                                         type="button"
                                         onClick={() => setShowIssueModal(false)}
-                                        className="flex-1 px-4 py-2 border border-white/10 rounded-xl text-gray-300 hover:bg-white/5 transition-colors"
+                                        className="flex-1 px-4 py-3 rounded-xl border border-white/10 text-gray-400 font-bold hover:bg-white/5 transition-colors"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={submitting}
-                                        className="flex-1 px-4 py-2 bg-shivkara-orange text-black font-medium rounded-xl hover:bg-shivkara-orange/90 transition-colors disabled:opacity-50"
+                                        className="flex-1 px-4 py-3 rounded-xl bg-amber-500 text-black font-bold hover:bg-amber-400 transition-colors shadow-lg shadow-amber-900/20"
                                     >
                                         {submitting ? 'Issuing...' : 'Issue Certificate'}
                                     </button>
@@ -532,14 +519,14 @@ export default function CertificatesPage() {
                 )}
             </AnimatePresence>
 
-            {/* Revoke Certificate Modal */}
+            {/* Revoke Modal */}
             <AnimatePresence>
                 {showRevokeModal && selectedCertificate && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                        className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4"
                         onClick={() => setShowRevokeModal(false)}
                     >
                         <motion.div
@@ -547,52 +534,48 @@ export default function CertificatesPage() {
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.95, opacity: 0 }}
                             onClick={(e) => e.stopPropagation()}
-                            className="bg-[#0a0a0a] border border-red-500/20 rounded-2xl p-6 w-full max-w-lg"
+                            className="bg-[#0a0a0a] border border-red-500/30 rounded-3xl p-8 w-full max-w-lg shadow-2xl relative overflow-hidden"
                         >
-                            <div className="flex items-center gap-3 mb-6">
-                                <div className="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center">
-                                    <AlertTriangle className="text-red-400" size={20} />
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-rose-600" />
+
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center text-red-500">
+                                    <AlertTriangle size={24} />
                                 </div>
                                 <div>
-                                    <h2 className="text-xl font-bold text-red-400">Revoke Certificate</h2>
-                                    <p className="text-sm text-gray-400">This action cannot be undone</p>
+                                    <h2 className="text-xl font-bold text-white">Revoke Certificate</h2>
+                                    <p className="text-sm text-red-400">This action is irreversible.</p>
                                 </div>
                             </div>
 
-                            <div className="bg-white/[0.02] border border-white/5 rounded-xl p-4 mb-4">
-                                <div className="text-sm text-gray-400">Certificate for</div>
-                                <div className="font-medium">{selectedCertificate.studentName}</div>
-                                <div className="text-sm text-gray-500">{selectedCertificate.bootcampName}</div>
-                            </div>
-
-                            <form onSubmit={handleRevokeCertificate} className="space-y-4">
+                            <form onSubmit={handleRevokeCertificate} className="space-y-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-1">Reason for Revocation</label>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Reason</label>
                                     <textarea
                                         value={revokeReason}
                                         onChange={(e) => setRevokeReason(e.target.value)}
                                         required
                                         minLength={10}
-                                        rows={3}
-                                        className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-red-500 resize-none"
-                                        placeholder="Provide a detailed reason (min. 10 characters)..."
+                                        rows={4}
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-red-500 resize-none"
+                                        placeholder="Please explain why this certificate is being revoked..."
                                     />
                                 </div>
 
-                                <div className="flex gap-3 pt-4">
+                                <div className="flex gap-4 pt-2">
                                     <button
                                         type="button"
                                         onClick={() => setShowRevokeModal(false)}
-                                        className="flex-1 px-4 py-2 border border-white/10 rounded-xl text-gray-300 hover:bg-white/5 transition-colors"
+                                        className="flex-1 px-4 py-3 rounded-xl border border-white/10 text-gray-400 font-bold hover:bg-white/5 transition-colors"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={submitting || revokeReason.length < 10}
-                                        className="flex-1 px-4 py-2 bg-red-500 text-white font-medium rounded-xl hover:bg-red-600 transition-colors disabled:opacity-50"
+                                        className="flex-1 px-4 py-3 rounded-xl bg-red-600 text-white font-bold hover:bg-red-500 transition-colors shadow-lg shadow-red-900/20 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        {submitting ? 'Revoking...' : 'Revoke Certificate'}
+                                        {submitting ? 'Revoking...' : 'Confirm Revocation'}
                                     </button>
                                 </div>
                             </form>
@@ -608,7 +591,7 @@ export default function CertificatesPage() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                        className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4"
                         onClick={() => setShowQRModal(false)}
                     >
                         <motion.div
@@ -616,57 +599,45 @@ export default function CertificatesPage() {
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.95, opacity: 0 }}
                             onClick={(e) => e.stopPropagation()}
-                            className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 w-full max-w-sm text-center"
+                            className="bg-white rounded-3xl p-8 w-full max-w-sm text-center shadow-2xl relative overflow-hidden"
                         >
-                            <h2 className="text-xl font-bold mb-4">Certificate QR Code</h2>
+                            <button onClick={() => setShowQRModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-black">
+                                <X size={24} />
+                            </button>
+
+                            <h2 className="text-xl font-bold text-black mb-6">Scan to Verify</h2>
 
                             {qrLoading ? (
-                                <div className="w-48 h-48 mx-auto bg-white rounded-2xl flex items-center justify-center mb-4">
-                                    <Loader2 size={48} className="text-gray-400 animate-spin" />
+                                <div className="w-56 h-56 mx-auto flex items-center justify-center">
+                                    <Loader2 size={32} className="text-black animate-spin" />
                                 </div>
-                            ) : generatedQR ? (
-                                <div className="bg-white rounded-2xl p-4 inline-block mb-4">
+                            ) : generatedQR && (
+                                <div className="mb-6">
                                     <img
                                         src={generatedQR}
-                                        alt="Certificate QR Code"
-                                        className="w-48 h-48"
+                                        alt="QR Code"
+                                        className="w-64 h-64 mx-auto"
                                         crossOrigin="anonymous"
                                     />
                                 </div>
-                            ) : (
-                                <div className="w-48 h-48 mx-auto bg-white/5 rounded-2xl flex items-center justify-center mb-4">
-                                    <QrCode size={64} className="text-gray-500" />
-                                </div>
                             )}
 
-                            <p className="text-sm text-gray-400 mb-2">
-                                Scan to verify certificate for<br />
-                                <span className="text-white font-medium">{selectedCertificate.studentName}</span>
+                            <p className="text-sm text-gray-500 mb-6">
+                                This QR code directs to the secure verification page for <strong>{selectedCertificate.studentName}</strong>.
                             </p>
 
-                            <p className="text-xs text-gray-500 mb-4 font-mono break-all">
-                                {window.location.origin}/verify/{selectedCertificate.id.substring(0, 16)}...
-                            </p>
-
-                            <div className="flex gap-3">
-                                <button
-                                    onClick={() => setShowQRModal(false)}
-                                    className="flex-1 px-4 py-2 border border-white/10 rounded-xl text-gray-300 hover:bg-white/5 transition-colors"
-                                >
-                                    Close
-                                </button>
-                                <button
-                                    onClick={() => downloadQR(selectedCertificate)}
-                                    className="flex-1 px-4 py-2 bg-shivkara-orange text-black font-medium rounded-xl hover:bg-shivkara-orange/90 transition-colors flex items-center justify-center gap-2"
-                                >
-                                    <Download size={16} />
-                                    Download
-                                </button>
-                            </div>
+                            <button
+                                onClick={() => downloadQR(selectedCertificate)}
+                                className="w-full px-4 py-3 rounded-xl bg-black text-white font-bold hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
+                            >
+                                <Download size={18} />
+                                Download QR Code
+                            </button>
                         </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
+
         </div>
     );
 }

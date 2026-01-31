@@ -3,6 +3,10 @@
 import { useEffect } from "react";
 import Lenis from "lenis";
 
+/**
+ * SmoothScroll
+ * Implements smooth scrolling behavior using Lenis.
+ */
 export default function SmoothScroll() {
     useEffect(() => {
         const lenis = new Lenis({
@@ -11,6 +15,9 @@ export default function SmoothScroll() {
             orientation: "vertical",
             gestureOrientation: "vertical",
             smoothWheel: true,
+            wheelMultiplier: 1,
+            touchMultiplier: 2,
+            infinite: false,
         });
 
         function raf(time: number) {

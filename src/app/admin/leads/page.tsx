@@ -1,138 +1,197 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { format } from "date-fns";
-import { Loader2, RefreshCw, Mail, Phone, Package, DollarSign, Search, Filter } from "lucide-react";
+import { useState, useEffect } from "react";
+import {
+    Users, Search, Filter, Phone, Mail, MapPin,
+    MessageSquare, Calendar, Trash2, Loader2, ArrowUpRight
+} from "lucide-react";
+import { getLeads } from "@/lib/admin-api";
+import { motion } from "framer-motion";
+import { TiltCard } from "@/components/admin/TiltCard";
 
 export default function LeadsPage() {
-    const [inquiries, setInquiries] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [leads, setLeads] = useState<any[]>([]);
+    const [filteredLeads, setFilteredLeads] = useState<any[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [filter, setFilter] = useState("all");
 
-    const fetchInquiries = async () => {
-        setLoading(true);
+    useEffect(() => {
+        fetchLeads();
+    }, []);
+
+    const fetchLeads = async () => {
         try {
-            const res = await fetch('/api/inquiries');
-            const data = await res.json();
-            setInquiries(data.inquiries);
+            setLoading(true);
+            const result = await getLeads();
+            if (result.success && result.data) {
+                setLeads(result.data);
+                setFilteredLeads(result.data);
+            }
         } catch (error) {
-            console.error("Failed to fetch", error);
+            console.error("Error fetching leads:", error);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchInquiries();
-    }, []);
-
-    const filteredInquiries = inquiries.filter(i =>
-        i.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        i.email?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+        let result = leads;
+        if (searchTerm) {
+            const lower = searchTerm.toLowerCase();
+            result = result.filter(l =>
+                l.name.toLowerCase().includes(lower) ||
+                l.email.toLowerCase().includes(lower) ||
+                l.phone?.includes(searchTerm)
+            );
+        }
+        // Filter logic can be extended here if leads have status
+        setFilteredLeads(result);
+    }, [searchTerm, leads]);
 
     return (
-        <div>
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6">
-                <div>
-                    <h2 className="text-3xl font-black uppercase tracking-tighter mb-1">Leads</h2>
-                    <p className="text-gray-400 text-sm">Manage incoming price inquiries and project requests.</p>
-                </div>
-                <div className="flex items-center gap-3 w-full md:w-auto">
-                    <div className="relative flex-1 md:w-64">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                        <input
-                            type="text"
-                            placeholder="Search leads..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full bg-[#0A0A0A] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-shivkara-orange/50 transition-colors"
-                        />
-                    </div>
-                    <button
-                        onClick={fetchInquiries}
-                        className="p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all"
-                    >
-                        <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-                    </button>
-                    <button className="p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all">
-                        <Filter className="w-4 h-4" />
-                    </button>
-                </div>
+        <div className="relative w-full min-h-screen text-white font-sans overflow-hidden perspective-1000">
+
+            {/* Background Ambience - Purple/Teal Theme */}
+            <div className="fixed inset-0 z-0 bg-black">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#222_1px,transparent_1px),linear-gradient(to_bottom,#222_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20" />
+                <div className="absolute top-[-20%] left-[20%] w-[60vw] h-[60vw] bg-violet-600/10 rounded-full blur-[150px] animate-pulse-slow" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-teal-600/5 rounded-full blur-[100px] animate-pulse-slow delay-1000" />
             </div>
 
-            {/* List */}
-            {loading && inquiries.length === 0 ? (
-                <div className="flex justify-center py-20">
-                    <Loader2 className="w-10 h-10 animate-spin text-shivkara-orange" />
+            <div className="relative z-10 max-w-[1400px] mx-auto p-6 md:p-8 space-y-12">
+
+                {/* Header */}
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+                    <div className="relative">
+                        <div className="absolute -left-6 top-2 bottom-2 w-1 bg-gradient-to-b from-violet-500 to-transparent rounded-full opacity-50" />
+                        <motion.h1
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="text-5xl md:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-500 mb-2 filter drop-shadow-2xl"
+                        >
+                            LEADS
+                        </motion.h1>
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.2 }}
+                            className="text-gray-400 font-mono text-sm tracking-widest uppercase flex items-center gap-3"
+                        >
+                            <span className="w-2 h-2 bg-violet-500 rounded-full animate-pulse" />
+                            Inquiry Pipeline
+                        </motion.p>
+                    </div>
                 </div>
-            ) : (
-                <div className="grid grid-cols-1 gap-4">
-                    {filteredInquiries.length === 0 ? (
-                        <div className="text-center py-20 bg-[#080808] rounded-3xl border border-white/5 border-dashed">
-                            <p className="text-gray-500 text-sm">No inquiries found matching your search.</p>
-                        </div>
-                    ) : (
-                        filteredInquiries.map((inquiry) => (
-                            <div key={inquiry.id} className="bg-[#0A0A0A] border border-white/5 rounded-2xl p-6 hover:border-white/10 transition-all group">
-                                <div className="flex flex-col md:flex-row justify-between gap-6">
-                                    {/* Contact Info */}
-                                    <div className="flex-1">
-                                        <div className="flex items-start justify-between mb-3">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center font-bold text-white">
-                                                    {inquiry.name.charAt(0)}
-                                                </div>
-                                                <div>
-                                                    <h3 className="font-bold text-white leading-tight">{inquiry.name}</h3>
-                                                    <div className="text-xs text-gray-500">{format(new Date(inquiry.date), "MMM d, h:mm a")}</div>
-                                                </div>
-                                            </div>
-                                            <span className="md:hidden text-xs bg-shivkara-orange/10 text-shivkara-orange px-2 py-1 rounded font-bold uppercase">
-                                                New
-                                            </span>
-                                        </div>
 
-                                        <div className="flex flex-wrap gap-4 text-gray-400 text-sm ml-13 pl-13 md:pl-0 md:ml-12">
-                                            <div className="flex items-center gap-2 hover:text-white transition-colors cursor-default">
-                                                <Mail className="w-3.5 h-3.5" /> {inquiry.email}
-                                            </div>
-                                            <div className="flex items-center gap-2 hover:text-white transition-colors cursor-default">
-                                                <Phone className="w-3.5 h-3.5" /> {inquiry.phone}
-                                            </div>
-                                        </div>
-
-                                        {inquiry.details && (
-                                            <div className="mt-4 md:ml-12 p-3 bg-white/[0.02] rounded-xl border border-white/5 text-sm text-gray-300 italic">
-                                                "{inquiry.details}"
-                                            </div>
-                                        )}
+                {/* 3D Stats Deck */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 perspective-1000">
+                    <TiltCard className="h-full">
+                        <div className="h-full p-8 rounded-[2.5rem] bg-white/5 border border-white/10 backdrop-blur-xl relative overflow-hidden group hover:bg-white/10 transition-colors duration-500">
+                            <div className="absolute -right-8 -top-8 w-40 h-40 bg-violet-500/20 rounded-full blur-3xl group-hover:bg-violet-500/30 transition-all" />
+                            <div className="relative z-10 flex flex-col justify-between h-full">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="p-3 rounded-2xl bg-violet-500/10 text-violet-400">
+                                        <Users size={28} />
                                     </div>
+                                    <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Total Inquiries</p>
+                                </div>
+                                <p className="text-6xl font-black text-white tracking-tighter drop-shadow-lg">
+                                    {leads.length}
+                                </p>
+                            </div>
+                        </div>
+                    </TiltCard>
 
-                                    {/* Project Details */}
-                                    <div className="md:w-64 md:border-l border-white/5 md:pl-6 flex flex-col justify-center">
-                                        <div className="space-y-3">
-                                            <div className="flex justify-between items-center">
-                                                <div className="text-xs font-bold text-gray-500 uppercase tracking-widest">Package</div>
-                                                <div className="text-xs bg-white/5 px-2 py-0.5 rounded text-gray-300">{inquiry.category}</div>
-                                            </div>
-                                            <div className="font-bold text-white flex items-center gap-2">
-                                                <Package className="w-4 h-4 text-shivkara-orange" />
-                                                {inquiry.package}
-                                            </div>
-                                            <div className="pt-2 border-t border-white/5 flex justify-between items-center">
-                                                <div className="text-xs font-bold text-gray-500 uppercase tracking-widest">Budget</div>
-                                                <div className="font-mono font-bold text-green-500">₹{inquiry.price.toLocaleString()}</div>
-                                            </div>
-                                        </div>
+                    <TiltCard className="h-full">
+                        <div className="h-full p-8 rounded-[2.5rem] bg-white/5 border border-white/10 backdrop-blur-xl relative overflow-hidden group hover:bg-white/10 transition-colors duration-500">
+                            <div className="absolute -right-8 -top-8 w-40 h-40 bg-teal-500/20 rounded-full blur-3xl group-hover:bg-teal-500/30 transition-all" />
+                            <div className="relative z-10 flex flex-col justify-between h-full">
+                                {/* Placeholder for Conversion Rate or other metric */}
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="p-3 rounded-2xl bg-teal-500/10 text-teal-400">
+                                        <ArrowUpRight size={28} />
+                                    </div>
+                                    <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Active Today</p>
+                                </div>
+                                <p className="text-6xl font-black text-white tracking-tighter">
+                                    {leads.filter(l => new Date(l.createdAt).toDateString() === new Date().toDateString()).length}
+                                </p>
+                            </div>
+                        </div>
+                    </TiltCard>
+                </div>
+
+                {/* Search */}
+                <div className="relative max-w-xl group">
+                    <div className="absolute inset-0 bg-violet-500/20 rounded-2xl opacity-0 group-focus-within:opacity-100 blur-xl transition-opacity duration-500" />
+                    <div className="relative flex items-center bg-[#0A0A0A] border border-white/10 rounded-2xl overflow-hidden h-14">
+                        <Search className="ml-6 w-5 h-5 text-gray-500" />
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={e => setSearchTerm(e.target.value)}
+                            className="w-full bg-transparent border-none px-4 text-sm text-white placeholder:text-gray-600 focus:outline-none"
+                            placeholder="Search leads by name, email, phone..."
+                        />
+                    </div>
+                </div>
+
+                {/* List */}
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {loading ? (
+                        <div className="col-span-full h-64 flex items-center justify-center"><Loader2 className="animate-spin text-violet-500 w-8 h-8" /></div>
+                    ) : filteredLeads.length === 0 ? (
+                        <div className="col-span-full text-center py-20 text-gray-500">No leads found.</div>
+                    ) : (
+                        filteredLeads.map((lead, i) => (
+                            <motion.div
+                                key={lead.id}
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: i * 0.05 }}
+                                className="group relative bg-[#0A0A0A]/60 hover:bg-[#111] border border-white/5 hover:border-violet-500/30 rounded-[2rem] p-6 flex flex-col justify-between gap-6 transition-all duration-300 hover:shadow-2xl hover:shadow-violet-900/10"
+                            >
+                                <div className="absolute top-4 right-4 w-2 h-2 bg-violet-500 rounded-full animate-pulse" />
+
+                                <div>
+                                    <h3 className="text-xl font-bold text-white group-hover:text-violet-400 transition-colors mb-1">{lead.name}</h3>
+                                    <div className="flex items-center gap-2 text-xs text-gray-500 font-mono">
+                                        <Calendar size={12} />
+                                        {new Date(lead.createdAt).toLocaleDateString("en-IN")}
                                     </div>
                                 </div>
-                            </div>
+
+                                <div className="space-y-3">
+                                    <a href={`mailto:${lead.email}`} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-violet-500/10 hover:text-violet-400 text-sm text-gray-300 transition-all">
+                                        <Mail size={16} />
+                                        <span className="truncate">{lead.email}</span>
+                                    </a>
+                                    {lead.phone && (
+                                        <a href={`tel:${lead.phone}`} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-teal-500/10 hover:text-teal-400 text-sm text-gray-300 transition-all">
+                                            <Phone size={16} />
+                                            <span>{lead.phone}</span>
+                                        </a>
+                                    )}
+                                    {lead.company && (
+                                        <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 text-sm text-gray-300">
+                                            <MapPin size={16} />
+                                            <span>{lead.company} {lead.budget ? `(${lead.budget})` : ''}</span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {lead.message && (
+                                    <div className="mt-2 p-4 rounded-xl bg-black/40 border border-white/5 text-xs text-gray-400 italic">
+                                        "{lead.message}"
+                                    </div>
+                                )}
+                            </motion.div>
                         ))
                     )}
                 </div>
-            )}
+
+            </div>
         </div>
     );
 }

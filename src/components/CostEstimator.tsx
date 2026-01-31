@@ -1,17 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ChevronRight, ShoppingBag, PenTool, Briefcase, Activity, Plane, Database, Zap, Layers } from "lucide-react";
+import { Check, ChevronRight, ShoppingBag, PenTool, Briefcase, Activity, Plane, Database, Zap, Layers, Cpu, Server, Smartphone, Globe } from "lucide-react";
 import MagneticButton from "./MagneticButton";
 import PriceRequestModal from "./PriceRequestModal";
 
+// --- data structures ---
 type Package = {
     id: string;
     label: string;
     subLabel: string;
     price: number;
     description: string;
+    features: string[];
     popular?: boolean;
 };
 
@@ -28,20 +30,31 @@ const categories: Category[] = [
         label: "E-Commerce",
         icon: ShoppingBag,
         packages: [
-            { id: "woo", label: "Startup Store", subLabel: "WordPress + Woo", price: 19999, description: "Everything you need to start selling. Includes Domain, Hosting, & Setup.", popular: true },
-            { id: "custom_ecom", label: "Custom Scale", subLabel: "React / Next.js", price: 29999, description: "Blazing fast custom store designed for performance and growth." },
-            { id: "shopify", label: "Shopify Elite", subLabel: "Shopify Setup", price: 34999, description: "Scalable Shopify store with premium theme customization." },
-            { id: "app_web_ecom", label: "Omnichannel", subLabel: "Web + Mobile App", price: 44999, description: "Dominate the market with a synchronized Website and Mobile App." },
-        ]
-    },
-    {
-        id: "blog",
-        label: "Blogging",
-        icon: PenTool,
-        packages: [
-            { id: "custom_blog", label: "Pro Blog", subLabel: "Next.js Custom", price: 7999, description: "A beautifully designed, ultra-fast blog to build your audience.", popular: true },
-            { id: "wp_blog", label: "WP Classic", subLabel: "WordPress", price: 9999, description: "The classic choice. Easy to manage content and plugins." },
-            { id: "blog_app", label: "Media Brand", subLabel: "Blog + App", price: 12999, description: "Turn your blog into a media empire with a dedicated mobile app." },
+            {
+                id: "woo",
+                label: "Startup Store",
+                subLabel: "WordPress + Woo",
+                price: 19999,
+                description: "Launch your brand with a solid foundation.",
+                features: ["50 Products", "Payment Gateway", "Basic SEO"],
+                popular: true
+            },
+            {
+                id: "custom_ecom",
+                label: "Scale Custom",
+                subLabel: "React / Next.js",
+                price: 29999,
+                description: "High-performance store for scaling brands.",
+                features: ["Unlimited Products", "Advanced Analytics", "Custom UI/UX"]
+            },
+            {
+                id: "app_web_ecom",
+                label: "Omnichannel",
+                subLabel: "Web + App",
+                price: 44999,
+                description: "Dominate mobile and web markets simultaneously.",
+                features: ["iOS & Android App", "Real-time Sync", "Push Notifs"]
+            },
         ]
     },
     {
@@ -49,61 +62,83 @@ const categories: Category[] = [
         label: "Business",
         icon: Briefcase,
         packages: [
-            { id: "static", label: "Digital Card", subLabel: "Static Site", price: 6999, description: "Perfect for establishing a professional online presence. 3-5 Pages." },
-            { id: "dynamic", label: "Growth Site", subLabel: "Dynamic CMS", price: 12999, description: "Editable content and dynamic features for growing businesses.", popular: true },
+            {
+                id: "static",
+                label: "Digital Card",
+                subLabel: "Static Site",
+                price: 6999,
+                description: "Professional digital presence.",
+                features: ["5 Pages", "Contact Form", "Fast Loading"]
+            },
+            {
+                id: "dynamic",
+                label: "Growth Engine",
+                subLabel: "Dynamic CMS",
+                price: 12999,
+                description: "Manage your content dynamically.",
+                features: ["Admin Panel", "Blog Section", "Lead Capture"],
+                popular: true
+            },
+        ]
+    },
+    {
+        id: "saas",
+        label: "SaaS / App",
+        icon: Cpu,
+        packages: [
+            {
+                id: "mvp",
+                label: "MVP Launch",
+                subLabel: "Standard Stack",
+                price: 39999,
+                description: "Validate your idea with a working product.",
+                features: ["User Auth", "Database", "Core Features"]
+            },
+            {
+                id: "scale_saas",
+                label: "Pro Platform",
+                subLabel: "Advanced Arch",
+                price: 89999,
+                description: "Built for thousands of concurrent users.",
+                features: ["Microservices", "AI Integration", "High Security"]
+            },
         ]
     },
     {
         id: "health",
-        label: "Health & Fit",
+        label: "Health",
         icon: Activity,
         packages: [
-            { id: "basic_fit", label: "Fitness Starter", subLabel: "Basic App", price: 24999, description: "Diet plans, workout logs, and basic analytics." },
-            { id: "adv_fit", label: "Health Eco", subLabel: "App + Dashboard", price: 59999, description: "Complete platform with payment gateway and coach dashboard." },
+            { id: "basic_fit", label: "Fitness App", subLabel: "Basic Tracking", price: 24999, description: "Track workouts and diets.", features: ["User Profiles", "Progress Charts"] },
+            { id: "adv_fit", label: "Health Eco", subLabel: "Full Platform", price: 59999, description: "Complete telemedicine or coaching system.", features: ["Video Calls", "Subscription Mgmt"] },
         ]
-    },
-    {
-        id: "travel",
-        label: "Travel",
-        icon: Plane,
-        packages: [
-            { id: "tour_booking", label: "Agency Web", subLabel: "Booking Site", price: 19999, description: "Showcase tours and accept bookings online effortlessly." },
-            { id: "adv_booking", label: "Travel Aggregator", subLabel: "Multi-Service Platform", price: 49999, description: "Flights, hotels, and bus booking system with mobile app." },
-        ]
-    },
-    {
-        id: "erp",
-        label: "ERP / CRM",
-        icon: Database,
-        packages: [
-            { id: "small_erp", label: "Biz Manager", subLabel: "Small Biz ERP", price: 14999, description: "Streamline operations: Inventory, Billing, and HR basics." },
-            { id: "enterprise_erp", label: "Enterprise Core", subLabel: "Advanced ERP", price: 54999, description: "Full-scale management system with analytics and custom modules." },
-        ]
-    },
+    }
 ];
 
 const addons = [
-    { id: "social_img", label: "Social Graphics", desc: "12 Custom Posts/mo", price: 3499, icon: Layers },
-    { id: "social_vid", label: "Reels / Shorts", desc: "4 Edited Videos/mo", price: 1499, icon: Zap },
-    { id: "social_manage", label: "Social Manager", desc: "Posting & Engagement", price: 3999, icon: Activity },
+    { id: "social_img", label: "Social Kit", desc: "12 Posts/mo", price: 3499, icon: Layers },
+    { id: "seo_pro", label: "SEO Pro", desc: "Rank Higher", price: 4999, icon: Globe },
+    { id: "server_setup", label: "Cloud Ops", desc: "AWS/GCP Setup", price: 2999, icon: Server },
+    { id: "maintenance", label: "AMC Support", desc: "Yearly Maint.", price: 9999, icon: Zap },
 ];
 
 export default function CostEstimator() {
     const [selectedCategory, setSelectedCategory] = useState<string>("ecommerce");
-    const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
+    const [selectedPackage, setSelectedPackage] = useState<string | null>("woo");
     const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [animatedTotal, setAnimatedTotal] = useState(0);
+    const [currentDate, setCurrentDate] = useState<string>("");
 
-    const toggleAddon = (id: string) => {
-        setSelectedAddons(prev =>
-            prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]
-        );
-    };
+    useEffect(() => {
+        setCurrentDate(new Date().toLocaleDateString());
+    }, []);
+
+    const activeCategory = categories.find(c => c.id === selectedCategory);
 
     const calculateTotal = () => {
         let total = 0;
-        const category = categories.find(c => c.id === selectedCategory);
-        const pkg = category?.packages.find(p => p.id === selectedPackage);
+        const pkg = activeCategory?.packages.find(p => p.id === selectedPackage);
         if (pkg) total += pkg.price;
         selectedAddons.forEach(id => {
             const addon = addons.find(a => a.id === id);
@@ -112,167 +147,223 @@ export default function CostEstimator() {
         return total;
     };
 
-    const total = calculateTotal();
+    const targetTotal = calculateTotal();
+
+    // Smooth counter animation
+    useEffect(() => {
+        let start = animatedTotal;
+        const end = targetTotal;
+        const duration = 500;
+        const startTime = performance.now();
+
+        const animate = (currentTime: number) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            // Ease out quart
+            const ease = 1 - Math.pow(1 - progress, 4);
+
+            setAnimatedTotal(Math.floor(start + (end - start) * ease));
+
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
+        };
+        requestAnimationFrame(animate);
+    }, [targetTotal]);
+
+    const toggleAddon = (id: string) => {
+        setSelectedAddons(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]);
+    };
 
     return (
-        <section className="py-24 bg-[#030303] relative overflow-hidden" id="estimator">
-            {/* Vibrant Background Glows */}
-            <div className="absolute top-[10%] left-[20%] w-[500px] h-[500px] bg-shivkara-orange/10 blur-[150px] rounded-full pointer-events-none" />
-            <div className="absolute bottom-[10%] right-[20%] w-[500px] h-[500px] bg-blue-600/10 blur-[150px] rounded-full pointer-events-none" />
+        <section className="py-24 bg-black relative overflow-hidden" id="estimator">
+            {/* Background Tech Grid */}
+            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] opacity-20 pointer-events-none" />
 
             <div className="container mx-auto px-6 relative z-10">
                 <div className="text-center mb-16">
-                    <span className="text-shivkara-orange font-mono text-xs tracking-widest uppercase mb-4 block">/// Budget Planner</span>
-                    <h2 className="text-4xl md:text-6xl font-black uppercase text-white tracking-tighter mb-6">
-                        Build Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-shivkara-orange to-yellow-500">Vision</span>
-                    </h2>
-                    <p className="text-gray-400 text-lg max-w-2xl mx-auto font-light">
-                        Select your industry and needs to get an instant, budget-friendly estimate.
-                    </p>
-                </div>
-
-                {/* Category Navigation */}
-                <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-12 md:mb-16">
-                    {categories.map(cat => {
-                        const Icon = cat.icon;
-                        const isSelected = selectedCategory === cat.id;
-                        return (
-                            <button
-                                key={cat.id}
-                                onClick={() => { setSelectedCategory(cat.id); setSelectedPackage(null); }}
-                                className={`flex items-center gap-2 px-4 py-3 md:px-6 md:py-3 rounded-full border transition-all duration-300 w-full sm:w-auto justify-center sm:justify-start ${isSelected
-                                    ? "bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.3)]"
-                                    : "bg-white/5 text-gray-400 border-white/10 hover:bg-white/10 hover:text-white"
-                                    }`}
-                            >
-                                <Icon className="w-4 h-4 flex-shrink-0" />
-                                <span className="font-bold uppercase tracking-wide text-xs md:text-sm">{cat.label}</span>
-                            </button>
-                        );
-                    })}
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Packages Grid */}
-                    <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-                        <AnimatePresence mode="wait">
-                            {categories.find(c => c.id === selectedCategory)?.packages.map(pkg => (
-                                <motion.div
-                                    key={pkg.id}
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    onClick={() => setSelectedPackage(pkg.id)}
-                                    className={`relative p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] border cursor-pointer group transition-all duration-300 ${selectedPackage === pkg.id
-                                        ? "bg-[#0A0A0A] border-shivkara-orange shadow-[0_0_30px_rgba(255,107,0,0.15)] ring-1 ring-shivkara-orange/50"
-                                        : "bg-[#0A0A0A] border-white/10 hover:border-white/20 hover:bg-white/[0.02]"
-                                        }`}
-                                >
-                                    {pkg.popular && (
-                                        <div className="absolute top-4 right-4 px-2 py-1 md:px-3 md:py-1 bg-gradient-to-r from-shivkara-orange to-red-500 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white shadow-lg">
-                                            Best Value
-                                        </div>
-                                    )}
-
-                                    <div className="text-gray-500 font-mono text-[10px] md:text-xs uppercase tracking-wider mb-2">{pkg.subLabel}</div>
-                                    <h3 className="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{pkg.label}</h3>
-                                    <p className="text-gray-400 text-xs md:text-sm leading-relaxed mb-4 md:mb-6 min-h-[30px] md:min-h-[40px]">
-                                        {pkg.description}
-                                    </p>
-
-                                    <div className="flex items-end justify-between">
-                                        <div className="text-2xl md:text-3xl font-black text-white tracking-tight">
-                                            ₹{pkg.price.toLocaleString()}
-                                        </div>
-                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${selectedPackage === pkg.id ? "bg-shivkara-orange text-black" : "bg-white/10 text-gray-500 group-hover:bg-white/20"
-                                            }`}>
-                                            <Check className="w-4 h-4" />
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </AnimatePresence>
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-shivkara-orange/10 border border-shivkara-orange/20 text-shivkara-orange text-[10px] font-mono tracking-widest uppercase mb-4">
+                        <Database className="w-3 h-3" />
+                        System Configurator
                     </div>
+                    <h2 className="text-4xl md:text-6xl font-black uppercase text-white tracking-tighter">
+                        Budget <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-500 to-white">Planner</span>
+                    </h2>
+                </div>
 
-                    {/* Summary & Addons Panel */}
-                    <div className="lg:col-span-1">
-                        <div className="sticky top-24 space-y-4">
-                            {/* Summary Card */}
-                            <div className="bg-[#080808] border border-white/10 rounded-[2rem] p-6 md:p-8 relative overflow-hidden">
-                                <div className="absolute inset-0 bg-gradient-to-b from-shivkara-orange/5 to-transparent pointer-events-none" />
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
 
-                                <h3 className="text-lg font-bold text-white mb-6 uppercase tracking-widest opacity-60">Estimation</h3>
-
-                                <div className="space-y-4 mb-8">
-                                    <div className="flex justify-between items-center text-sm">
-                                        <span className="text-gray-400">Package</span>
-                                        <span className="text-white font-medium text-right max-w-[150px]">
-                                            {categories.find(c => c.id === selectedCategory)?.packages.find(p => p.id === selectedPackage)?.subLabel || "None Selected"}
-                                        </span>
-                                    </div>
-                                    {selectedAddons.length > 0 && (
-                                        <div className="flex justify-between items-center text-sm">
-                                            <span className="text-gray-400">Add-ons ({selectedAddons.length})</span>
-                                            <span className="text-shivkara-orange font-medium">Included</span>
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="text-4xl md:text-5xl font-black text-white mb-2 tracking-tighter">
-                                    <span className="text-xl md:text-2xl text-gray-600 align-top mr-1">₹</span>
-                                    {total.toLocaleString()}
-                                </div>
-                                <p className="text-xs text-gray-500 mb-8">*Exclusive of taxes</p>
-
-                                <div onClick={() => setIsModalOpen(true)}>
-                                    <MagneticButton className="w-full bg-shivkara-orange text-black font-black py-4 rounded-xl hover:shadow-[0_0_30px_rgba(255,107,0,0.4)] transition-shadow cursor-pointer">
-                                        Get This Price
-                                    </MagneticButton>
-                                </div>
+                    {/* LEFT PANEL: Controls */}
+                    <div className="lg:col-span-7 space-y-10">
+                        {/* 1. Industry Selection */}
+                        <div className="space-y-4">
+                            <label className="text-xs font-mono text-gray-500 uppercase tracking-widest pl-1">01 // Select Network</label>
+                            <div className="flex flex-wrap gap-3">
+                                {categories.map(cat => (
+                                    <button
+                                        key={cat.id}
+                                        onClick={() => { setSelectedCategory(cat.id); setSelectedPackage(null); }}
+                                        className={`flex items-center gap-2 px-5 py-3 rounded-full border transition-all duration-300 ${selectedCategory === cat.id
+                                            ? "bg-white text-black border-white shadow-[0_0_15px_rgba(255,255,255,0.4)]"
+                                            : "bg-[#0A0A0A] text-gray-400 border-white/10 hover:border-white/30 hover:text-white"
+                                            }`}
+                                    >
+                                        <cat.icon className="w-4 h-4" />
+                                        <span className="text-sm font-bold uppercase tracking-wide">{cat.label}</span>
+                                    </button>
+                                ))}
                             </div>
+                        </div>
 
-                            {/* Add-ons List */}
-                            <div className="bg-[#080808] border border-white/10 rounded-[2rem] p-6">
-                                <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Recommended Add-ons</h4>
-                                <div className="space-y-3">
-                                    {addons.map(addon => (
-                                        <div
-                                            key={addon.id}
-                                            onClick={() => toggleAddon(addon.id)}
-                                            className={`flex items-center gap-4 p-4 rounded-xl cursor-pointer border transition-all ${selectedAddons.includes(addon.id)
-                                                ? "bg-white/5 border-white/30"
-                                                : "bg-transparent border-transparent hover:bg-white/[0.02]"
+                        {/* 2. Scale Selection */}
+                        <div className="space-y-4">
+                            <label className="text-xs font-mono text-gray-500 uppercase tracking-widest pl-1">02 // Select Architecture</label>
+                            <div className="flex overflow-x-auto snap-x snap-mandatory -mx-6 px-6 pb-8 md:grid md:grid-cols-2 md:gap-4 md:overflow-visible md:pb-0 md:px-0 md:mx-0 no-scrollbar gap-4">
+                                <AnimatePresence mode="popLayout">
+                                    {activeCategory?.packages.map(pkg => (
+                                        <motion.div
+                                            key={pkg.id}
+                                            initial={{ opacity: 0, scale: 0.9 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.9 }}
+                                            onClick={() => setSelectedPackage(pkg.id)}
+                                            className={`relative p-6 rounded-2xl border cursor-pointer transition-all duration-300 group overflow-hidden min-w-[85vw] md:min-w-0 snap-center ${selectedPackage === pkg.id
+                                                ? "bg-[#0A0A0A] border-shivkara-orange/50 shadow-[0_0_20px_rgba(255,77,0,0.1)]"
+                                                : "bg-[#0A0A0A] border-white/10 hover:border-white/20"
                                                 }`}
                                         >
-                                            <div className="p-2 bg-white/5 rounded-lg text-shivkara-orange flex-shrink-0">
-                                                <addon.icon className="w-4 h-4" />
+                                            {/* Selection Indicator */}
+                                            <div className={`absolute top-0 right-0 p-3 transition-opacity ${selectedPackage === pkg.id ? "opacity-100" : "opacity-0"}`}>
+                                                <div className="w-2 h-2 rounded-full bg-shivkara-orange shadow-[0_0_8px_#FF4D00]" />
                                             </div>
-                                            <div className="flex-1 min-w-0">
-                                                <div className="text-sm font-bold text-white truncate">{addon.label}</div>
-                                                <div className="text-xs text-gray-500 truncate">{addon.desc}</div>
+
+                                            <div className="text-xs font-mono text-gray-500 uppercase tracking-wider mb-2">{pkg.subLabel}</div>
+                                            <h3 className="text-xl font-bold text-white mb-2">{pkg.label}</h3>
+                                            <p className="text-gray-400 text-xs leading-relaxed mb-4">{pkg.description}</p>
+
+                                            <div className="space-y-1">
+                                                {pkg.features.map((feat, i) => (
+                                                    <div key={i} className="flex items-center gap-2 text-[10px] text-gray-500">
+                                                        <Check className="w-3 h-3 text-shivkara-orange" />
+                                                        {feat}
+                                                    </div>
+                                                ))}
                                             </div>
-                                            <div className="text-sm font-mono font-bold text-gray-300 flex-shrink-0">
-                                                +₹{(addon.price / 1000).toFixed(1)}k
+
+                                            <div className="mt-4 pt-4 border-t border-white/5 flex justify-between items-center">
+                                                <span className="text-white font-mono font-bold">₹{(pkg.price / 1000).toFixed(0)}k</span>
+                                                <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${selectedPackage === pkg.id ? "border-shivkara-orange bg-shivkara-orange text-black" : "border-white/20 text-transparent"}`}>
+                                                    <Check className="w-3 h-3" />
+                                                </div>
                                             </div>
-                                            <div className={`w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 ${selectedAddons.includes(addon.id) ? "bg-shivkara-orange border-shivkara-orange text-black" : "border-white/20"
-                                                }`}>
-                                                {selectedAddons.includes(addon.id) && <Check className="w-3 h-3" />}
-                                            </div>
-                                        </div>
+                                        </motion.div>
                                     ))}
+                                </AnimatePresence>
+                            </div>
+                        </div>
+
+                        {/* 3. Add-ons */}
+                        <div className="space-y-4">
+                            <label className="text-xs font-mono text-gray-500 uppercase tracking-widest pl-1">03 // Extensions</label>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                {addons.map(addon => (
+                                    <div
+                                        key={addon.id}
+                                        onClick={() => toggleAddon(addon.id)}
+                                        className={`p-4 rounded-xl border cursor-pointer transition-all duration-200 ${selectedAddons.includes(addon.id)
+                                            ? "bg-white/10 border-white/30"
+                                            : "bg-[#0A0A0A] border-white/10 hover:border-white/20"
+                                            }`}
+                                    >
+                                        <addon.icon className={`w-5 h-5 mb-3 ${selectedAddons.includes(addon.id) ? "text-shivkara-orange" : "text-gray-500"}`} />
+                                        <div className="text-xs font-bold text-white mb-0.5">{addon.label}</div>
+                                        <div className="text-[10px] text-gray-500">+₹{addon.price.toLocaleString()}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* RIGHT PANEL: Receipt */}
+                    <div className="lg:col-span-5">
+                        <div className="sticky top-24">
+                            <div className="bg-[#050505] border border-white/10 rounded-3xl p-8 relative overflow-hidden backdrop-blur-xl">
+                                {/* Digital Noise Overlay */}
+                                <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] pointer-events-none" />
+
+                                <div className="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
+                                    <span className="font-mono text-xs text-gray-500 uppercase">Est. Receipt // {currentDate}</span>
+                                    <Activity className="w-4 h-4 text-shivkara-orange animate-pulse" />
+                                </div>
+
+                                <div className="space-y-4 mb-8 min-h-[160px]">
+                                    {/* Line Items */}
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-300">Core Architecture</span>
+                                        <span className="text-white font-mono">
+                                            ₹{(activeCategory?.packages.find(p => p.id === selectedPackage)?.price || 0).toLocaleString()}
+                                        </span>
+                                    </div>
+
+                                    <AnimatePresence>
+                                        {selectedAddons.map(id => {
+                                            const addon = addons.find(a => a.id === id);
+                                            return (
+                                                <motion.div
+                                                    key={id}
+                                                    initial={{ opacity: 0, height: 0 }}
+                                                    animate={{ opacity: 1, height: "auto" }}
+                                                    exit={{ opacity: 0, height: 0 }}
+                                                    className="flex justify-between text-sm overflow-hidden"
+                                                >
+                                                    <span className="text-gray-400 pl-4 border-l border-white/10">{addon?.label}</span>
+                                                    <span className="text-gray-300 font-mono">+₹{addon?.price.toLocaleString()}</span>
+                                                </motion.div>
+                                            );
+                                        })}
+                                    </AnimatePresence>
+                                </div>
+
+                                {/* Total Display */}
+                                <div className="border-t border-dashed border-white/20 pt-6 mb-8">
+                                    <div className="flex justify-between items-end">
+                                        <div className="text-xs font-mono text-gray-500 uppercase">Estimated Total</div>
+                                        <div className="text-4xl font-black text-white tracking-tighter">
+                                            ₹{animatedTotal.toLocaleString()}
+                                        </div>
+                                    </div>
+                                    <div className="w-full h-1 bg-white/5 mt-4 rounded-full overflow-hidden">
+                                        <motion.div
+                                            className="h-full bg-shivkara-orange"
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${Math.min((targetTotal / 100000) * 100, 100)}%` }}
+                                            transition={{ type: "spring", bounce: 0, duration: 0.8 }}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div onClick={() => setIsModalOpen(true)}>
+                                    <MagneticButton className="w-full bg-white text-black font-black py-4 rounded-xl hover:bg-shivkara-orange hover:text-white transition-colors flex items-center justify-center gap-2 group">
+                                        Launch Project
+                                        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                    </MagneticButton>
+                                    <p className="text-[10px] text-center text-gray-600 mt-4">
+                                        *Final quote may vary based on exact requirements.
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <PriceRequestModal
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                     data={{
-                        category: categories.find(c => c.id === selectedCategory)?.label || "",
-                        package: categories.find(c => c.id === selectedCategory)?.packages.find(p => p.id === selectedPackage)?.label || "Custom Build",
-                        price: total,
+                        category: activeCategory?.label || "",
+                        package: activeCategory?.packages.find(p => p.id === selectedPackage)?.label || "Custom",
+                        price: targetTotal,
                         addons: addons.filter(a => selectedAddons.includes(a.id)).map(a => a.label)
                     }}
                 />

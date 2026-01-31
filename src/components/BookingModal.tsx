@@ -133,7 +133,7 @@ export default function BookingModal({ isOpen, onClose, initialPlan }: BookingMo
                         <div className="p-6 max-h-[70vh] overflow-y-auto">
                             {step === 1 && (
                                 <div className="space-y-4">
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
                                             <label className="text-xs text-white/60 mb-1 block">Name</label>
                                             <input

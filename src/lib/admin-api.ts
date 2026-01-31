@@ -270,3 +270,14 @@ export async function createLead(data: {
     body: JSON.stringify(data),
   });
 }
+
+// Reports API
+export async function getReport(type: string, startDate: string, endDate: string) {
+  const queryParams = new URLSearchParams();
+  queryParams.append('type', type);
+  queryParams.append('startDate', startDate);
+  queryParams.append('endDate', endDate);
+
+  const query = queryParams.toString();
+  return apiRequest<any>('/reports' + (query ? `?${query}` : ''));
+}
