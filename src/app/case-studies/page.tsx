@@ -1,5 +1,4 @@
 import Navbar from "@/components/Navbar";
-import Work from "@/components/Work";
 import Results from "@/components/Results";
 import Testimonials from "@/components/Testimonials";
 import Contact from "@/components/Contact";
@@ -34,7 +33,6 @@ export default function CaseStudiesPage() {
             <NoiseBackground />
             <Navbar />
             <div className="pt-32">
-                <Work />
                 <Results />
                 <Testimonials />
             </div>
