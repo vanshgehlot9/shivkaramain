@@ -1,8 +1,6 @@
 import Navbar from "@/components/Navbar";
-import FoundersNote from "@/components/FoundersNote";
 import Team from "@/components/Team";
 import Values from "@/components/Values";
-import Methodology from "@/components/Methodology";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import NoiseBackground from "@/components/ui/NoiseBackground";
@@ -35,9 +33,7 @@ export default function AboutPage() {
             <NoiseBackground />
             <Navbar />
             <div className="pt-32">
-                <FoundersNote />
                 <Values />
-                <Methodology />
                 <Team />
             </div>
             <Contact />

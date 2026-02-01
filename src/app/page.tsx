@@ -1,32 +1,37 @@
+import dynamic from "next/dynamic";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-
-
-
 import TechStack from "@/components/TechStack";
 import CoreCapabilities from "@/components/CoreCapabilities";
 import WhyUs from "@/components/WhyUs";
 import CallToAction from "@/components/CallToAction";
 import Insights from "@/components/Insights";
-
 import Certifications from "@/components/Certifications";
-
 import Results from "@/components/Results";
-import CostEstimator from "@/components/CostEstimator";
 import UnifiedProcess from "@/components/UnifiedProcess";
-
 import FutureEngineering from "@/components/FutureEngineering";
 import BootcampsHighlight from "@/components/BootcampsHighlight";
-
-import Footer from "@/components/Footer";
 import Stats from "@/components/Stats";
-
-import Testimonials from "@/components/Testimonials";
-import FAQ from "@/components/FAQ";
 import ScrollProgress from "@/components/ScrollProgress";
-import Contact from "@/components/Contact";
 import NoiseBackground from "@/components/ui/NoiseBackground";
 import LeadPopup from "@/components/LeadPopup";
+
+// Dynamic imports for below-the-fold heavy components (code-splitting)
+const CostEstimator = dynamic(() => import("@/components/CostEstimator"), {
+  loading: () => <div className="min-h-[400px] bg-black" />
+});
+const Testimonials = dynamic(() => import("@/components/Testimonials"), {
+  loading: () => <div className="min-h-[400px] bg-black" />
+});
+const FAQ = dynamic(() => import("@/components/FAQ"), {
+  loading: () => <div className="min-h-[300px] bg-black" />
+});
+const Contact = dynamic(() => import("@/components/Contact"), {
+  loading: () => <div className="min-h-[300px] bg-black" />
+});
+const Footer = dynamic(() => import("@/components/Footer"), {
+  loading: () => <div className="min-h-[200px] bg-black" />
+});
 
 export default function Home() {
   return (

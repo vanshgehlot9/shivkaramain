@@ -2,20 +2,14 @@ import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
-import Grain from "@/components/Grain";
-import Preloader from "@/components/Preloader";
-import WhatsAppWidget from "@/components/WhatsAppWidget";
-import LeadPopup from "@/components/LeadPopup";
-import ScrollProgress from "@/components/ScrollProgress";
-import SmoothScroll from "@/components/SmoothScroll";
 import { Toaster } from "@/components/ui/toaster";
-import AnalyticsTracker from "@/components/AnalyticsTracker";
 import SiteOverlays from "@/components/SiteOverlays";
 
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -103,13 +97,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <Suspense fallback={null}>
-          <AnalyticsTracker />
+          <SiteOverlays />
         </Suspense>
-        <SmoothScroll />
-        <SiteOverlays />
         {children}
         <Toaster />
-        <script src="https://checkout.razorpay.com/v1/checkout.js" async></script>
       </body>
     </html>
   );
