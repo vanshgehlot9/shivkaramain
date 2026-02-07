@@ -1,6 +1,6 @@
 import React from "react";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { MagneticButton } from "@/components/MagneticButton";
+import MagneticButton from "@/components/MagneticButton";
 import { Play, Calendar, Clock, ArrowRight, CheckCircle } from "lucide-react";
 
 export default function StudentDashboard() {
