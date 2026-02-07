@@ -1,6 +1,6 @@
 import React from "react";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { MagneticButton } from "@/components/MagneticButton"; // Need to ensure this exists or import from correct path, currently assuming it was present in DesignLabContent import
+import MagneticButton from "@/components/MagneticButton";
 import { Video, Calendar, Plus, Link as LinkIcon, ExternalLink } from "lucide-react";
 
 export default function SessionsPage() {
@@ -73,8 +73,8 @@ const SessionRow = ({ name, date, link, status }: any) => (
         </td>
         <td className="p-6">
             <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${status === 'Upcoming' ? 'bg-green-500/10 text-green-500 border border-green-500/20' :
-                    status === 'Completed' ? 'bg-gray-500/10 text-gray-500 border border-gray-500/20' :
-                        'bg-blue-500/10 text-blue-500 border border-blue-500/20'
+                status === 'Completed' ? 'bg-gray-500/10 text-gray-500 border border-gray-500/20' :
+                    'bg-blue-500/10 text-blue-500 border border-blue-500/20'
                 }`}>
                 {status}
             </span>
