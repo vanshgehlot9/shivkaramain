@@ -6,7 +6,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Calendar, Award, Users, CheckCircle, ArrowRight, Zap, Trophy, ShieldCheck, Target } from "lucide-react";
+import { Calendar, Award, Users, CheckCircle, ArrowRight, Zap, Trophy, ShieldCheck, Target, Download, Mail, ExternalLink } from "lucide-react";
 import MagneticButton from "@/components/MagneticButton";
 
 export default function Spunk2025Content() {
@@ -84,9 +84,9 @@ export default function Spunk2025Content() {
 
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
                                 {[
+                                    { label: "Dates", value: "1-8 Dec 2025" },
                                     { label: "Format", value: "Bootcamp" },
                                     { label: "Focus", value: "UI/UX" },
-                                    { label: "Duration", value: "Intensive" },
                                     { label: "Status", value: "Completed" }
                                 ].map((stat, i) => (
                                     <div key={i} className="flex flex-col">
@@ -96,6 +96,43 @@ export default function Spunk2025Content() {
                                 ))}
                             </div>
                         </motion.div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Alumni Portal Section */}
+            <section className="py-16 relative z-10">
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="bg-gradient-to-br from-shivkara-orange/10 to-yellow-500/5 border border-shivkara-orange/20 rounded-3xl p-8 md:p-12">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+                            <div>
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-shivkara-orange/10 border border-shivkara-orange/20 text-shivkara-orange text-xs font-mono uppercase tracking-wider mb-4">
+                                    <Award className="w-3 h-3" /> Alumni Access
+                                </div>
+                                <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">SPUNK 2025 Participants</h3>
+                                <p className="text-gray-400 text-sm max-w-lg">
+                                    Access your e-certificate and student portal. For login credentials, contact us at <a href="mailto:info@shivkaradigital.com" className="text-shivkara-orange hover:underline">info@shivkaradigital.com</a>
+                                </p>
+                            </div>
+                            <div className="flex flex-col sm:flex-row gap-4">
+                                <a
+                                    href="https://student.shivkaradigital.com"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-colors text-sm"
+                                >
+                                    <Download className="w-4 h-4" />
+                                    Download E-Certificate
+                                </a>
+                                <a
+                                    href="mailto:info@shivkaradigital.com"
+                                    className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 border border-white/20 text-white font-bold rounded-full hover:bg-white/20 transition-colors text-sm"
+                                >
+                                    <Mail className="w-4 h-4" />
+                                    Get Portal Credentials
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

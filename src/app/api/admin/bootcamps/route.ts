@@ -57,6 +57,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
                 startDate: data.startDate?.toDate() || new Date(),
                 endDate: data.endDate?.toDate() || new Date(),
                 status: data.status,
+                price: data.price || 0,
                 createdAt: data.createdAt?.toDate() || new Date(),
                 updatedAt: data.updatedAt?.toDate() || new Date()
             };
@@ -91,9 +92,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         const body = await request.json() as CreateBootcampInput;
 
         // Validate required fields
-        if (!body.name || !body.description || !body.category || !body.startDate || !body.endDate) {
+        if (!body.name || !body.description || !body.category || !body.startDate || !body.endDate || body.price === undefined) {
             return NextResponse.json<ApiResponse>(
-                { success: false, error: 'Missing required fields: name, description, category, startDate, endDate' },
+                { success: false, error: 'Missing required fields: name, description, category, startDate, endDate, price' },
                 { status: 400 }
             );
         }
@@ -116,7 +117,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             category: body.category,
             startDate: new Date(body.startDate),
             endDate: new Date(body.endDate),
-            status: BootcampStatus.ACTIVE,
+            status: body.status || BootcampStatus.ACTIVE,
+            price: Number(body.price),
             createdAt: now,
             updatedAt: now
         };

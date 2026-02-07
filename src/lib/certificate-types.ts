@@ -53,6 +53,7 @@ export interface Bootcamp {
     startDate: Date;
     endDate: Date;
     status: BootcampStatus;
+    price: number;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -63,6 +64,8 @@ export interface CreateBootcampInput {
     category: BootcampCategory;
     startDate: Date;
     endDate: Date;
+    status?: BootcampStatus;
+    price: number;
 }
 
 export interface UpdateBootcampInput {
@@ -72,6 +75,7 @@ export interface UpdateBootcampInput {
     startDate?: Date;
     endDate?: Date;
     status?: BootcampStatus;
+    price?: number;
 }
 
 // ============================================================================
@@ -84,6 +88,7 @@ export interface Student {
     email: string;
     phone?: string;
     externalId?: string; // For external system integration
+    role?: 'admin' | 'faculty' | 'student';
     enrolledAt: Date;
     createdAt: Date;
 }
@@ -93,6 +98,7 @@ export interface CreateStudentInput {
     email: string;
     phone?: string;
     externalId?: string;
+    role?: 'admin' | 'faculty' | 'student';
 }
 
 export interface UpdateStudentInput {
@@ -100,6 +106,7 @@ export interface UpdateStudentInput {
     email?: string;
     phone?: string;
     externalId?: string;
+    role?: 'admin' | 'faculty' | 'student';
 }
 
 // ============================================================================

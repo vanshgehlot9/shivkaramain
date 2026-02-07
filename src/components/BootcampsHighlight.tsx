@@ -73,7 +73,18 @@ export default function BootcampsHighlight() {
 
                             {/* Cards Container - Desktop (Grid/Flex) */}
                             <div className="hidden lg:col-span-8 lg:flex flex-col md:flex-row gap-6 justify-end">
-                                {/* SPUNK 2025 Card */}
+                                {/* Shivkara Design Lab - Upcoming */}
+                                <TiltCard
+                                    title="Shivkara Design Lab"
+                                    badge="Coming Soon"
+                                    badgeColor="bg-yellow-500"
+                                    image="/bootcamp/bootcampheader.jpeg"
+                                    description="A comprehensive virtual bootcamp mastering the art of User Interface and Experience Design."
+                                    link="/bootcamps/shivkara-design-lab"
+                                    isComingSoon={true}
+                                />
+
+                                {/* SPUNK 2025 - Completed */}
                                 <TiltCard
                                     title="SPUNK 2025"
                                     badge="Completed"
@@ -82,21 +93,21 @@ export default function BootcampsHighlight() {
                                     description="Master modern product design workflows in this intensive, hands-on bootcamp."
                                     link="/bootcamps/spunk-2025"
                                 />
-
-                                {/* NEW UI/UX Virtual Card */}
-                                <TiltCard
-                                    title="UI / UX Virtual"
-                                    badge="Coming Soon"
-                                    badgeColor="bg-yellow-500"
-                                    image="/bootcamp/bootcampheader.jpeg"
-                                    description="A comprehensive virtual bootcamp mastering the art of User Interface and Experience Design."
-                                    link="#"
-                                    isComingSoon={true}
-                                />
                             </div>
 
                             {/* Cards Container - Mobile (Manual Scroll) */}
                             <div className="lg:hidden w-full overflow-x-auto snap-x snap-mandatory -mx-6 px-6 pb-8 no-scrollbar flex gap-4">
+                                <div className="min-w-[85vw] snap-center">
+                                    <TiltCard
+                                        title="Shivkara Design Lab"
+                                        badge="Coming Soon"
+                                        badgeColor="bg-yellow-500"
+                                        image="/bootcamp/bootcampheader.jpeg"
+                                        description="A comprehensive virtual bootcamp mastering the art of User Interface and Experience Design."
+                                        link="/bootcamps/shivkara-design-lab"
+                                        isComingSoon={true}
+                                    />
+                                </div>
                                 <div className="min-w-[85vw] snap-center">
                                     <TiltCard
                                         title="SPUNK 2025"
@@ -105,17 +116,6 @@ export default function BootcampsHighlight() {
                                         image="/bootcamp/bootcampheader.jpeg"
                                         description="Master modern product design workflows in this intensive, hands-on bootcamp."
                                         link="/bootcamps/spunk-2025"
-                                    />
-                                </div>
-                                <div className="min-w-[85vw] snap-center">
-                                    <TiltCard
-                                        title="UI / UX Virtual"
-                                        badge="Coming Soon"
-                                        badgeColor="bg-yellow-500"
-                                        image="/bootcamp/bootcampheader.jpeg"
-                                        description="A comprehensive virtual bootcamp mastering the art of User Interface and Experience Design."
-                                        link="#"
-                                        isComingSoon={true}
                                     />
                                 </div>
                             </div>
@@ -267,14 +267,14 @@ function TiltCard({ title, badge, badgeColor, image, description, link, isComing
                 onMouseLeave={handleMouseLeave}
                 className="relative group cursor-pointer h-full"
             >
-                {isComingSoon ? (
-                    <div className="block h-full relative cursor-default">
-                        {CardContent}
-                    </div>
-                ) : (
+                {link && link !== "#" ? (
                     <Link href={link} className="block h-full relative">
                         {CardContent}
                     </Link>
+                ) : (
+                    <div className="block h-full relative cursor-default">
+                        {CardContent}
+                    </div>
                 )}
             </motion.div>
         </motion.div>

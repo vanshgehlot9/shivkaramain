@@ -22,6 +22,12 @@ export const COLLECTIONS = {
 
   // User Reviews
   REVIEWS: 'reviews',
+
+  // Student Platform
+  SESSIONS: 'sessions',
+  ASSIGNMENTS: 'assignments',
+  REFERRALS: 'referrals',
+  BADGES: 'badges',
 } as const;
 
 export type CollectionName = typeof COLLECTIONS[keyof typeof COLLECTIONS];

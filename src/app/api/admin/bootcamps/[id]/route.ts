@@ -55,6 +55,7 @@ export async function GET(
             startDate: data.startDate?.toDate() || new Date(),
             endDate: data.endDate?.toDate() || new Date(),
             status: data.status,
+            price: data.price || 0,
             createdAt: data.createdAt?.toDate() || new Date(),
             updatedAt: data.updatedAt?.toDate() || new Date()
         };
@@ -126,6 +127,8 @@ export async function PUT(
             updateData.status = body.status;
         }
 
+        if (body.price !== undefined) updateData.price = Number(body.price);
+
         await db.collection(COLLECTIONS.BOOTCAMPS).doc(id).update(updateData);
 
         // Fetch updated document
@@ -140,6 +143,7 @@ export async function PUT(
             startDate: data.startDate?.toDate() || new Date(),
             endDate: data.endDate?.toDate() || new Date(),
             status: data.status,
+            price: data.price || 0,
             createdAt: data.createdAt?.toDate() || new Date(),
             updatedAt: data.updatedAt?.toDate() || new Date()
         };

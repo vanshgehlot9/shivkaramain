@@ -16,6 +16,7 @@ interface Bootcamp {
     startDate: string;
     endDate: string;
     status: string;
+    price: number;
     createdAt: string;
 }
 
@@ -39,6 +40,8 @@ export default function BootcampsPage() {
         category: 'design',
         startDate: '',
         endDate: '',
+        price: '',
+        status: 'active',
     });
     const [submitting, setSubmitting] = useState(false);
 
@@ -91,6 +94,20 @@ export default function BootcampsPage() {
         }
     };
 
+    const handleToggleStatus = async (bootcamp: Bootcamp) => {
+        const newStatus = bootcamp.status === 'active' ? 'completed' : 'active';
+        try {
+            const response = await fetch(`/api/admin/bootcamps/${bootcamp.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus }),
+            });
+            if (response.ok) fetchBootcamps();
+        } catch (error) {
+            console.error('Error updating status:', error);
+        }
+    };
+
     const handleDelete = async (id: string) => {
         if (!confirm('Are you sure you want to delete this bootcamp?')) return;
 
@@ -117,6 +134,8 @@ export default function BootcampsPage() {
             category: 'design',
             startDate: '',
             endDate: '',
+            price: '',
+            status: 'active',
         });
         setShowModal(true);
     };
@@ -129,6 +148,8 @@ export default function BootcampsPage() {
             category: bootcamp.category,
             startDate: new Date(bootcamp.startDate).toISOString().split('T')[0],
             endDate: new Date(bootcamp.endDate).toISOString().split('T')[0],
+            price: bootcamp.price?.toString() || '',
+            status: bootcamp.status,
         });
         setShowModal(true);
     };
@@ -252,9 +273,9 @@ export default function BootcampsPage() {
                                                     <h3 className="font-bold text-lg text-white group-hover:text-pink-200 transition-colors line-clamp-1">
                                                         {bootcamp.name}
                                                     </h3>
-                                                    <span className={`inline-flex items-center px-2 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider border ${getStatusStyle(bootcamp.status)}`}>
+                                                    <button onClick={() => handleToggleStatus(bootcamp)} className={`inline-flex items-center px-2 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider border hover:opacity-80 transition-opacity ${getStatusStyle(bootcamp.status)}`}>
                                                         {bootcamp.status}
-                                                    </span>
+                                                    </button>
                                                 </div>
                                                 <div className="flex gap-1">
                                                     <button
@@ -286,6 +307,9 @@ export default function BootcampsPage() {
                                                     <span>
                                                         {new Date(bootcamp.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {new Date(bootcamp.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                                     </span>
+                                                </div>
+                                                <div className="flex items-center gap-2 text-gray-400">
+                                                    <span className="font-mono text-green-400">₹{bootcamp.price?.toLocaleString()}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -364,6 +388,31 @@ export default function BootcampsPage() {
                                             className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-pink-500 transition-colors resize-none"
                                             placeholder="Describe the bootcamp..."
                                         />
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Price (₹)</label>
+                                            <input
+                                                type="number"
+                                                value={formData.price}
+                                                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                                                required
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-pink-500 transition-colors"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Status</label>
+                                            <select
+                                                value={formData.status}
+                                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-pink-500 transition-colors appearance-none"
+                                            >
+                                                <option value="active" className="bg-[#0a0a0a]">Active</option>
+                                                <option value="completed" className="bg-[#0a0a0a]">Completed</option>
+                                                <option value="cancelled" className="bg-[#0a0a0a]">Cancelled</option>
+                                            </select>
+                                        </div>
                                     </div>
 
                                     <div>

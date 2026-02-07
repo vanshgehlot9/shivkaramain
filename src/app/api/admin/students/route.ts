@@ -39,18 +39,35 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
         let students: Student[] = snapshot.docs.map(doc => {
             const data = doc.data();
+
+            // Helper to safely parse dates (Timestamp | Date | string | null)
+            const parseDate = (d: any) => {
+                if (!d) return new Date();
+                if (typeof d.toDate === 'function') return d.toDate(); // Firestore Timestamp
+                if (d instanceof Date) return d; // Native Date object
+                return new Date(d); // String or other
+            };
+
             return {
                 id: doc.id,
                 fullName: data.fullName,
                 email: data.email,
                 phone: data.phone,
                 externalId: data.externalId,
-                enrolledAt: data.enrolledAt?.toDate() || new Date(),
-                createdAt: data.createdAt?.toDate() || new Date()
+                enrolledAt: parseDate(data.enrolledAt),
+                createdAt: parseDate(data.createdAt)
             };
         });
 
         // Client-side search filter (Firestore doesn't support full-text search)
+        // Also filtering out incomplete records (like Auth users who haven't paid or completed profile)
+        students = students.filter(s =>
+            s.fullName &&
+            s.fullName.trim() !== '' &&
+            s.phone &&
+            s.phone.trim() !== ''
+        );
+
         if (search) {
             const searchLower = search.toLowerCase();
             students = students.filter(s =>
@@ -141,6 +158,16 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         const ipAddress = getIPFromRequest(request);
         const adminEmail = request.headers.get('x-admin-email') || 'unknown';
         await logStudentCreate(studentId, adminEmail, ipAddress, body.fullName);
+
+        // Assign Role (default to 'student' if not specified)
+        const role = body.role || 'student';
+
+        // 1. Set Custom Claim
+        await import('@/lib/auth-utils').then(m => m.setUserRole(studentId, role as any));
+
+        // 2. Store in Firestore (for UI listing)
+        await db.collection(COLLECTIONS.STUDENTS).doc(studentId).update({ role });
+        student.role = role;
 
         return NextResponse.json<ApiResponse<Student>>({
             success: true,

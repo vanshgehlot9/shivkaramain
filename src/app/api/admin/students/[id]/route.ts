@@ -143,6 +143,11 @@ export async function PUT(
         }
         if (body.phone !== undefined) updateData.phone = body.phone;
         if (body.externalId !== undefined) updateData.externalId = body.externalId;
+        if (body.role !== undefined) {
+            updateData.role = body.role;
+            // Update Custom Claim
+            await import('@/lib/auth-utils').then(m => m.setUserRole(id, body.role as any));
+        }
 
         if (Object.keys(updateData).length === 0) {
             return NextResponse.json<ApiResponse>(

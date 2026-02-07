@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import {
     Plus, Mail, Phone, User, Edit2, Trash2, X, Award,
-    Search, Hash, Calendar, GraduationCap, ChevronRight, Sparkles, Clock
+    Search, Hash, Calendar, GraduationCap, ChevronRight, Sparkles, Clock, CheckCircle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TiltCard } from "@/components/admin/TiltCard";
@@ -16,6 +16,7 @@ interface Student {
     externalId?: string;
     enrolledAt: string;
     createdAt: string;
+    paymentStatus?: string; // 'pending_payment' | 'verified' | undefined
 }
 
 export default function StudentsPage() {
@@ -24,11 +25,13 @@ export default function StudentsPage() {
     const [showModal, setShowModal] = useState(false);
     const [editingStudent, setEditingStudent] = useState<Student | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [filterStatus, setFilterStatus] = useState<'all' | 'verified' | 'pending'>('all');
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
         phone: '',
         externalId: '',
+        role: 'student',
     });
     const [submitting, setSubmitting] = useState(false);
 
@@ -47,6 +50,29 @@ export default function StudentsPage() {
             console.error('Error fetching students:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleVerify = async (student: Student) => {
+        if (!confirm(`Confirm payment verification for ${student.fullName}?`)) return;
+
+        try {
+            const response = await fetch(`/api/admin/students/${student.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    externalId: `STU-${Date.now().toString().slice(-6)}`, // Auto-generate ID
+                    paymentStatus: 'verified' // Mark as verified
+                }),
+            });
+            const data = await response.json();
+            if (data.success) {
+                fetchStudents();
+            } else {
+                alert(data.error || 'Failed to verify student');
+            }
+        } catch (error) {
+            console.error('Error verifying student:', error);
         }
     };
 
@@ -106,6 +132,7 @@ export default function StudentsPage() {
             email: '',
             phone: '',
             externalId: '',
+            role: 'student',
         });
         setShowModal(true);
     };
@@ -117,6 +144,7 @@ export default function StudentsPage() {
             email: student.email,
             phone: student.phone || '',
             externalId: student.externalId || '',
+            role: 'student', // Default or fetch if available
         });
         setShowModal(true);
     };
@@ -127,9 +155,19 @@ export default function StudentsPage() {
     };
 
     const filteredStudents = students.filter(
-        (s) =>
-            s.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            s.email.toLowerCase().includes(searchTerm.toLowerCase())
+        (s) => {
+            // Hide students with pending_payment status (not yet paid)
+            if (s.paymentStatus === 'pending_payment') return false;
+
+            const matchesSearch = (s.fullName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (s.email || '').toLowerCase().includes(searchTerm.toLowerCase());
+
+            if (!matchesSearch) return false;
+
+            if (filterStatus === 'verified') return !!s.externalId;
+            if (filterStatus === 'pending') return !s.externalId;
+            return true;
+        }
     );
 
     if (loading) {
@@ -203,6 +241,22 @@ export default function StudentsPage() {
                     </div>
                 </div>
 
+                {/* Filter Tabs */}
+                <div className="flex gap-2 p-1 bg-white/5 rounded-xl w-fit border border-white/10">
+                    {(['all', 'verified', 'pending'] as const).map((tab) => (
+                        <button
+                            key={tab}
+                            onClick={() => setFilterStatus(tab)}
+                            className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${filterStatus === tab
+                                ? 'bg-cyan-600 text-white shadow-lg'
+                                : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                }`}
+                        >
+                            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                        </button>
+                    ))}
+                </div>
+
                 {/* Stats Row */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {[
@@ -253,7 +307,7 @@ export default function StudentsPage() {
                                         {/* Header */}
                                         <div className="flex items-start justify-between">
                                             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center text-cyan-300 text-xl font-bold border border-white/5 shadow-inner">
-                                                {student.fullName.charAt(0).toUpperCase()}
+                                                {(student.fullName || '?').charAt(0).toUpperCase()}
                                             </div>
                                             <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
@@ -273,11 +327,16 @@ export default function StudentsPage() {
 
                                         {/* Info */}
                                         <div>
-                                            <h3 className="text-lg font-bold text-white mb-1 line-clamp-1">{student.fullName}</h3>
-                                            {student.externalId && (
-                                                <div className="flex items-center gap-1.5 text-xs text-cyan-400 mb-3">
-                                                    <Hash size={12} />
-                                                    <span>ID: {student.externalId}</span>
+                                            <h3 className="text-lg font-bold text-white mb-1 line-clamp-1">{student.fullName || 'Unknown Student'}</h3>
+                                            {student.externalId ? (
+                                                <div className="flex items-center gap-1.5 text-xs text-cyan-400 mb-3 bg-cyan-500/10 px-2.5 py-1 rounded-full w-fit">
+                                                    <Award size={12} />
+                                                    <span>Verified: {student.externalId}</span>
+                                                </div>
+                                            ) : (
+                                                <div className="flex items-center gap-1.5 text-xs text-amber-400 mb-3 bg-amber-500/10 px-2.5 py-1 rounded-full w-fit animate-pulse border border-amber-500/20">
+                                                    <Clock size={12} />
+                                                    <span>Payment Verification Pending</span>
                                                 </div>
                                             )}
                                         </div>
@@ -286,7 +345,7 @@ export default function StudentsPage() {
                                         <div className="space-y-3 mt-auto pt-4 border-t border-white/5">
                                             <div className="flex items-center gap-3 text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
                                                 <Mail size={14} className="text-cyan-500/70" />
-                                                <span className="truncate">{student.email}</span>
+                                                <span className="truncate">{student.email || 'No email'}</span>
                                             </div>
                                             {student.phone && (
                                                 <div className="flex items-center gap-3 text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
@@ -301,6 +360,16 @@ export default function StudentsPage() {
                                             </div>
                                         </div>
 
+                                        {/* Action Buttons */}
+                                        {!student.externalId && (
+                                            <button
+                                                onClick={() => handleVerify(student)}
+                                                className="w-full mt-3 py-2 bg-green-600/20 hover:bg-green-600/30 text-green-400 border border-green-600/30 rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-2"
+                                            >
+                                                <CheckCircle size={14} />
+                                                Verify Payment
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </TiltCard>
@@ -422,6 +491,21 @@ export default function StudentsPage() {
                                                         placeholder="ID-123"
                                                     />
                                                 </div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">System Role</label>
+                                            <div className="relative h-full">
+                                                <select
+                                                    value={formData.role || 'student'}
+                                                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-cyan-500 appearance-none cursor-pointer"
+                                                >
+                                                    <option value="student" className="bg-[#0a0a0a]">Student</option>
+                                                    <option value="faculty" className="bg-[#0a0a0a]">Faculty</option>
+                                                    <option value="admin" className="bg-[#0a0a0a]">Admin</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
