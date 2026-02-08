@@ -99,13 +99,66 @@ export default function CertificatePrintPage() {
             // Create canvas from the certificate element
             // IMPORTANT: images must be CORS compliant or data URLs
             const canvas = await html2canvas(element, {
-                scale: 4, // Higher quality (approx 300 DPI)
+                scale: 2,
                 useCORS: true,
                 backgroundColor: '#ffffff',
                 logging: false,
-                onclone: (clonedDoc) => {
+                onclone: (clonedDoc, clonedElement) => {
+                    // CRITICAL: Remove all stylesheets that contain oklab colors
+                    // html2canvas parses stylesheets before we can modify them
+                    const stylesheets = clonedDoc.querySelectorAll('link[rel="stylesheet"], style');
+                    stylesheets.forEach(sheet => {
+                        // Check if it contains oklab
+                        if (sheet.textContent?.includes('oklab') || sheet.tagName === 'LINK') {
+                            sheet.remove();
+                        }
+                    });
+
+                    // Apply computed styles as inline styles to all elements
+                    const allElements = clonedElement.querySelectorAll('*');
+                    allElements.forEach((el) => {
+                        const htmlEl = el as HTMLElement;
+                        const computed = window.getComputedStyle(htmlEl);
+
+                        // Copy essential visual properties as inline styles
+                        htmlEl.style.color = computed.color;
+                        htmlEl.style.backgroundColor = computed.backgroundColor;
+                        htmlEl.style.borderColor = computed.borderColor;
+                        htmlEl.style.fontFamily = computed.fontFamily;
+                        htmlEl.style.fontSize = computed.fontSize;
+                        htmlEl.style.fontWeight = computed.fontWeight;
+                        htmlEl.style.lineHeight = computed.lineHeight;
+                        htmlEl.style.textAlign = computed.textAlign;
+                        htmlEl.style.padding = computed.padding;
+                        htmlEl.style.margin = computed.margin;
+                        htmlEl.style.display = computed.display;
+                        htmlEl.style.flexDirection = computed.flexDirection;
+                        htmlEl.style.justifyContent = computed.justifyContent;
+                        htmlEl.style.alignItems = computed.alignItems;
+                        htmlEl.style.gap = computed.gap;
+                        htmlEl.style.width = computed.width;
+                        htmlEl.style.height = computed.height;
+                        htmlEl.style.position = computed.position;
+                        htmlEl.style.top = computed.top;
+                        htmlEl.style.left = computed.left;
+                        htmlEl.style.right = computed.right;
+                        htmlEl.style.bottom = computed.bottom;
+                        htmlEl.style.borderRadius = computed.borderRadius;
+                        htmlEl.style.borderWidth = computed.borderWidth;
+                        htmlEl.style.borderStyle = computed.borderStyle;
+                        htmlEl.style.opacity = computed.opacity;
+                        htmlEl.style.boxShadow = computed.boxShadow;
+                        htmlEl.style.textTransform = computed.textTransform;
+                        htmlEl.style.letterSpacing = computed.letterSpacing;
+                    });
+
+                    // Also apply to the container itself
+                    const containerComputed = window.getComputedStyle(element);
+                    clonedElement.style.backgroundColor = containerComputed.backgroundColor;
+                    clonedElement.style.color = containerComputed.color;
+
                     // Fix text gradient for PDF generation
-                    const nameElement = clonedDoc.querySelector('.student-name-gradient') as HTMLElement;
+                    const nameElement = clonedElement.querySelector('.student-name-gradient') as HTMLElement;
                     if (nameElement) {
                         nameElement.style.background = 'none';
                         nameElement.style.webkitTextFillColor = '#1e293b';
