@@ -74,8 +74,8 @@ export default function Contact() {
         {
             icon: MapPin,
             label: "Visit HQ",
-            value: "Sardarpura C Road, Jodhpur",
-            link: "https://maps.google.com",
+            value: "Behind Shri Ram Bhojnalaya, 2nd Floor Sunrise Creation Road, 12th A Road, Sardarpura, Jodhpur",
+            link: "https://maps.google.com/?q=Behind+Shri+Ram+Bhojnalaya,+2nd+Floor+Sunrise+Creation+Road,+12th+A+Road,+Sardarpura,+Jodhpur",
             color: "text-emerald-400"
         }
     ];

@@ -73,7 +73,7 @@ export default function Footer() {
                         <div className="space-y-4">
                             <ContactItem icon={Mail} text="info@shivkaradigital.com" href="mailto:info@shivkaradigital.com" />
                             <ContactItem icon={Phone} text="+91 9521699090" href="tel:+919521699090" />
-                            <ContactItem icon={MapPin} text="Sardarpura C Road, Jodhpur, India" href="https://maps.google.com" />
+                            <ContactItem icon={MapPin} text="Behind Shri Ram Bhojnalaya, 2nd Floor Sunrise Creation Road, 12th A Road, Sardarpura, Jodhpur" href="https://maps.google.com/?q=Behind+Shri+Ram+Bhojnalaya,+2nd+Floor+Sunrise+Creation+Road,+12th+A+Road,+Sardarpura,+Jodhpur" />
                         </div>
                     </div>
 

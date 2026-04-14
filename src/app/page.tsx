@@ -9,7 +9,7 @@ import Insights from "@/components/Insights";
 import Certifications from "@/components/Certifications";
 import Results from "@/components/Results";
 import UnifiedProcess from "@/components/UnifiedProcess";
-import FutureEngineering from "@/components/FutureEngineering";
+import SummerInternship2026 from "@/components/SummerInternship2026";
 import BootcampsHighlight from "@/components/BootcampsHighlight";
 import Stats from "@/components/Stats";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -48,7 +48,7 @@ export default function Home() {
       <UnifiedProcess />
       <Results />
       <BootcampsHighlight />
-      <FutureEngineering />
+      <SummerInternship2026 />
       <Testimonials />
       <CostEstimator />
       <WhyUs />

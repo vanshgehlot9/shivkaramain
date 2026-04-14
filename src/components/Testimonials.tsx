@@ -8,53 +8,77 @@ import { db } from "@/lib/firebase";
 import { COLLECTIONS } from "@/lib/firebase-collections";
 import SpotlightCard from "./ui/SpotlightCard";
 
-// Initial static testimonials
+// Curated client testimonials
 const staticTestimonials = [
     {
         id: "static-1",
-        name: "Rajesh Kumar",
-        role: "CEO, TechFlow",
-        content: "Shivkara Digital transformed our operations. Their ability to translate complex requirements into elegant code is unmatched.",
+        name: "Sawai Singh",
+        role: "Owner, Vehicle on Rent • Jaipur",
+        content: "Very professional team. They helped us improve our online visibility and customer inquiries started increasing within weeks.",
         rating: 5,
         static: true
     },
     {
         id: "static-2",
-        name: "Priya Sharma",
-        role: "Founder, DesignStudio",
-        content: "The attention to UI detail paired with robust backend performance is rare. They delivered our app ahead of schedule.",
+        name: "Nikki Moolchandani",
+        role: "Nikki Fashion • Jodhpur",
+        content: "Our brand presentation became much better after working with Shivkara. The communication and execution were both smooth.",
         rating: 5,
         static: true
     },
     {
         id: "static-3",
-        name: "Amit Patel",
-        role: "Director, RetailGiant",
-        content: "Our e-commerce conversion rate doubled after the redesign. Their data-driven approach to UX is incredibly effective.",
+        name: "Himanshu Tak",
+        role: "Owner, Jee Ri Haveli • Jodhpur",
+        content: "They understood our hospitality requirements clearly and delivered a clean digital experience for our guests.",
         rating: 5,
         static: true
     },
     {
         id: "static-4",
-        name: "Sarah Jenkins",
-        role: "CTO, InnovateX",
-        content: "Scalability was our main concern, and Shivkara nailed it. The architecture they built handles our traffic spikes effortlessly.",
+        name: "Vartika Singh",
+        role: "Owner, Jee Tours • Delhi",
+        content: "From planning to final delivery, the process was clear and reliable. We saw better trust from customers online.",
         rating: 5,
         static: true
     },
     {
         id: "static-5",
-        name: "David Chen",
-        role: "VP Engineering, CloudScale",
-        content: "Best dev shop we've worked with. Period. The code quality is top-tier.",
+        name: "Ashutosh Jhanwar",
+        role: "Owner, Mitss.Store",
+        content: "The team was responsive and detail-oriented. Our store workflows and digital branding both improved significantly.",
         rating: 5,
         static: true
     },
     {
         id: "static-6",
-        name: "Elena Rodriguez",
-        role: "Product Lead, FinSolve",
-        content: "They understood our domain constraints perfectly. Secure, compliant, and fast.",
+        name: "Mukesh Choudhary",
+        role: "Owner, Fusion IOT • Jaipur",
+        content: "Strong technical understanding and practical suggestions. They helped us shape our digital direction with confidence.",
+        rating: 5,
+        static: true
+    },
+    {
+        id: "static-7",
+        name: "Mr Naresh",
+        role: "Owner, Prasukh Food • Jaipur",
+        content: "We needed a simple and effective online presence, and Shivkara delivered exactly that with a professional finish.",
+        rating: 5,
+        static: true
+    },
+    {
+        id: "static-8",
+        name: "Mr Garvit Sankhla",
+        role: "Eat Affairs • Jodhpur",
+        content: "Their design and content support gave our brand a more premium feel. Great experience working with the team.",
+        rating: 5,
+        static: true
+    },
+    {
+        id: "static-9",
+        name: "Mr Caron Rawnsley",
+        role: "Founder, Step Well Renovater Foundation • Trust of Mehrangarh Fort",
+        content: "They respected the heritage context of our work and presented our foundation online in a thoughtful, impactful way.",
         rating: 5,
         static: true
     }
@@ -105,7 +129,7 @@ export default function Testimonials() {
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                             </span>
-                            <span className="text-green-500 font-mono text-xs tracking-widest uppercase">/// Live Feedback</span>
+                            <span className="text-green-500 font-mono text-xs tracking-widest uppercase">/// Client Reviews</span>
                         </div>
                         <h2 className="text-4xl md:text-6xl font-black uppercase text-white tracking-tighter leading-[0.9]">
                             What They <br />

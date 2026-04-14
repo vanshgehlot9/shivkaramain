@@ -83,6 +83,7 @@ export default function AdminWrapper({ children }: { children: React.ReactNode }
         {
             section: "MANAGEMENT", items: [
                 { icon: Users, label: "Leads", href: "/admin/leads" },
+                { icon: Users, label: "Internship", href: "/admin/internship" },
                 { icon: Briefcase, label: "Clients", href: "/admin/clients" },
                 { icon: Users, label: "Students", href: "/admin/students" },
             ]

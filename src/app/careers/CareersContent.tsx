@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
-import { Calendar, Palette, Brain, BarChart, Smartphone, Megaphone, Clock, Lock } from "lucide-react";
+import { Calendar, Palette, Brain, BarChart, Smartphone, Megaphone, ArrowRight } from "lucide-react";
 
 export default function CareersContent() {
     const courses = [
@@ -36,10 +37,10 @@ export default function CareersContent() {
                         transition={{ delay: 0.1 }}
                         className="text-5xl md:text-8xl font-black uppercase tracking-tighter mb-8"
                     >
-                        Join the <span className="text-transparent bg-clip-text bg-gradient-to-r from-shivkara-orange to-yellow-500">Revolution</span>
+                        Launch Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-shivkara-orange to-yellow-500">Tech Career</span>
                     </motion.h1>
                     <p className="text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
-                        We don't just offer jobs; we offer a launchpad for your career. Learn, build, and ship with the best minds in the industry.
+                        Join our Summer Internship 2026 and gain real-world experience in Web Development, UI/UX Design, Generative AI, and more.
                     </p>
                 </div>
             </section>
@@ -59,26 +60,26 @@ export default function CareersContent() {
                         <div className="relative z-10">
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
                                 <div>
-                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-shivkara-orange/10 border border-shivkara-orange/30 rounded-full text-shivkara-orange text-xs font-bold uppercase tracking-wider mb-4">
-                                        <Clock className="w-3 h-3" /> Coming Soon
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-emerald-400 text-xs font-bold uppercase tracking-wider mb-4">
+                                        <Calendar className="w-3 h-3" /> Now Open
                                     </div>
                                     <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight">
-                                        Summer Internship <br /> & Training '26
+                                        Summer Internship <br /> 2026
                                     </h2>
                                 </div>
                                 <div className="text-right hidden md:block">
                                     <div className="text-2xl font-bold text-white flex items-center justify-end gap-3">
                                         <Calendar className="w-6 h-6 text-shivkara-orange" />
-                                        1 May - 30 July
+                                        May - July 2026
                                     </div>
-                                    <p className="text-gray-500 text-sm font-mono mt-1">Duration: 3 Months</p>
+                                    <p className="text-gray-500 text-sm font-mono mt-1">Duration: 45-60 Days</p>
                                 </div>
                             </div>
 
                             {/* Mobile Date Display */}
                             <div className="flex items-center gap-3 md:hidden mb-8 text-white font-bold text-xl">
                                 <Calendar className="w-5 h-5 text-shivkara-orange" />
-                                1 May - 30 July
+                                May - July 2026
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
@@ -91,19 +92,16 @@ export default function CareersContent() {
                                 ))}
                             </div>
 
-                            <div className="flex flex-col md:flex-row items-center justify-between gap-6 bg-white/5 rounded-2xl p-6 border border-white/5">
-                                <div className="flex items-center gap-4">
-                                    <div className="p-3 bg-white/10 rounded-full">
-                                        <Lock className="w-6 h-6 text-gray-400" />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-400 font-mono uppercase tracking-wider">Program Fee</p>
-                                        <p className="text-xl font-bold text-white">Revealing Soon</p>
-                                    </div>
+                            <div className="flex flex-col md:flex-row items-center justify-between gap-6 bg-gradient-to-r from-shivkara-orange/10 to-yellow-500/10 rounded-2xl p-8 border border-shivkara-orange/30">
+                                <div>
+                                    <p className="text-sm text-gray-400 font-mono uppercase tracking-wider mb-1">Program Details</p>
+                                    <p className="text-lg text-white font-bold">Onsite • UI/UX Design • Full Stack Development • Generative AI</p>
+                                    <p className="text-sm text-gray-400 mt-2">Flexible timeline: 45 or 60 days | Multiple domains available</p>
                                 </div>
-                                <button disabled className="px-8 py-3 bg-white/10 text-gray-400 font-bold rounded-full cursor-not-allowed border border-white/5 w-full md:w-auto">
-                                    Enrollment Opens Shortly
-                                </button>
+                                <Link href="/internship" className="px-8 py-3 bg-shivkara-orange text-black font-bold rounded-full hover:bg-yellow-500 transition-colors w-full md:w-auto inline-flex items-center justify-center gap-2 whitespace-nowrap">
+                                    Apply Now
+                                    <ArrowRight className="w-4 h-4" />
+                                </Link>
                             </div>
                         </div>
                     </motion.div>

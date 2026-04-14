@@ -78,7 +78,7 @@ export default function Contact() {
                         <div className="absolute inset-0 z-10 pointer-events-none bg-[url('/grid.svg')] opacity-10" />
 
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.3976864194487!2d75.77123957613583!3d26.85908226238697!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db5c450165555%3A0x6a04df9045731b53!2sMansarovar%20Plaza!5e0!3m2!1sen!2sin!4v1709123456789!5m2!1sen!2sin"
+                            src="https://maps.google.com/maps?q=Behind%20Shri%20Ram%20Bhojnalaya%2C%202nd%20Floor%20Sunrise%20Creation%20Road%2C%2012th%20A%20Road%2C%20Sardarpura%2C%20Jodhpur&output=embed"
                             width="100%"
                             height="100%"
                             style={{ border: 0, filter: 'grayscale(100%) invert(92%) contrast(83%)' }}
@@ -96,9 +96,9 @@ export default function Contact() {
                                 <div>
                                     <h3 className="text-xl font-bold text-white mb-2">HQ Coordinates</h3>
                                     <p className="text-gray-400 text-sm font-mono leading-relaxed">
-                                        Floor No 5, Office No. 518,<br />
-                                        Mansarovar Plaza, Jaipur<br />
-                                        <span className="text-xs text-shivkara-orange/70 mt-1 block">LAT: 26.8590° N, LONG: 75.7712° E</span>
+                                        Behind Shri Ram Bhojnalaya,<br />
+                                        2nd Floor Sunrise Creation Road,<br />
+                                        12th A Road, Sardarpura, Jodhpur
                                     </p>
                                 </div>
                             </div>

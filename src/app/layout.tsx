@@ -74,7 +74,7 @@ const jsonLd = {
   },
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "Mansarovar Plaza",
+    "streetAddress": "Behind Shri Ram Bhojnalaya, 2nd Floor Sunrise Creation Road, 12th A Road, Sardarpura",
     "addressLocality": "Jodhpur",
     "addressRegion": "RJ",
     "postalCode": "342001",

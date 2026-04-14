@@ -11,7 +11,7 @@ export const SEO_CONFIG = {
   businessInfo: {
     name: 'Shivkara Digitals',
     address: {
-      street: 'Business District',
+      street: 'Behind Shri Ram Bhojnalaya, 2nd Floor Sunrise Creation Road, 12th A Road, Sardarpura',
       city: 'Jodhpur',
       state: 'Rajasthan',
       country: 'India',

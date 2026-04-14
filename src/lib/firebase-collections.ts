@@ -28,6 +28,9 @@ export const COLLECTIONS = {
   ASSIGNMENTS: 'assignments',
   REFERRALS: 'referrals',
   BADGES: 'badges',
+
+  // Internship Program
+  INTERNSHIP_APPLICATIONS: 'internship_applications',
 } as const;
 
 export type CollectionName = typeof COLLECTIONS[keyof typeof COLLECTIONS];

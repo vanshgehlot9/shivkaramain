@@ -271,6 +271,23 @@ export async function createLead(data: {
   });
 }
 
+// Internship Applications API
+export async function getInternshipApplications(page: number = 1, limit: number = 20, search: string = "") {
+  const params = new URLSearchParams();
+  params.append("page", page.toString());
+  params.append("limit", limit.toString());
+  if (search) params.append("search", search);
+
+  return apiRequest<any>(`/internship?${params.toString()}`);
+}
+
+export async function updateInternshipApplicationStatus(id: string, status: 'pending' | 'approved' | 'declined') {
+  return apiRequest<any>(`/internship/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status }),
+  });
+}
+
 // Reports API
 export async function getReport(type: string, startDate: string, endDate: string) {
   const queryParams = new URLSearchParams();

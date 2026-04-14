@@ -138,7 +138,7 @@ export default function LetsTalk() {
                                         <MapPin size={16} />
                                         <span className="text-xs font-bold tracking-widest uppercase">Jodhpur, India</span>
                                     </div>
-                                    <p className="text-sm text-gray-300">Sardarpura C Road, Rajasthan 342001</p>
+                                    <p className="text-sm text-gray-300">Behind Shri Ram Bhojnalaya, 2nd Floor Sunrise Creation Road, 12th A Road, Sardarpura, Jodhpur</p>
                                 </div>
                             </div>
                         </motion.div>

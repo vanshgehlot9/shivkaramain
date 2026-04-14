@@ -42,7 +42,11 @@ export default function LeadsPage() {
             result = result.filter(l =>
                 l.name.toLowerCase().includes(lower) ||
                 l.email.toLowerCase().includes(lower) ||
-                l.phone?.includes(searchTerm)
+                l.phone?.includes(searchTerm) ||
+                l.domain?.toLowerCase?.().includes(lower) ||
+                l.timeline?.toLowerCase?.().includes(lower) ||
+                l.city?.toLowerCase?.().includes(lower) ||
+                l.source?.toLowerCase?.().includes(lower)
             );
         }
         // Filter logic can be extended here if leads have status
@@ -177,6 +181,26 @@ export default function LeadsPage() {
                                         <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 text-sm text-gray-300">
                                             <MapPin size={16} />
                                             <span>{lead.company} {lead.budget ? `(${lead.budget})` : ''}</span>
+                                        </div>
+                                    )}
+
+                                    {(lead.domain || lead.timeline || lead.source) && (
+                                        <div className="flex flex-wrap gap-2">
+                                            {lead.domain && (
+                                                <span className="px-2 py-1 rounded-lg bg-shivkara-orange/10 border border-shivkara-orange/30 text-[10px] uppercase tracking-wider text-shivkara-orange font-mono">
+                                                    Domain: {lead.domain}
+                                                </span>
+                                            )}
+                                            {lead.timeline && (
+                                                <span className="px-2 py-1 rounded-lg bg-blue-500/10 border border-blue-500/30 text-[10px] uppercase tracking-wider text-blue-300 font-mono">
+                                                    Timeline: {lead.timeline}
+                                                </span>
+                                            )}
+                                            {lead.source && (
+                                                <span className="px-2 py-1 rounded-lg bg-white/5 border border-white/15 text-[10px] uppercase tracking-wider text-gray-300 font-mono">
+                                                    {lead.source}
+                                                </span>
+                                            )}
                                         </div>
                                     )}
                                 </div>

@@ -242,7 +242,7 @@ function TiltCard({ title, badge, badgeColor, image, description, link, isComing
                         </div>
                     )}
                     <span className="flex items-center gap-2 text-xs font-bold text-white uppercase tracking-wider group-hover:translate-x-1 transition-transform ml-auto">
-                        {isComingSoon ? "Starting From 23 Feb" : "Explore"} <ArrowRight className="w-3 h-3" />
+                        {isComingSoon ? "Coming Soon" : "Explore"} <ArrowRight className="w-3 h-3" />
                     </span>
                 </div>
             </div>
