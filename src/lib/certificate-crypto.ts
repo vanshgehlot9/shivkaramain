@@ -84,6 +84,9 @@ function createSigningPayload(certificate: {
     studentName: string;
     bootcampName?: string;
     internshipName?: string;
+    mentorName?: string;
+    mentorTitle?: string;
+    mentorSignature?: string;
     completionDate: Date;
     issuedAt: Date;
     issuingAuthority: string;
@@ -96,6 +99,9 @@ function createSigningPayload(certificate: {
         studentName: certificate.studentName,
         bootcampName: certificate.bootcampName,
         internshipName: certificate.internshipName,
+        mentorName: certificate.mentorName,
+        mentorTitle: certificate.mentorTitle,
+        mentorSignature: certificate.mentorSignature,
         completionDate: certificate.completionDate.toISOString(),
         issuedAt: certificate.issuedAt.toISOString(),
         issuingAuthority: certificate.issuingAuthority
@@ -117,6 +123,9 @@ export function signCertificate(certificate: {
     studentName: string;
     bootcampName?: string;
     internshipName?: string;
+    mentorName?: string;
+    mentorTitle?: string;
+    mentorSignature?: string;
     completionDate: Date;
     issuedAt: Date;
     issuingAuthority: string;
@@ -148,6 +157,9 @@ export function verifySignature(certificate: Certificate): boolean {
             studentName: certificate.studentName,
             bootcampName: certificate.bootcampName || '',
             internshipName: certificate.internshipName,
+            mentorName: certificate.mentorName,
+            mentorTitle: certificate.mentorTitle,
+            mentorSignature: certificate.mentorSignature,
             completionDate: certificate.completionDate,
             issuedAt: certificate.issuedAt,
             issuingAuthority: certificate.issuingAuthority
