@@ -9,9 +9,12 @@ import QRCode from 'qrcode';
 
 interface CertificateData {
     id: string;
+    type?: string;
     studentName: string;
-    bootcampName: string;
-    bootcampCategory: string;
+    bootcampName?: string;
+    bootcampCategory?: string;
+    internshipName?: string;
+    internshipCategory?: string;
     completionDate: string;
     issuedAt: string;
 }
@@ -23,6 +26,7 @@ export default function CertificatePrintPage() {
     const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [downloading, setDownloading] = useState(false);
+    const [printing, setPrinting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -85,8 +89,54 @@ export default function CertificatePrintPage() {
         });
     };
 
-    const handlePrint = () => {
-        window.print();
+    const waitForImagesAndFonts = async (root: HTMLElement) => {
+        try {
+            // Wait for fonts to be ready (modern browsers)
+            if ('fonts' in document && document.fonts?.ready) {
+                await document.fonts.ready;
+            }
+
+            // Wait for all images inside the root to decode
+            const imgs = Array.from(root.querySelectorAll('img')) as HTMLImageElement[];
+            await Promise.all(imgs.map(async (img) => {
+                if (img.complete && img.naturalWidth > 0) return;
+
+                if (typeof img.decode === 'function') {
+                    try {
+                        await img.decode();
+                        return;
+                    } catch {
+                        // Fall back to events below
+                    }
+                }
+
+                await new Promise<void>((resolve) => {
+                    img.addEventListener('load', () => resolve(), { once: true });
+                    img.addEventListener('error', () => resolve(), { once: true });
+                });
+            }));
+
+            // Let layout settle before snapshotting
+            await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+        } catch (err) {
+            // swallow errors - best-effort
+            console.warn('Error waiting for assets', err);
+        }
+    };
+
+    const handlePrint = async () => {
+        const element = document.getElementById('certificate-container');
+        if (!element) return window.print();
+
+        try {
+            setPrinting(true);
+            await waitForImagesAndFonts(element);
+            // small delay to ensure layout stabilises
+            await new Promise(r => setTimeout(r, 150));
+            window.print();
+        } finally {
+            setPrinting(false);
+        }
     };
 
     const handleDownload = async () => {
@@ -96,12 +146,18 @@ export default function CertificatePrintPage() {
         setDownloading(true);
 
         try {
+            // Ensure fonts and images are loaded before snapshotting
+            await waitForImagesAndFonts(element);
+            await new Promise(resolve => setTimeout(resolve, 250));
+
             // Create canvas from the certificate element
             // IMPORTANT: images must be CORS compliant or data URLs
+            const scale = window.devicePixelRatio >= 2 ? 4 : 3;
             const canvas = await html2canvas(element, {
-                scale: 2,
+                scale,
                 useCORS: true,
                 backgroundColor: '#ffffff',
+                imageTimeout: 10000,
                 logging: false,
                 onclone: (clonedDoc, clonedElement) => {
                     // CRITICAL: Remove all stylesheets that contain oklab colors
@@ -183,7 +239,8 @@ export default function CertificatePrintPage() {
 
             // Generate filename
             const studentName = certificate.studentName.replace(/\s+/g, '_');
-            const filename = `Certificate_${studentName}_${certificate.bootcampName || 'Bootcamp'}.pdf`;
+            const projectName = certificate.type === 'internship' ? (certificate.internshipName || 'Internship') : (certificate.bootcampName || 'Bootcamp');
+            const filename = `Certificate_${studentName}_${projectName}.pdf`;
 
             // Download
             pdf.save(filename);
@@ -224,9 +281,14 @@ export default function CertificatePrintPage() {
     }
 
     // Generate certificate ID format
-    const bootcampCode = (certificate.bootcampName || 'BOOTCAMP').replace(/\s+/g, '').substring(0, 8).toUpperCase();
+    let typeCode = '';
+    if (certificate.type === 'internship') {
+        typeCode = (certificate.internshipName || 'INTERN').replace(/\s+/g, '').substring(0, 8).toUpperCase();
+    } else {
+        typeCode = (certificate.bootcampName || 'BOOTCAMP').replace(/\s+/g, '').substring(0, 8).toUpperCase();
+    }
     const idSuffix = (certificate.id || '0000').substring(0, 4).toUpperCase();
-    const formattedCertId = `SKD-${bootcampCode}-${idSuffix}`;
+    const formattedCertId = `SKD-${typeCode}-${idSuffix}`;
 
     return (
         <>
@@ -320,10 +382,20 @@ export default function CertificatePrintPage() {
                         </button>
                         <button
                             onClick={handlePrint}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-colors font-medium"
+                            disabled={printing}
+                            className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <Printer size={18} />
-                            Print
+                            {printing ? (
+                                <>
+                                    <Loader2 size={18} className="animate-spin" />
+                                    Preparing...
+                                </>
+                            ) : (
+                                <>
+                                    <Printer size={18} />
+                                    Print
+                                </>
+                            )}
                         </button>
                     </div>
                 </div>
@@ -384,7 +456,7 @@ export default function CertificatePrintPage() {
                                     Certificate of
                                 </p>
                                 <h1 className="text-5xl text-slate-900 uppercase tracking-widest leading-none" style={{ fontFamily: "'Playfair Display', serif" }}>
-                                    Participation
+                                    {certificate.type === 'internship' ? 'Completion' : 'Participation'}
                                 </h1>
                             </div>
                         </header>
@@ -408,7 +480,7 @@ export default function CertificatePrintPage() {
                             </div>
 
                             <p className="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto mb-4 font-light">
-                                has successfully attended the <span className="font-semibold text-slate-900">{certificate.bootcampName || 'Bootcamp'}</span> Bootcamp,
+                                has successfully {certificate.type === 'internship' ? 'completed the internship in' : 'attended the'} <span className="font-semibold text-slate-900">{certificate.type === 'internship' ? certificate.internshipName : certificate.bootcampName || 'Bootcamp'}</span> {certificate.type !== 'internship' && 'Bootcamp,'}
                                 <br />demonstrating dedication and commitment to excellence.
                             </p>
 
@@ -421,71 +493,42 @@ export default function CertificatePrintPage() {
                         <footer className="mt-8 pt-8 flex items-end justify-between">
                             {/* Left Signatures */}
                             <div className="flex gap-16">
-                                {/* Sawai Singh */}
+                                {/* Founder */}
                                 <div className="text-center relative">
                                     <div className="h-16 flex items-end justify-center mb-2">
                                         <img
-                                            src="/signature/sawaisingh.png"
-                                            alt="Signature"
+                                            src="/signature/vansh.png"
+                                            alt="Founder Signature"
                                             className="h-16 w-auto object-contain signature-img"
                                         />
                                     </div>
                                     <div className="border-t border-slate-800 pt-2 w-32 mx-auto">
-                                        <p className="font-bold text-slate-900 text-sm">Sawai Singh</p>
+                                        <p className="font-bold text-slate-900 text-sm">Vansh Gehlot</p>
                                         <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">Founder</p>
                                     </div>
                                 </div>
 
-                                {/* Ashutosh Singh */}
+                                {/* Mentor / Tutor */}
                                 <div className="text-center">
                                     <div className="h-16 flex items-end justify-center mb-2">
                                         <img
-                                            src="/signature/ashutosh.png"
-                                            alt="Signature"
+                                            src={`/signature/${certificate.mentorSignature || 'tutor.PNG'}`}
+                                            alt={`${certificate.mentorName || 'UI/Web Designer'} Signature`}
                                             className="h-16 w-auto object-contain signature-img"
                                         />
                                     </div>
                                     <div className="border-t border-slate-800 pt-2 w-32 mx-auto">
-                                        <p className="font-bold text-slate-900 text-sm">Ashutosh Singh</p>
-                                        <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">Training Incharge</p>
-                                    </div>
-                                </div>
-
-                                {/* Mohit */}
-                                <div className="text-center">
-                                    <div className="h-16 flex items-end justify-center mb-2">
-                                        <img
-                                            src="/signature/mohit.png"
-                                            alt="Signature"
-                                            className="h-16 w-auto object-contain signature-img"
-                                        />
-                                    </div>
-                                    <div className="border-t border-slate-800 pt-2 w-32 mx-auto">
-                                        <p className="font-bold text-slate-900 text-sm">Mohit</p>
-                                        <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">Mentor</p>
+                                        <p className="font-bold text-slate-900 text-sm">{certificate.mentorName || 'UI/Web Designer'}</p>
+                                        <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">{certificate.mentorTitle || 'Signature'}</p>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Right QR Info */}
+                            {/* Right Info */}
                             <div className="flex items-end gap-6">
                                 <div className="text-right">
                                     <p className="text-[10px] text-slate-400 uppercase tracking-widest mb-1">Certificate ID</p>
                                     <p className="font-mono text-xs text-slate-600 tracking-wide mb-3">{formattedCertId}</p>
-
-                                    <p className="text-[10px] font-medium text-slate-500">Scan to Verify</p>
-                                    <p className="text-[10px] text-slate-400">Shivkara Digital</p>
-                                </div>
-                                <div className="bg-white p-1.5 rounded border border-slate-100 shadow-sm">
-                                    {qrCodeDataUrl ? (
-                                        <img
-                                            src={qrCodeDataUrl}
-                                            alt="QR Code"
-                                            className="w-16 h-16"
-                                        />
-                                    ) : (
-                                        <div className="w-16 h-16 bg-slate-100 animate-pulse rounded" />
-                                    )}
                                 </div>
                             </div>
                         </footer>

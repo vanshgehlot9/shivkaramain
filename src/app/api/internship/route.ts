@@ -47,23 +47,6 @@ export async function POST(request: NextRequest) {
 
         const docRef = await db.collection(COLLECTIONS.INTERNSHIP_APPLICATIONS).add(internshipApplication);
 
-        // Optional mirror entry to lead pipeline for existing admin workflows
-        await db.collection(COLLECTIONS.LEADS).add({
-            name,
-            email,
-            phone,
-            company: collegeOrCompany || "",
-            budget: `${domain} | ${timeline}`,
-            domain,
-            timeline,
-            city: city || "",
-            message: message || "Internship application submitted from website.",
-            status: "new",
-            source: "website_internship_2026",
-            internshipApplicationId: docRef.id,
-            createdAt: new Date(),
-        });
-
         await sendLeadNotification({
             name: internshipApplication.name,
             email: internshipApplication.email,

@@ -11,6 +11,9 @@ interface CertificateData {
     bootcampCategory: string;
     completionDate: string;
     issuedAt: string;
+    mentorName?: string;
+    mentorTitle?: string;
+    mentorSignature?: string;
 }
 
 export default function CertificatePrintPage() {
@@ -105,6 +108,9 @@ export default function CertificatePrintPage() {
             dateOfParticipation={formatDate(certificate.completionDate)}
             certificateId={formattedCertId}
             qrCodeUrl={qrCodeUrl}
+            mentorName={certificate.mentorName}
+            mentorTitle={certificate.mentorTitle}
+            mentorSignature={certificate.mentorSignature}
         />
     );
 }

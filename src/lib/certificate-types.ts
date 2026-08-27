@@ -13,6 +13,11 @@ export enum CertificateStatus {
     EXPIRED = 'expired'
 }
 
+export enum CertificateType {
+    BOOTCAMP = 'bootcamp',
+    INTERNSHIP = 'internship'
+}
+
 export enum BootcampStatus {
     ACTIVE = 'active',
     COMPLETED = 'completed',
@@ -115,13 +120,20 @@ export interface UpdateStudentInput {
 
 export interface Certificate {
     id: string; // SHA-256 hash-based
+    type?: CertificateType;
     studentId: string;
-    bootcampId: string;
+    bootcampId?: string;
+    internshipId?: string;
     // Denormalized data for long-term validity
     studentName: string;
     studentEmail: string;
-    bootcampName: string;
-    bootcampCategory: BootcampCategory;
+    bootcampName?: string;
+    bootcampCategory?: BootcampCategory;
+    internshipName?: string;
+    internshipCategory?: string;
+    mentorName?: string;
+    mentorTitle?: string;
+    mentorSignature?: string;
     // Certificate details
     completionDate: Date;
     issuedAt: Date;
@@ -141,8 +153,15 @@ export interface Certificate {
 }
 
 export interface IssueCertificateInput {
+    type?: CertificateType;
     studentId: string;
-    bootcampId: string;
+    bootcampId?: string;
+    internshipId?: string;
+    internshipName?: string;
+    internshipCategory?: string;
+    mentorName?: string;
+    mentorTitle?: string;
+    mentorSignature?: string;
     completionDate: Date;
 }
 
@@ -154,9 +173,14 @@ export interface RevokeCertificateInput {
 export interface CertificateSigningPayload {
     id: string;
     studentId: string;
-    bootcampId: string;
+    bootcampId?: string;
+    internshipId?: string;
     studentName: string;
-    bootcampName: string;
+    bootcampName?: string;
+    internshipName?: string;
+    mentorName?: string;
+    mentorTitle?: string;
+    mentorSignature?: string;
     completionDate: string; // ISO string
     issuedAt: string; // ISO string
     issuingAuthority: string;
@@ -178,8 +202,11 @@ export interface VerificationResult {
 export interface PublicCertificateData {
     certificateId: string;
     studentName: string;
-    bootcampName: string;
-    bootcampCategory: BootcampCategory;
+    type?: CertificateType;
+    bootcampName?: string;
+    bootcampCategory?: BootcampCategory;
+    internshipName?: string;
+    internshipCategory?: string;
     completionDate: Date;
     issuedAt: Date;
     issuingAuthority: string;

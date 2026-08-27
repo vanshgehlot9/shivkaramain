@@ -33,7 +33,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         const search = searchParams.get('search');
         const limit = parseInt(searchParams.get('limit') || '100');
 
-        let query = db.collection(COLLECTIONS.STUDENTS).orderBy('createdAt', 'desc').limit(limit);
+        const query = db.collection(COLLECTIONS.STUDENTS).orderBy('createdAt', 'desc').limit(limit);
 
         const snapshot = await query.get();
 
@@ -41,11 +41,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             const data = doc.data();
 
             // Helper to safely parse dates (Timestamp | Date | string | null)
-            const parseDate = (d: any) => {
+            const parseDate = (d: unknown) => {
                 if (!d) return new Date();
-                if (typeof d.toDate === 'function') return d.toDate(); // Firestore Timestamp
+                if (typeof d === 'object' && d !== null && 'toDate' in d && typeof (d as { toDate?: unknown }).toDate === 'function') {
+                    return (d as { toDate: () => Date }).toDate(); // Firestore Timestamp
+                }
                 if (d instanceof Date) return d; // Native Date object
-                return new Date(d); // String or other
+                return new Date(String(d)); // String or other
             };
 
             return {
@@ -60,13 +62,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         });
 
         // Client-side search filter (Firestore doesn't support full-text search)
-        // Also filtering out incomplete records (like Auth users who haven't paid or completed profile)
-        students = students.filter(s =>
-            s.fullName &&
-            s.fullName.trim() !== '' &&
-            s.phone &&
-            s.phone.trim() !== ''
-        );
+        // Keep students with a valid fullName. Previously we filtered out records
+        // missing `phone`, which hid students created without phone numbers.
+        students = students.filter(s => s.fullName && s.fullName.trim() !== '');
 
         if (search) {
             const searchLower = search.toLowerCase();
@@ -160,10 +158,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         await logStudentCreate(studentId, adminEmail, ipAddress, body.fullName);
 
         // Assign Role (default to 'student' if not specified)
-        const role = body.role || 'student';
+        const role: 'admin' | 'faculty' | 'student' = body.role || 'student';
 
         // 1. Set Custom Claim
-        await import('@/lib/auth-utils').then(m => m.setUserRole(studentId, role as any));
+        await import('@/lib/auth-utils').then(m => m.setUserRole(studentId, role));
 
         // 2. Store in Firestore (for UI listing)
         await db.collection(COLLECTIONS.STUDENTS).doc(studentId).update({ role });

@@ -61,7 +61,17 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
                 revokedAt: data.revokedAt?.toDate(),
                 revocationReason: data.revocationReason,
                 createdAt: data.createdAt?.toDate(),
-                updatedAt: data.updatedAt?.toDate()
+                updatedAt: data.updatedAt?.toDate(),
+                
+                // Add missing properties
+                type: data.type,
+                internshipId: data.internshipId,
+                internshipName: data.internshipName,
+                internshipCategory: data.internshipCategory,
+                mentorName: data.mentorName,
+                mentorTitle: data.mentorTitle,
+                mentorSignature: data.mentorSignature,
+                cloudinaryUrl: data.cloudinaryUrl
             };
         });
 
@@ -105,9 +115,16 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         const body = await request.json() as IssueCertificateInput;
 
         // Validate required fields
-        if (!body.studentId || !body.bootcampId || !body.completionDate) {
+        if (!body.studentId || !body.completionDate) {
             return NextResponse.json<ApiResponse>(
-                { success: false, error: 'Missing required fields: studentId, bootcampId, completionDate' },
+                { success: false, error: 'Missing required fields: studentId, completionDate' },
+                { status: 400 }
+            );
+        }
+        
+        if (!body.bootcampId && !body.internshipId) {
+            return NextResponse.json<ApiResponse>(
+                { success: false, error: 'Must provide either bootcampId or internshipId' },
                 { status: 400 }
             );
         }
@@ -122,41 +139,76 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         }
         const student = studentDoc.data()!;
 
-        // Fetch bootcamp
-        const bootcampDoc = await db.collection(COLLECTIONS.BOOTCAMPS).doc(body.bootcampId).get();
-        if (!bootcampDoc.exists) {
-            return NextResponse.json<ApiResponse>(
-                { success: false, error: 'Bootcamp not found' },
-                { status: 404 }
-            );
+        let bootcamp;
+        let internship;
+        
+        if (body.bootcampId) {
+            // Fetch bootcamp
+            const bootcampDoc = await db.collection(COLLECTIONS.BOOTCAMPS).doc(body.bootcampId).get();
+            if (!bootcampDoc.exists) {
+                return NextResponse.json<ApiResponse>(
+                    { success: false, error: 'Bootcamp not found' },
+                    { status: 404 }
+                );
+            }
+            bootcamp = bootcampDoc.data()!;
+            
+            // Check for existing certificate for this student-bootcamp combination
+            const existingSnapshot = await db
+                .collection(COLLECTIONS.CERTIFICATES)
+                .where('studentId', '==', body.studentId)
+                .where('bootcampId', '==', body.bootcampId)
+                .where('status', '==', CertificateStatus.VALID)
+                .limit(1)
+                .get();
+    
+            if (!existingSnapshot.empty) {
+                return NextResponse.json<ApiResponse>(
+                    { success: false, error: 'A valid certificate already exists for this student and bootcamp' },
+                    { status: 409 }
+                );
+            }
         }
-        const bootcamp = bootcampDoc.data()!;
-
-        // Check for existing certificate for this student-bootcamp combination
-        const existingSnapshot = await db
-            .collection(COLLECTIONS.CERTIFICATES)
-            .where('studentId', '==', body.studentId)
-            .where('bootcampId', '==', body.bootcampId)
-            .where('status', '==', CertificateStatus.VALID)
-            .limit(1)
-            .get();
-
-        if (!existingSnapshot.empty) {
-            return NextResponse.json<ApiResponse>(
-                { success: false, error: 'A valid certificate already exists for this student and bootcamp' },
-                { status: 409 }
-            );
+        
+        if (body.internshipId) {
+            // we will use the data passed from the client instead of rejecting if the collection document is not found
+            internship = {
+                position: body.internshipName,
+                category: body.internshipCategory
+            };
+            
+            const existingSnapshot = await db
+                .collection(COLLECTIONS.CERTIFICATES)
+                .where('studentId', '==', body.studentId)
+                .where('internshipId', '==', body.internshipId)
+                .where('status', '==', CertificateStatus.VALID)
+                .limit(1)
+                .get();
+    
+            if (!existingSnapshot.empty) {
+                return NextResponse.json<ApiResponse>(
+                    { success: false, error: 'A valid certificate already exists for this student and internship' },
+                    { status: 409 }
+                );
+            }
         }
 
         // Generate certificate ID, signature, and metadata
         const completionDate = new Date(body.completionDate);
         const cryptoData = createSignedCertificate({
+            type: body.type,
             studentId: body.studentId,
             bootcampId: body.bootcampId,
+            internshipId: body.internshipId,
             studentName: student.fullName,
             studentEmail: student.email,
-            bootcampName: bootcamp.name,
-            bootcampCategory: bootcamp.category,
+            bootcampName: bootcamp?.name,
+            bootcampCategory: bootcamp?.category,
+            internshipName: internship?.position || 'Internship',
+            internshipCategory: internship?.category || 'General',
+            mentorName: body.mentorName,
+            mentorTitle: body.mentorTitle,
+            mentorSignature: body.mentorSignature,
             completionDate
         });
 
@@ -166,12 +218,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         const now = new Date();
         const certificate: Certificate = {
             id: cryptoData.id,
+            type: body.type || (body.internshipId ? 'internship' : 'bootcamp') as any,
             studentId: body.studentId,
             bootcampId: body.bootcampId,
+            internshipId: body.internshipId,
             studentName: student.fullName,
             studentEmail: student.email,
-            bootcampName: bootcamp.name,
-            bootcampCategory: bootcamp.category,
+            bootcampName: bootcamp?.name,
+            bootcampCategory: bootcamp?.category,
+            internshipName: internship?.position || 'Internship',
+            internshipCategory: internship?.category || 'General',
+            mentorName: body.mentorName,
+            mentorTitle: body.mentorTitle,
+            mentorSignature: body.mentorSignature,
             completionDate,
             issuedAt: cryptoData.issuedAt,
             issuingAuthority: cryptoData.issuingAuthority,
@@ -183,9 +242,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             updatedAt: now
         };
 
+        // Remove undefined values to prevent Firestore errors
+        const cleanCertificate = Object.fromEntries(
+            Object.entries(certificate).filter(([_, v]) => v !== undefined)
+        );
+
         // Store in Firestore
         await db.collection(COLLECTIONS.CERTIFICATES).doc(cryptoData.id).set({
-            ...certificate,
+            ...cleanCertificate,
             completionDate,
             issuedAt: cryptoData.issuedAt,
             createdAt: now,
@@ -207,7 +271,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         const adminEmail = request.headers.get('x-admin-email') || 'unknown';
         await logCertificateIssue(cryptoData.id, adminEmail, ipAddress, {
             studentName: student.fullName,
-            bootcampName: bootcamp.name
+            courseName: bootcamp?.name || internship?.position || 'Internship'
         });
 
         return NextResponse.json<ApiResponse<Certificate>>({

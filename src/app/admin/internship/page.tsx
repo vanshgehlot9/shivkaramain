@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CheckCircle2, Clock3, Loader2, Search, UserX } from "lucide-react";
+import { CheckCircle2, Clock3, Loader2, Search, UserX, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { TiltCard } from "@/components/admin/TiltCard";
-import { getInternshipApplications, updateInternshipApplicationStatus } from "@/lib/admin-api";
+import { getInternshipApplications, updateInternshipApplicationStatus, deleteInternshipApplication } from "@/lib/admin-api";
 
 type ApplicationStatus = "pending" | "approved" | "declined";
 
@@ -72,6 +72,24 @@ export default function AdminInternshipPage() {
             }
         } catch (error) {
             console.error("Error updating application status:", error);
+        } finally {
+            setUpdatingId(null);
+        }
+    };
+
+    const handleDelete = async (id: string) => {
+        if (!confirm("Are you sure you want to delete this application?")) return;
+        
+        try {
+            setUpdatingId(id);
+            const result = await deleteInternshipApplication(id);
+            if (result.success) {
+                setApplications((prev) => prev.filter((item) => item.id !== id));
+            } else {
+                alert("Failed to delete application.");
+            }
+        } catch (error) {
+            console.error("Error deleting application:", error);
         } finally {
             setUpdatingId(null);
         }
@@ -169,6 +187,14 @@ export default function AdminInternshipPage() {
                                         >
                                             {updatingId === item.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserX className="w-4 h-4" />}
                                             {item.status === "declined" ? "Declined" : "Decline"}
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(item.id)}
+                                            disabled={updatingId === item.id}
+                                            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border bg-gray-500/15 border-gray-500/40 text-gray-300 hover:bg-gray-500/25 transition-colors disabled:opacity-50"
+                                            title="Delete Application"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
                                         </button>
                                         <div className="ml-auto text-xs text-gray-500 inline-flex items-center gap-1.5">
                                             <Clock3 className="w-3 h-3" />

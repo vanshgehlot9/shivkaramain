@@ -199,8 +199,11 @@ function StatusBanner({ status, valid }: { status: string; valid: boolean }) {
 function CertificateDetails({ certificate }: {
     certificate: {
         studentName: string;
-        bootcampName: string;
-        bootcampCategory: string;
+        type?: string;
+        bootcampName?: string;
+        bootcampCategory?: string;
+        internshipName?: string;
+        internshipCategory?: string;
         completionDate: Date;
         issuedAt: Date;
         issuingAuthority: string;
@@ -220,9 +223,9 @@ function CertificateDetails({ certificate }: {
             {/* Program */}
             <DetailRow
                 icon={<Award className="w-5 h-5" />}
-                label="Program"
-                value={certificate.bootcampName}
-                sublabel={`Category: ${formatCategory(certificate.bootcampCategory)}`}
+                label={certificate.type === 'internship' ? 'Role' : 'Program'}
+                value={(certificate.type === 'internship' ? certificate.internshipName : certificate.bootcampName) || ''}
+                sublabel={`Category: ${formatCategory((certificate.type === 'internship' ? certificate.internshipCategory : certificate.bootcampCategory) || '')}`}
             />
 
             {/* Completion Date */}

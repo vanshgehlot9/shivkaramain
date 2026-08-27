@@ -10,6 +10,10 @@ export async function setUserRole(uid: string, role: UserRole) {
     if (!adminApp) throw new Error("Firebase Admin not initialized");
 
     try {
+        // Many student records in Firestore do not have a matching Firebase Auth user.
+        // In that case, skip custom claims quietly instead of treating it as an error.
+        await adminApp.auth().getUser(uid);
+
         const claims = {
             role,
             admin: role === 'admin' // Maintain backward compatibility for existing isAdmin() checks
@@ -18,6 +22,10 @@ export async function setUserRole(uid: string, role: UserRole) {
         await adminApp.auth().setCustomUserClaims(uid, claims);
         return { success: true };
     } catch (error) {
+        if ((error as { code?: string })?.code === 'auth/user-not-found') {
+            return { success: true, skipped: true };
+        }
+
         console.error("Error setting user role:", error);
         return { success: false, error };
     }

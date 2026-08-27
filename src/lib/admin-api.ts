@@ -288,6 +288,12 @@ export async function updateInternshipApplicationStatus(id: string, status: 'pen
   });
 }
 
+export async function deleteInternshipApplication(id: string) {
+  return apiRequest<any>(`/internship/${id}`, {
+    method: 'DELETE',
+  });
+}
+
 // Reports API
 export async function getReport(type: string, startDate: string, endDate: string) {
   const queryParams = new URLSearchParams();

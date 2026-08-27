@@ -79,9 +79,11 @@ export function generateCertificateId(
 function createSigningPayload(certificate: {
     id: string;
     studentId: string;
-    bootcampId: string;
+    bootcampId?: string;
+    internshipId?: string;
     studentName: string;
-    bootcampName: string;
+    bootcampName?: string;
+    internshipName?: string;
     completionDate: Date;
     issuedAt: Date;
     issuingAuthority: string;
@@ -90,8 +92,10 @@ function createSigningPayload(certificate: {
         id: certificate.id,
         studentId: certificate.studentId,
         bootcampId: certificate.bootcampId,
+        internshipId: certificate.internshipId,
         studentName: certificate.studentName,
         bootcampName: certificate.bootcampName,
+        internshipName: certificate.internshipName,
         completionDate: certificate.completionDate.toISOString(),
         issuedAt: certificate.issuedAt.toISOString(),
         issuingAuthority: certificate.issuingAuthority
@@ -108,9 +112,11 @@ function createSigningPayload(certificate: {
 export function signCertificate(certificate: {
     id: string;
     studentId: string;
-    bootcampId: string;
+    bootcampId?: string;
+    internshipId?: string;
     studentName: string;
-    bootcampName: string;
+    bootcampName?: string;
+    internshipName?: string;
     completionDate: Date;
     issuedAt: Date;
     issuingAuthority: string;
@@ -138,8 +144,10 @@ export function verifySignature(certificate: Certificate): boolean {
             id: certificate.id,
             studentId: certificate.studentId,
             bootcampId: certificate.bootcampId,
+            internshipId: certificate.internshipId,
             studentName: certificate.studentName,
-            bootcampName: certificate.bootcampName,
+            bootcampName: certificate.bootcampName || '',
+            internshipName: certificate.internshipName,
             completionDate: certificate.completionDate,
             issuedAt: certificate.issuedAt,
             issuingAuthority: certificate.issuingAuthority
@@ -218,12 +226,19 @@ export function getVerificationUrl(certificateId: string): string {
  * This is the main function to use when issuing a new certificate.
  */
 export function createSignedCertificate(params: {
+    type?: string;
     studentId: string;
-    bootcampId: string;
+    bootcampId?: string;
+    internshipId?: string;
     studentName: string;
     studentEmail: string;
-    bootcampName: string;
-    bootcampCategory: string;
+    bootcampName?: string;
+    bootcampCategory?: string;
+    internshipName?: string;
+    internshipCategory?: string;
+    mentorName?: string;
+    mentorTitle?: string;
+    mentorSignature?: string;
     completionDate: Date;
 }): {
     id: string;
@@ -236,7 +251,7 @@ export function createSignedCertificate(params: {
 
     const id = generateCertificateId(
         params.studentId,
-        params.bootcampId,
+        params.bootcampId || params.internshipId || '',
         issuedAt
     );
 
@@ -244,8 +259,13 @@ export function createSignedCertificate(params: {
         id,
         studentId: params.studentId,
         bootcampId: params.bootcampId,
+        internshipId: params.internshipId,
         studentName: params.studentName,
         bootcampName: params.bootcampName,
+        internshipName: params.internshipName,
+        mentorName: params.mentorName,
+        mentorTitle: params.mentorTitle,
+        mentorSignature: params.mentorSignature,
         completionDate: params.completionDate,
         issuedAt,
         issuingAuthority: ISSUING_AUTHORITY

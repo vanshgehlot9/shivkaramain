@@ -3,21 +3,27 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-    Award, Plus, Eye, XCircle, Download, QrCode, CheckCircle,
+    Award, Plus, XCircle, Download, QrCode, CheckCircle, Trash2,
     AlertTriangle, Search, Filter, X, ExternalLink, FileText,
-    ShieldCheck, AlertOctagon, Sparkles, ChevronRight, Loader2
+    ShieldCheck, AlertOctagon, Sparkles, ChevronRight, Loader2, MessageCircle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TiltCard } from "@/components/admin/TiltCard";
+import { CertificateImageUploader } from "@/components/admin/CertificateImageUploader";
+import { apiRequest } from '@/lib/admin-api';
 
 interface Certificate {
     id: string;
     studentId: string;
-    bootcampId: string;
+    bootcampId?: string;
+    internshipId?: string;
     studentName: string;
     studentEmail: string;
-    bootcampName: string;
-    bootcampCategory: string;
+    bootcampName?: string;
+    bootcampCategory?: string;
+    internshipName?: string;
+    internshipCategory?: string;
+    type?: 'bootcamp' | 'internship';
     completionDate: string;
     issuedAt: string;
     issuingAuthority: string;
@@ -25,6 +31,7 @@ interface Certificate {
     qrCodeDataUrl?: string;
     revokedAt?: string;
     revocationReason?: string;
+    cloudinaryUrl?: string;
 }
 
 interface Bootcamp {
@@ -38,6 +45,13 @@ interface Student {
     email: string;
 }
 
+const MENTORS = [
+    { id: 'tutor', name: 'UI/Web Designer', title: 'Signature', signature: 'tutor.PNG' },
+    { id: 'ashutosh', name: 'Ashutosh', title: 'Tutor', signature: 'ashutosh.png' },
+    { id: 'mohit', name: 'Mohit', title: 'Mentor', signature: 'mohit.png' },
+    { id: 'sawaisingh', name: 'Sawai Singh', title: 'Tutor', signature: 'sawaisingh.png' },
+];
+
 export default function CertificatesPage() {
     const [certificates, setCertificates] = useState<Certificate[]>([]);
     const [bootcamps, setBootcamps] = useState<Bootcamp[]>([]);
@@ -46,16 +60,30 @@ export default function CertificatesPage() {
     const [showIssueModal, setShowIssueModal] = useState(false);
     const [showRevokeModal, setShowRevokeModal] = useState(false);
     const [showQRModal, setShowQRModal] = useState(false);
+    const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
+    const [waPhoneNumber, setWaPhoneNumber] = useState('');
     const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [generatedQR, setGeneratedQR] = useState<string | null>(null);
     const [qrLoading, setQrLoading] = useState(false);
 
+    // Cloudinary state
+    const [uploadingCert, setUploadingCert] = useState<Certificate | null>(null);
+    const [bulkUploadQueue, setBulkUploadQueue] = useState<Certificate[]>([]);
+    const [isBulkUploading, setIsBulkUploading] = useState(false);
+
     const [issueForm, setIssueForm] = useState({
+        type: 'bootcamp',
         studentId: '',
         bootcampId: '',
+        internshipId: '',
+        internshipName: '',
+        internshipCategory: '',
         completionDate: '',
+        mentorName: 'UI/Web Designer',
+        mentorTitle: 'Signature',
+        mentorSignature: 'tutor.PNG',
     });
     const [revokeReason, setRevokeReason] = useState('');
     const [submitting, setSubmitting] = useState(false);
@@ -102,9 +130,10 @@ export default function CertificatesPage() {
 
             const data = await response.json();
             if (data.success) {
+                setUploadingCert(data.data);
                 fetchData();
                 setShowIssueModal(false);
-                setIssueForm({ studentId: '', bootcampId: '', completionDate: '' });
+                setIssueForm({ type: 'bootcamp', studentId: '', bootcampId: '', internshipId: '', internshipName: '', internshipCategory: '', completionDate: '', mentorName: 'UI/Web Designer', mentorTitle: 'Signature', mentorSignature: 'tutor.PNG' });
             } else {
                 alert(data.error || 'Failed to issue certificate');
             }
@@ -145,10 +174,109 @@ export default function CertificatesPage() {
         }
     };
 
+    const handleSendWhatsApp = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!selectedCertificate || !waPhoneNumber) return;
+        setSubmitting(true);
+        try {
+            const certUrl = `${window.location.origin}/certificate/${selectedCertificate.id}`;
+            const certTitle = selectedCertificate.type === 'internship' ? selectedCertificate.internshipName : selectedCertificate.bootcampName;
+            
+            const response = await fetch('/api/admin/whatsapp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    phone_number: waPhoneNumber,
+                    certificate_url: certUrl,
+                    certificate_title: certTitle || 'Shivkara Digital Certificate',
+                    certificate_image_url: selectedCertificate.cloudinaryUrl || ''
+                }),
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                alert('WhatsApp message sent successfully!');
+                setShowWhatsAppModal(false);
+                setSelectedCertificate(null);
+                setWaPhoneNumber('');
+            } else {
+                alert(data.error || 'Failed to send WhatsApp message');
+            }
+        } catch (error) {
+            console.error('Error sending WhatsApp:', error);
+            alert('Failed to send WhatsApp message');
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+
+    const handleBulkUpload = () => {
+        const toUpload = certificates.filter(c => !c.cloudinaryUrl && c.status === 'valid');
+        if (toUpload.length === 0) {
+            alert('All valid certificates are already uploaded to Cloudinary!');
+            return;
+        }
+        setBulkUploadQueue(toUpload);
+        setIsBulkUploading(true);
+    };
+
+    useEffect(() => {
+        if (isBulkUploading && bulkUploadQueue.length > 0 && !uploadingCert) {
+            setUploadingCert(bulkUploadQueue[0]);
+        } else if (isBulkUploading && bulkUploadQueue.length === 0) {
+            setIsBulkUploading(false);
+            alert('Bulk upload completed!');
+        }
+    }, [isBulkUploading, bulkUploadQueue, uploadingCert]);
+
+    const handleUploadSuccess = (url: string) => {
+        if (uploadingCert) {
+            setCertificates(prev => prev.map(c => c.id === uploadingCert.id ? { ...c, cloudinaryUrl: url } : c));
+        }
+        setUploadingCert(null);
+        if (isBulkUploading) {
+            setBulkUploadQueue(prev => prev.slice(1));
+        }
+    };
+
+    const handleUploadError = (error: string) => {
+        console.error('Upload error:', error);
+        setUploadingCert(null);
+        if (isBulkUploading) {
+            // Skip this one and continue
+            setBulkUploadQueue(prev => prev.slice(1));
+        }
+    };
+
+    const handleDeleteCertificate = async (cert: Certificate) => {
+        if (!confirm(`Delete certificate for ${cert.studentName}? This cannot be undone.`)) return;
+        setSubmitting(true);
+        try {
+            const result = await apiRequest<{ message?: string }>(`/certificates/${cert.id}`, { method: 'DELETE' });
+            if (result.success) {
+                setCertificates(prev => prev.filter(c => c.id !== cert.id));
+            } else {
+                alert(result.error || 'Failed to delete certificate');
+            }
+        } catch (err) {
+            console.error('Error deleting certificate:', err);
+            alert('Failed to delete certificate');
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     const openRevokeModal = (cert: Certificate) => {
         setSelectedCertificate(cert);
         setRevokeReason('');
         setShowRevokeModal(true);
+    };
+
+    const openWhatsAppModal = (cert: Certificate) => {
+        setSelectedCertificate(cert);
+        setWaPhoneNumber('');
+        setShowWhatsAppModal(true);
     };
 
     const openQRModal = async (cert: Certificate) => {
@@ -194,7 +322,8 @@ export default function CertificatesPage() {
     const filteredCertificates = certificates.filter((cert) => {
         const matchesSearch =
             cert.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            cert.bootcampName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (cert.bootcampName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (cert.internshipName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
             cert.id.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesStatus = statusFilter === 'all' || cert.status === statusFilter;
         return matchesSearch && matchesStatus;
@@ -280,6 +409,17 @@ export default function CertificatesPage() {
                         <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
+                            onClick={handleBulkUpload}
+                            disabled={isBulkUploading || !!uploadingCert}
+                            className="group flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-500 to-teal-600 rounded-2xl font-bold text-black shadow-xl shadow-teal-500/20 hover:shadow-teal-500/40 transition-all disabled:opacity-50"
+                        >
+                            {isBulkUploading ? <Loader2 size={20} className="animate-spin" /> : <ShieldCheck size={20} />}
+                            {isBulkUploading ? `Uploading (${bulkUploadQueue.length})` : 'Bulk Upload'}
+                        </motion.button>
+                        
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                             onClick={() => setShowIssueModal(true)}
                             className="group flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-yellow-600 rounded-2xl font-bold text-black shadow-xl shadow-amber-500/20 hover:shadow-amber-500/40 transition-all"
                         >
@@ -357,7 +497,9 @@ export default function CertificatesPage() {
                                         <h3 className="text-lg font-bold text-white mb-1 group-hover:text-amber-200 transition-colors">
                                             {cert.studentName}
                                         </h3>
-                                        <p className="text-sm text-amber-500 font-medium mb-4">{cert.bootcampName}</p>
+                                        <p className="text-sm text-amber-500 font-medium mb-4">
+                                            {cert.type === 'internship' ? cert.internshipName : cert.bootcampName}
+                                        </p>
 
                                         <div className="space-y-2 text-xs text-gray-400">
                                             <div className="flex justify-between">
@@ -366,7 +508,9 @@ export default function CertificatesPage() {
                                             </div>
                                             <div className="flex justify-between">
                                                 <span>Category:</span>
-                                                <span className="capitalize text-gray-300">{cert.bootcampCategory}</span>
+                                                <span className="capitalize text-gray-300">
+                                                    {cert.type === 'internship' ? cert.internshipCategory : cert.bootcampCategory}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -398,6 +542,13 @@ export default function CertificatesPage() {
                                             >
                                                 <QrCode size={16} />
                                             </button>
+                                            <button
+                                                onClick={() => openWhatsAppModal(cert)}
+                                                className="p-1.5 text-gray-400 hover:text-green-400 transition-colors"
+                                                title="Send via WhatsApp"
+                                            >
+                                                <MessageCircle size={16} />
+                                            </button>
                                             {cert.status === 'valid' && (
                                                 <button
                                                     onClick={() => openRevokeModal(cert)}
@@ -407,6 +558,13 @@ export default function CertificatesPage() {
                                                     <XCircle size={16} />
                                                 </button>
                                             )}
+                                            <button
+                                                onClick={() => handleDeleteCertificate(cert)}
+                                                className="p-1.5 text-gray-400 hover:text-red-400 transition-colors"
+                                                title="Delete"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
                                         </div>
                                     </div>
 
@@ -453,6 +611,27 @@ export default function CertificatesPage() {
 
                             <form onSubmit={handleIssueCertificate} className="space-y-6">
                                 <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Type</label>
+                                    <select
+                                        value={issueForm.type}
+                                        onChange={(e) => {
+                                            const newType = e.target.value as 'bootcamp' | 'internship';
+                                            setIssueForm({ 
+                                                ...issueForm, 
+                                                type: newType,
+                                                internshipId: newType === 'internship' && !issueForm.internshipId 
+                                                    ? `INT-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}-${Math.random().toString(36).substring(2, 5).toUpperCase()}` 
+                                                    : issueForm.internshipId
+                                            });
+                                        }}
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-500 appearance-none"
+                                    >
+                                        <option value="bootcamp" className="bg-[#0a0a0a]">Bootcamp</option>
+                                        <option value="internship" className="bg-[#0a0a0a]">Internship</option>
+                                    </select>
+                                </div>
+
+                                <div>
                                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Student</label>
                                     <select
                                         value={issueForm.studentId}
@@ -469,22 +648,69 @@ export default function CertificatesPage() {
                                     </select>
                                 </div>
 
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Bootcamp</label>
-                                    <select
-                                        value={issueForm.bootcampId}
-                                        onChange={(e) => setIssueForm({ ...issueForm, bootcampId: e.target.value })}
-                                        required
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-500 appearance-none"
-                                    >
-                                        <option value="" className="bg-[#0a0a0a]">Select a bootcamp...</option>
-                                        {bootcamps.map((b) => (
-                                            <option key={b.id} value={b.id} className="bg-[#0a0a0a]">
-                                                {b.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
+                                {issueForm.type === 'bootcamp' ? (
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Bootcamp</label>
+                                        <select
+                                            value={issueForm.bootcampId}
+                                            onChange={(e) => setIssueForm({ ...issueForm, bootcampId: e.target.value })}
+                                            required
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-500 appearance-none"
+                                        >
+                                            <option value="" className="bg-[#0a0a0a]">Select a bootcamp...</option>
+                                            {bootcamps.map((b) => (
+                                                <option key={b.id} value={b.id} className="bg-[#0a0a0a]">
+                                                    {b.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div>
+                                            <div className="flex justify-between items-center mb-2">
+                                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest">Internship ID</label>
+                                                <button 
+                                                    type="button" 
+                                                    onClick={() => setIssueForm({ ...issueForm, internshipId: `INT-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}-${Math.random().toString(36).substring(2, 5).toUpperCase()}` })}
+                                                    className="text-[10px] bg-amber-500/20 text-amber-500 px-2 py-1 rounded hover:bg-amber-500/30 transition-colors"
+                                                >
+                                                    Auto Generate
+                                                </button>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                value={issueForm.internshipId}
+                                                onChange={(e) => setIssueForm({ ...issueForm, internshipId: e.target.value })}
+                                                required
+                                                placeholder="e.g. INT-2026-01"
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-500"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Internship Name</label>
+                                            <input
+                                                type="text"
+                                                value={issueForm.internshipName}
+                                                onChange={(e) => setIssueForm({ ...issueForm, internshipName: e.target.value })}
+                                                required
+                                                placeholder="e.g. Frontend Development"
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-500"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Internship Category</label>
+                                            <input
+                                                type="text"
+                                                value={issueForm.internshipCategory}
+                                                onChange={(e) => setIssueForm({ ...issueForm, internshipCategory: e.target.value })}
+                                                required
+                                                placeholder="e.g. Web Development"
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-500"
+                                            />
+                                        </div>
+                                    </>
+                                )}
 
                                 <div>
                                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Completion Date</label>
@@ -495,6 +721,31 @@ export default function CertificatesPage() {
                                         required
                                         className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-500"
                                     />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Mentor Signature</label>
+                                    <select
+                                        value={issueForm.mentorSignature}
+                                        onChange={(e) => {
+                                            const mentor = MENTORS.find(m => m.signature === e.target.value);
+                                            if (mentor) {
+                                                setIssueForm({
+                                                    ...issueForm,
+                                                    mentorName: mentor.name,
+                                                    mentorTitle: mentor.title,
+                                                    mentorSignature: mentor.signature
+                                                });
+                                            }
+                                        }}
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-amber-500 appearance-none"
+                                    >
+                                        {MENTORS.map((m) => (
+                                            <option key={m.id} value={m.signature} className="bg-[#0a0a0a]">
+                                                {m.name} ({m.title})
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
 
                                 <div className="flex gap-4 pt-4">
@@ -638,6 +889,79 @@ export default function CertificatesPage() {
                 )}
             </AnimatePresence>
 
+            {/* WhatsApp Modal */}
+            <AnimatePresence>
+                {showWhatsAppModal && selectedCertificate && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4"
+                        onClick={() => setShowWhatsAppModal(false)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.95, opacity: 0 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="bg-[#0a0a0a] border border-green-500/30 rounded-3xl p-8 w-full max-w-lg shadow-2xl relative overflow-hidden"
+                        >
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-emerald-600" />
+
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center text-green-500">
+                                    <MessageCircle size={24} />
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-bold text-white">Send via WhatsApp</h2>
+                                    <p className="text-sm text-green-400">Send certificate to {selectedCertificate.studentName}</p>
+                                </div>
+                            </div>
+
+                            <form onSubmit={handleSendWhatsApp} className="space-y-6">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">WhatsApp Number</label>
+                                    <input
+                                        type="tel"
+                                        value={waPhoneNumber}
+                                        onChange={(e) => setWaPhoneNumber(e.target.value)}
+                                        required
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-green-500"
+                                        placeholder="e.g. 919876543210"
+                                    />
+                                </div>
+
+                                <div className="flex gap-4 pt-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowWhatsAppModal(false)}
+                                        className="flex-1 px-4 py-3 rounded-xl border border-white/10 text-gray-400 font-bold hover:bg-white/5 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={submitting || !waPhoneNumber}
+                                        className="flex-1 px-4 py-3 rounded-xl bg-green-600 text-white font-bold hover:bg-green-500 transition-colors shadow-lg shadow-green-900/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {submitting ? 'Sending...' : 'Send Certificate'}
+                                    </button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+
+            {/* Hidden Uploader */}
+            {uploadingCert && (
+                <CertificateImageUploader
+                    certificate={uploadingCert}
+                    onUploaded={handleUploadSuccess}
+                    onError={handleUploadError}
+                />
+            )}
         </div>
     );
 }
