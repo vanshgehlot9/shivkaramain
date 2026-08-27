@@ -1,0 +1,1387 @@
+{
+  "version": "7.3",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "CITY_SELECT": [
+      "HOTEL_LIST_WITH_FILTER"
+    ],
+    "HOTEL_LIST_WITH_FILTER": [
+      "HOTEL_DETAIL"
+    ],
+    "HOTEL_DETAIL": [
+      "ROOM_SELECTION"
+    ],
+    "ROOM_SELECTION": [
+      "GUEST_AND_DATE_FORM"
+    ],
+    "GUEST_AND_DATE_FORM": [
+      "PAYMENT_METHOD"
+    ],
+    "PAYMENT_METHOD": [
+      "BOOKING_SUMMARY"
+    ],
+    "BOOKING_SUMMARY": [
+      "SUCCESS"
+    ],
+    "SUCCESS": []
+  },
+  "screens": [
+    {
+      "id": "CITY_SELECT",
+      "title": "Select Destination",
+      "data": {
+        "city_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            }
+          },
+          "__example__": [
+            {
+              "id": "ex_id",
+              "title": "ex_title"
+            }
+          ]
+        },
+        "error_message": {
+          "type": "string",
+          "__example__": "example_error_message"
+        },
+        "has_error": {
+          "type": "boolean",
+          "__example__": false
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "city_form",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "Hotel Booking"
+              },
+              {
+                "type": "TextSubheading",
+                "text": "Select your destination"
+              },
+              {
+                "type": "Dropdown",
+                "name": "city",
+                "label": "City",
+                "required": true,
+                "data-source": "${data.city_options}"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.error_message}",
+                "visible": "${data.has_error}"
+              },
+              {
+                "type": "Footer",
+                "label": "Search Hotels",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "city": "${form.city}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "HOTEL_LIST_WITH_FILTER",
+      "title": "Search Hotels",
+      "data": {
+        "city": {
+          "type": "string",
+          "__example__": "example_city"
+        },
+        "hotel_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          },
+          "__example__": [
+            {
+              "id": "ex_id",
+              "title": "ex_title",
+              "description": "ex_description"
+            }
+          ]
+        },
+        "hotel_count_label": {
+          "type": "string",
+          "__example__": "example_hotel_count_label"
+        },
+        "sort_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            }
+          },
+          "__example__": [
+            {
+              "id": "ex_id",
+              "title": "ex_title"
+            }
+          ]
+        },
+        "price_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            }
+          },
+          "__example__": [
+            {
+              "id": "ex_id",
+              "title": "ex_title"
+            }
+          ]
+        },
+        "amenity_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            }
+          },
+          "__example__": [
+            {
+              "id": "ex_id",
+              "title": "ex_title"
+            }
+          ]
+        },
+        "type_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            }
+          },
+          "__example__": [
+            {
+              "id": "ex_id",
+              "title": "ex_title"
+            }
+          ]
+        },
+        "rating_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            }
+          },
+          "__example__": [
+            {
+              "id": "ex_id",
+              "title": "ex_title"
+            }
+          ]
+        },
+        "booking_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            }
+          },
+          "__example__": [
+            {
+              "id": "ex_id",
+              "title": "ex_title"
+            }
+          ]
+        },
+        "error_message": {
+          "type": "string",
+          "__example__": "example_error_message"
+        },
+        "has_error": {
+          "type": "boolean",
+          "__example__": false
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "hotel_list_form",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "Hotels in ${data.city}"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.hotel_count_label}"
+              },
+              {
+                "type": "Dropdown",
+                "name": "sort_by",
+                "label": "Sort Options",
+                "data-source": "${data.sort_options}",
+                "required": false
+              },
+              {
+                "type": "CheckboxGroup",
+                "name": "price_range",
+                "label": "Price Range",
+                "data-source": "${data.price_options}",
+                "required": false
+              },
+              {
+                "type": "CheckboxGroup",
+                "name": "amenities",
+                "label": "Amenities",
+                "data-source": "${data.amenity_options}",
+                "required": false
+              },
+              {
+                "type": "CheckboxGroup",
+                "name": "hotel_type",
+                "label": "Hotel Type",
+                "data-source": "${data.type_options}",
+                "required": false
+              },
+              {
+                "type": "CheckboxGroup",
+                "name": "rating",
+                "label": "Guest Rating",
+                "data-source": "${data.rating_options}",
+                "required": false
+              },
+              {
+                "type": "CheckboxGroup",
+                "name": "booking_type",
+                "label": "Booking Type",
+                "data-source": "${data.booking_options}",
+                "required": false
+              },
+              {
+                "type": "TextSubheading",
+                "text": "Select a Hotel"
+              },
+              {
+                "type": "RadioButtonsGroup",
+                "name": "hotel_id",
+                "label": "Available Hotels",
+                "required": false,
+                "data-source": "${data.hotel_options}"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.error_message}",
+                "visible": "${data.has_error}"
+              },
+              {
+                "type": "Footer",
+                "label": "Apply Filters / View Details",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "city": "${data.city}",
+                    "hotel_id": "${form.hotel_id}",
+                    "sort_by": "${form.sort_by}",
+                    "price_range": "${form.price_range}",
+                    "amenities": "${form.amenities}",
+                    "hotel_type": "${form.hotel_type}",
+                    "rating": "${form.rating}",
+                    "booking_type": "${form.booking_type}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "HOTEL_DETAIL",
+      "title": "Hotel Details",
+      "data": {
+        "city": {
+          "type": "string",
+          "__example__": "example_city"
+        },
+        "hotel_id": {
+          "type": "string",
+          "__example__": "example_hotel_id"
+        },
+        "hotel_name": {
+          "type": "string",
+          "__example__": "example_hotel_name"
+        },
+        "hotel_image_url": {
+          "type": "string",
+          "__example__": "example_hotel_image_url"
+        },
+        "hotel_price_raw": {
+          "type": "number",
+          "__example__": 100
+        },
+        "hotel_price_label": {
+          "type": "string",
+          "__example__": "example_hotel_price_label"
+        },
+        "hotel_rating": {
+          "type": "string",
+          "__example__": "example_hotel_rating"
+        },
+        "hotel_location_label": {
+          "type": "string",
+          "__example__": "example_hotel_location_label"
+        },
+        "hotel_description": {
+          "type": "string",
+          "__example__": "example_hotel_description"
+        },
+        "hotel_amenities": {
+          "type": "string",
+          "__example__": "example_hotel_amenities"
+        },
+        "hotel_policies": {
+          "type": "string",
+          "__example__": "example_hotel_policies"
+        },
+        "hotel_availability": {
+          "type": "string",
+          "__example__": "example_hotel_availability"
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "hotel_detail_form",
+            "children": [
+              {
+                "type": "Image",
+                "src": "${data.hotel_image_url}",
+                "height": 180,
+                "scale-type": "cover"
+              },
+              {
+                "type": "TextHeading",
+                "text": "${data.hotel_name}"
+              },
+              {
+                "type": "TextSubheading",
+                "text": "${data.hotel_rating}"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.hotel_location_label}"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.hotel_price_label}"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.hotel_availability}"
+              },
+              {
+                "type": "TextSubheading",
+                "text": "About"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.hotel_description}"
+              },
+              {
+                "type": "TextSubheading",
+                "text": "Amenities"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.hotel_amenities}"
+              },
+              {
+                "type": "TextSubheading",
+                "text": "Policies"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.hotel_policies}"
+              },
+              {
+                "type": "Footer",
+                "label": "Select Room",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "hotel_id": "${data.hotel_id}",
+                    "city": "${data.city}",
+                    "hotel_name": "${data.hotel_name}",
+                    "hotel_image_url": "${data.hotel_image_url}",
+                    "hotel_price_raw": "${data.hotel_price_raw}",
+                    "hotel_rating": "${data.hotel_rating}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "ROOM_SELECTION",
+      "title": "Room Details",
+      "data": {
+        "city": {
+          "type": "string",
+          "__example__": "example_city"
+        },
+        "hotel_id": {
+          "type": "string",
+          "__example__": "example_hotel_id"
+        },
+        "hotel_name": {
+          "type": "string",
+          "__example__": "example_hotel_name"
+        },
+        "hotel_price_raw": {
+          "type": "number",
+          "__example__": 100
+        },
+        "hotel_rating": {
+          "type": "string",
+          "__example__": "example_hotel_rating"
+        },
+        "hotel_image_url": {
+          "type": "string",
+          "__example__": "example_hotel_image_url"
+        },
+        "img_room1": {
+          "type": "string",
+          "__example__": "example_img_room1"
+        },
+        "img_room2": {
+          "type": "string",
+          "__example__": "example_img_room2"
+        },
+        "img_room3": {
+          "type": "string",
+          "__example__": "example_img_room3"
+        },
+        "room_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          },
+          "__example__": [
+            {
+              "id": "ex_id",
+              "title": "ex_title",
+              "description": "ex_description"
+            }
+          ]
+        },
+        "error_message": {
+          "type": "string",
+          "__example__": "example_error_message"
+        },
+        "has_error": {
+          "type": "boolean",
+          "__example__": false
+        },
+        "has_room1": {
+          "type": "boolean",
+          "__example__": true
+        },
+        "title_room1": {
+          "type": "string",
+          "__example__": "Room Title"
+        },
+        "desc_room1": {
+          "type": "string",
+          "__example__": "Room Desc"
+        },
+        "has_room2": {
+          "type": "boolean",
+          "__example__": true
+        },
+        "title_room2": {
+          "type": "string",
+          "__example__": "Room Title"
+        },
+        "desc_room2": {
+          "type": "string",
+          "__example__": "Room Desc"
+        },
+        "has_room3": {
+          "type": "boolean",
+          "__example__": true
+        },
+        "title_room3": {
+          "type": "string",
+          "__example__": "Room Title"
+        },
+        "desc_room3": {
+          "type": "string",
+          "__example__": "Room Desc"
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "room_select_form",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "Select a Room"
+              },
+              {
+                "type": "Image",
+                "src": "${data.img_room1}",
+                "height": 120,
+                "scale-type": "cover",
+                "visible": "${data.has_room1}"
+              },
+              {
+                "type": "TextSubheading",
+                "text": "${data.title_room1}",
+                "visible": "${data.has_room1}"
+              },
+              {
+                "type": "TextCaption",
+                "text": "${data.desc_room1}",
+                "visible": "${data.has_room1}"
+              },
+              {
+                "type": "Image",
+                "src": "${data.img_room2}",
+                "height": 120,
+                "scale-type": "cover",
+                "visible": "${data.has_room2}"
+              },
+              {
+                "type": "TextSubheading",
+                "text": "${data.title_room2}",
+                "visible": "${data.has_room2}"
+              },
+              {
+                "type": "TextCaption",
+                "text": "${data.desc_room2}",
+                "visible": "${data.has_room2}"
+              },
+              {
+                "type": "Image",
+                "src": "${data.img_room3}",
+                "height": 120,
+                "scale-type": "cover",
+                "visible": "${data.has_room3}"
+              },
+              {
+                "type": "TextSubheading",
+                "text": "${data.title_room3}",
+                "visible": "${data.has_room3}"
+              },
+              {
+                "type": "TextCaption",
+                "text": "${data.desc_room3}",
+                "visible": "${data.has_room3}"
+              },
+              {
+                "type": "RadioButtonsGroup",
+                "name": "room_id",
+                "label": "Available Rooms",
+                "required": true,
+                "data-source": "${data.room_options}"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.error_message}",
+                "visible": "${data.has_error}"
+              },
+              {
+                "type": "Footer",
+                "label": "Continue Booking",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "room_id": "${form.room_id}",
+                    "hotel_id": "${data.hotel_id}",
+                    "city": "${data.city}",
+                    "hotel_name": "${data.hotel_name}",
+                    "hotel_image_url": "${data.hotel_image_url}",
+                    "hotel_price_raw": "${data.hotel_price_raw}",
+                    "hotel_rating": "${data.hotel_rating}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "GUEST_AND_DATE_FORM",
+      "title": "Guest & Date Details",
+      "data": {
+        "city": {
+          "type": "string",
+          "__example__": "example_city"
+        },
+        "hotel_id": {
+          "type": "string",
+          "__example__": "example_hotel_id"
+        },
+        "hotel_name": {
+          "type": "string",
+          "__example__": "example_hotel_name"
+        },
+        "hotel_image_url": {
+          "type": "string",
+          "__example__": "example_hotel_image_url"
+        },
+        "hotel_price_raw": {
+          "type": "number",
+          "__example__": 100
+        },
+        "hotel_rating": {
+          "type": "string",
+          "__example__": "example_hotel_rating"
+        },
+        "room_id": {
+          "type": "string",
+          "__example__": "example_room_id"
+        },
+        "room_type": {
+          "type": "string",
+          "__example__": "example_room_type"
+        },
+        "room_price_modifier": {
+          "type": "number",
+          "__example__": 100
+        },
+        "min_date": {
+          "type": "string",
+          "__example__": "example_min_date"
+        },
+        "guest_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            }
+          },
+          "__example__": [
+            {
+              "id": "ex_id",
+              "title": "ex_title"
+            }
+          ]
+        },
+        "child_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            }
+          },
+          "__example__": [
+            {
+              "id": "ex_id",
+              "title": "ex_title"
+            }
+          ]
+        },
+        "guest_name_prefill": {
+          "type": "string",
+          "__example__": "example_guest_name_prefill"
+        },
+        "guest_phone_prefill": {
+          "type": "string",
+          "__example__": "example_guest_phone_prefill"
+        },
+        "hotel_summary_line": {
+          "type": "string",
+          "__example__": "example_hotel_summary_line"
+        },
+        "error_message": {
+          "type": "string",
+          "__example__": "example_error_message"
+        },
+        "has_error": {
+          "type": "boolean",
+          "__example__": false
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "guest_date_form",
+            "init-values": {
+              "guest_name": "${data.guest_name_prefill}",
+              "guest_phone": "${data.guest_phone_prefill}",
+              "num_children": "0"
+            },
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "Booking Details"
+              },
+              {
+                "type": "TextSubheading",
+                "text": "${data.hotel_summary_line}"
+              },
+              {
+                "type": "DatePicker",
+                "name": "check_in_date",
+                "label": "Check-in Date",
+                "min-date": "${data.min_date}",
+                "required": true
+              },
+              {
+                "type": "DatePicker",
+                "name": "check_out_date",
+                "label": "Check-out Date",
+                "min-date": "${data.min_date}",
+                "required": true
+              },
+              {
+                "type": "RadioButtonsGroup",
+                "name": "num_guests",
+                "label": "Adults",
+                "required": true,
+                "data-source": "${data.guest_options}"
+              },
+              {
+                "type": "RadioButtonsGroup",
+                "name": "num_children",
+                "label": "Children",
+                "required": true,
+                "data-source": "${data.child_options}"
+              },
+              {
+                "type": "TextInput",
+                "name": "guest_name",
+                "label": "Full Name",
+                "input-type": "text",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "name": "guest_email",
+                "label": "Email Address",
+                "input-type": "email",
+                "required": false
+              },
+              {
+                "type": "TextInput",
+                "name": "guest_phone",
+                "label": "Phone Number",
+                "input-type": "phone",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "name": "special_requests",
+                "label": "Special Requests",
+                "input-type": "text",
+                "required": false
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.error_message}",
+                "visible": "${data.has_error}"
+              },
+              {
+                "type": "Footer",
+                "label": "Proceed to Payment",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "check_in_date": "${form.check_in_date}",
+                    "check_out_date": "${form.check_out_date}",
+                    "num_guests": "${form.num_guests}",
+                    "num_children": "${form.num_children}",
+                    "guest_name": "${form.guest_name}",
+                    "guest_email": "${form.guest_email}",
+                    "guest_phone": "${form.guest_phone}",
+                    "special_requests": "${form.special_requests}",
+                    "hotel_id": "${data.hotel_id}",
+                    "city": "${data.city}",
+                    "hotel_name": "${data.hotel_name}",
+                    "hotel_image_url": "${data.hotel_image_url}",
+                    "hotel_price_raw": "${data.hotel_price_raw}",
+                    "hotel_rating": "${data.hotel_rating}",
+                    "room_id": "${data.room_id}",
+                    "room_type": "${data.room_type}",
+                    "room_price_modifier": "${data.room_price_modifier}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "PAYMENT_METHOD",
+      "title": "Payment Method",
+      "data": {
+        "city": {
+          "type": "string",
+          "__example__": "example_city"
+        },
+        "hotel_id": {
+          "type": "string",
+          "__example__": "example_hotel_id"
+        },
+        "hotel_name": {
+          "type": "string",
+          "__example__": "example_hotel_name"
+        },
+        "hotel_image_url": {
+          "type": "string",
+          "__example__": "example_hotel_image_url"
+        },
+        "hotel_price_raw": {
+          "type": "number",
+          "__example__": 100
+        },
+        "hotel_rating": {
+          "type": "string",
+          "__example__": "example_hotel_rating"
+        },
+        "room_id": {
+          "type": "string",
+          "__example__": "example_room_id"
+        },
+        "room_type": {
+          "type": "string",
+          "__example__": "example_room_type"
+        },
+        "room_price_modifier": {
+          "type": "number",
+          "__example__": 100
+        },
+        "check_in_date": {
+          "type": "string",
+          "__example__": "example_check_in_date"
+        },
+        "check_out_date": {
+          "type": "string",
+          "__example__": "example_check_out_date"
+        },
+        "num_guests": {
+          "type": "string",
+          "__example__": "example_num_guests"
+        },
+        "num_children": {
+          "type": "string",
+          "__example__": "example_num_children"
+        },
+        "guest_name": {
+          "type": "string",
+          "__example__": "example_guest_name"
+        },
+        "guest_email": {
+          "type": "string",
+          "__example__": "example_guest_email"
+        },
+        "guest_phone": {
+          "type": "string",
+          "__example__": "example_guest_phone"
+        },
+        "special_requests": {
+          "type": "string",
+          "__example__": "example_special_requests"
+        },
+        "payment_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          },
+          "__example__": [
+            {
+              "id": "ex_id",
+              "title": "ex_title",
+              "description": "ex_description"
+            }
+          ]
+        },
+        "payment_summary_line": {
+          "type": "string",
+          "__example__": "example_payment_summary_line"
+        },
+        "hold_id": {
+          "type": "string",
+          "__example__": "example_hold_id"
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "payment_form",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "Payment Details"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.payment_summary_line}"
+              },
+              {
+                "type": "RadioButtonsGroup",
+                "name": "payment_method",
+                "label": "Payment Method",
+                "required": true,
+                "data-source": "${data.payment_options}"
+              },
+              {
+                "type": "Footer",
+                "label": "Review Booking",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "payment_method": "${form.payment_method}",
+                    "hotel_id": "${data.hotel_id}",
+                    "city": "${data.city}",
+                    "hotel_name": "${data.hotel_name}",
+                    "hotel_image_url": "${data.hotel_image_url}",
+                    "hotel_price_raw": "${data.hotel_price_raw}",
+                    "hotel_rating": "${data.hotel_rating}",
+                    "room_id": "${data.room_id}",
+                    "room_type": "${data.room_type}",
+                    "room_price_modifier": "${data.room_price_modifier}",
+                    "check_in_date": "${data.check_in_date}",
+                    "check_out_date": "${data.check_out_date}",
+                    "num_guests": "${data.num_guests}",
+                    "num_children": "${data.num_children}",
+                    "guest_name": "${data.guest_name}",
+                    "guest_email": "${data.guest_email}",
+                    "guest_phone": "${data.guest_phone}",
+                    "special_requests": "${data.special_requests}",
+                    "hold_id": "${data.hold_id}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "BOOKING_SUMMARY",
+      "title": "Booking Summary",
+      "data": {
+        "city": {
+          "type": "string",
+          "__example__": "example_city"
+        },
+        "hotel_id": {
+          "type": "string",
+          "__example__": "example_hotel_id"
+        },
+        "hotel_name": {
+          "type": "string",
+          "__example__": "example_hotel_name"
+        },
+        "hotel_image_url": {
+          "type": "string",
+          "__example__": "example_hotel_image_url"
+        },
+        "hotel_price_raw": {
+          "type": "number",
+          "__example__": 100
+        },
+        "hotel_rating": {
+          "type": "string",
+          "__example__": "example_hotel_rating"
+        },
+        "room_id": {
+          "type": "string",
+          "__example__": "example_room_id"
+        },
+        "room_type": {
+          "type": "string",
+          "__example__": "example_room_type"
+        },
+        "room_price_modifier": {
+          "type": "number",
+          "__example__": 100
+        },
+        "check_in_date": {
+          "type": "string",
+          "__example__": "example_check_in_date"
+        },
+        "check_out_date": {
+          "type": "string",
+          "__example__": "example_check_out_date"
+        },
+        "num_guests": {
+          "type": "string",
+          "__example__": "example_num_guests"
+        },
+        "num_children": {
+          "type": "string",
+          "__example__": "example_num_children"
+        },
+        "guest_name": {
+          "type": "string",
+          "__example__": "example_guest_name"
+        },
+        "guest_email": {
+          "type": "string",
+          "__example__": "example_guest_email"
+        },
+        "guest_phone": {
+          "type": "string",
+          "__example__": "example_guest_phone"
+        },
+        "special_requests": {
+          "type": "string",
+          "__example__": "example_special_requests"
+        },
+        "payment_method": {
+          "type": "string",
+          "__example__": "example_payment_method"
+        },
+        "total_amount": {
+          "type": "number",
+          "__example__": 100
+        },
+        "total_amount_display": {
+          "type": "string",
+          "__example__": "example_total_amount_display"
+        },
+        "payment_method_label": {
+          "type": "string",
+          "__example__": "example_payment_method_label"
+        },
+        "stay_summary": {
+          "type": "string",
+          "__example__": "example_stay_summary"
+        },
+        "guest_summary_label": {
+          "type": "string",
+          "__example__": "example_guest_summary_label"
+        },
+        "guest_name_label": {
+          "type": "string",
+          "__example__": "example_guest_name_label"
+        },
+        "guest_phone_label": {
+          "type": "string",
+          "__example__": "example_guest_phone_label"
+        },
+        "price_breakdown_label": {
+          "type": "string",
+          "__example__": "example_price_breakdown_label"
+        },
+        "hold_id": {
+          "type": "string",
+          "__example__": "example_hold_id"
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "summary_form",
+            "children": [
+              {
+                "type": "Image",
+                "src": "${data.hotel_image_url}",
+                "height": 160,
+                "scale-type": "cover"
+              },
+              {
+                "type": "TextHeading",
+                "text": "Confirm Booking"
+              },
+              {
+                "type": "TextSubheading",
+                "text": "${data.hotel_name}"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.stay_summary}"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.guest_summary_label}"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.guest_name_label}"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.guest_phone_label}"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.price_breakdown_label}"
+              },
+              {
+                "type": "TextSubheading",
+                "text": "${data.total_amount_display}"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.payment_method_label}"
+              },
+              {
+                "type": "Footer",
+                "label": "Confirm & Book",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "hotel_id": "${data.hotel_id}",
+                    "city": "${data.city}",
+                    "hotel_name": "${data.hotel_name}",
+                    "hotel_image_url": "${data.hotel_image_url}",
+                    "hotel_price_raw": "${data.hotel_price_raw}",
+                    "hotel_rating": "${data.hotel_rating}",
+                    "room_id": "${data.room_id}",
+                    "room_type": "${data.room_type}",
+                    "room_price_modifier": "${data.room_price_modifier}",
+                    "check_in_date": "${data.check_in_date}",
+                    "check_out_date": "${data.check_out_date}",
+                    "num_guests": "${data.num_guests}",
+                    "num_children": "${data.num_children}",
+                    "guest_name": "${data.guest_name}",
+                    "guest_email": "${data.guest_email}",
+                    "guest_phone": "${data.guest_phone}",
+                    "special_requests": "${data.special_requests}",
+                    "payment_method": "${data.payment_method}",
+                    "total_amount": "${data.total_amount}",
+                    "total_amount_display": "${data.total_amount_display}",
+                    "hold_id": "${data.hold_id}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "SUCCESS",
+      "title": "Booking Confirmed",
+      "terminal": true,
+      "data": {
+        "booking_id": {
+          "type": "string",
+          "__example__": "example_booking_id"
+        },
+        "hotel_name": {
+          "type": "string",
+          "__example__": "example_hotel_name"
+        },
+        "check_in_date": {
+          "type": "string",
+          "__example__": "example_check_in_date"
+        },
+        "check_out_date": {
+          "type": "string",
+          "__example__": "example_check_out_date"
+        },
+        "total_amount_display": {
+          "type": "string",
+          "__example__": "example_total_amount_display"
+        },
+        "payment_method_label": {
+          "type": "string",
+          "__example__": "example_payment_method_label"
+        },
+        "payment_url": {
+          "type": "string",
+          "__example__": "example_payment_url"
+        },
+        "payment_message": {
+          "type": "string",
+          "__example__": "example_payment_message"
+        },
+        "guest_name": {
+          "type": "string",
+          "__example__": "example_guest_name"
+        },
+        "extension_message_response": {
+          "type": "object",
+          "properties": {
+            "params": {
+              "type": "object",
+              "properties": {
+                "flow_token": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "__example__": {
+            "params": {
+              "flow_token": "token"
+            }
+          }
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "success_form",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "Booking Confirmed"
+              },
+              {
+                "type": "TextSubheading",
+                "text": "Booking ID: ${data.booking_id}"
+              },
+              {
+                "type": "TextBody",
+                "text": "Hotel: ${data.hotel_name}"
+              },
+              {
+                "type": "TextBody",
+                "text": "Check-in: ${data.check_in_date}"
+              },
+              {
+                "type": "TextBody",
+                "text": "Check-out: ${data.check_out_date}"
+              },
+              {
+                "type": "TextBody",
+                "text": "Total: ${data.total_amount_display}"
+              },
+              {
+                "type": "TextBody",
+                "text": "Payment: ${data.payment_method_label}"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.payment_message}"
+              },
+              {
+                "type": "Footer",
+                "label": "Done",
+                "on-click-action": {
+                  "name": "complete",
+                  "payload": {
+                    "flow_token": "${data.extension_message_response.params.flow_token}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

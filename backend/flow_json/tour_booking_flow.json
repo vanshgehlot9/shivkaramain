@@ -1,0 +1,543 @@
+{
+  "version": "7.3",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "TOUR_LIST": [
+      "TOUR_DETAIL"
+    ],
+    "TOUR_DETAIL": [
+      "TOUR_BOOKING_FORM"
+    ],
+    "TOUR_BOOKING_FORM": [
+      "TOUR_PAYMENT_METHOD"
+    ],
+    "TOUR_PAYMENT_METHOD": [
+      "SUCCESS"
+    ],
+    "SUCCESS": []
+  },
+  "screens": [
+    {
+      "id": "TOUR_LIST",
+      "title": "Available Tours",
+      "data": {
+        "tour_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          },
+          "__example__": [
+            {
+              "id": "exp123",
+              "title": "Bishnoi Village Safari",
+              "description": "₹1,500/pax • 4 hours"
+            }
+          ]
+        },
+        "tour_count_label": {
+          "type": "string",
+          "__example__": "4 tours available"
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "tour_list_form",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "Explore Local Tours 🏜️"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.tour_count_label}"
+              },
+              {
+                "type": "RadioButtonsGroup",
+                "name": "exp_id",
+                "label": "Choose a Tour",
+                "required": true,
+                "data-source": "${data.tour_options}"
+              },
+              {
+                "type": "Footer",
+                "label": "View Tour Details",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "exp_id": "${form.exp_id}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "TOUR_DETAIL",
+      "title": "Tour Details",
+      "data": {
+        "exp_id": {
+          "type": "string",
+          "__example__": "exp123"
+        },
+        "exp_title": {
+          "type": "string",
+          "__example__": "Bishnoi Village Safari"
+        },
+        "exp_image_url": {
+          "type": "string",
+          "__example__": "url"
+        },
+        "exp_price": {
+          "type": "number",
+          "__example__": 1500
+        },
+        "exp_price_label": {
+          "type": "string",
+          "__example__": "💰 ₹1,500 per person"
+        },
+        "exp_duration_label": {
+          "type": "string",
+          "__example__": "⏱️ 4 hours"
+        },
+        "exp_duration": {
+          "type": "string",
+          "__example__": "4 hours"
+        },
+        "exp_vendor": {
+          "type": "string",
+          "__example__": "vendor1"
+        },
+        "exp_description": {
+          "type": "string",
+          "__example__": "Experience the rural beauty."
+        },
+        "exp_inclusions": {
+          "type": "string",
+          "__example__": "✅ Transport\n✅ Guide"
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "tour_detail_form",
+            "children": [
+              {
+                "type": "Image",
+                "src": "${data.exp_image_url}",
+                "height": 180,
+                "scale-type": "cover"
+              },
+              {
+                "type": "TextHeading",
+                "text": "${data.exp_title}"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.exp_duration_label}"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.exp_price_label}"
+              },
+              {
+                "type": "TextSubheading",
+                "text": "About"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.exp_description}"
+              },
+              {
+                "type": "TextSubheading",
+                "text": "Inclusions"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.exp_inclusions}"
+              },
+              {
+                "type": "Footer",
+                "label": "Book Now",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "exp_id": "${data.exp_id}",
+                    "exp_title": "${data.exp_title}",
+                    "exp_price": "${data.exp_price}",
+                    "exp_image_url": "${data.exp_image_url}",
+                    "exp_duration": "${data.exp_duration}",
+                    "exp_inclusions": "${data.exp_inclusions}",
+                    "exp_vendor": "${data.exp_vendor}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "TOUR_BOOKING_FORM",
+      "title": "Book Tour",
+      "data": {
+        "exp_id": {
+          "type": "string",
+          "__example__": "exp123"
+        },
+        "exp_title": {
+          "type": "string",
+          "__example__": "Bishnoi Village Safari"
+        },
+        "exp_image_url": {
+          "type": "string",
+          "__example__": "url"
+        },
+        "exp_price": {
+          "type": "number",
+          "__example__": 1500
+        },
+        "exp_duration": {
+          "type": "string",
+          "__example__": "4 hours"
+        },
+        "exp_vendor": {
+          "type": "string",
+          "__example__": "vendor1"
+        },
+        "min_date": {
+          "type": "string",
+          "__example__": "2026-05-22"
+        },
+        "guest_name_prefill": {
+          "type": "string",
+          "__example__": "Rajesh Kumar"
+        },
+        "guest_phone_prefill": {
+          "type": "string",
+          "__example__": "919876543210"
+        },
+        "slot_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            }
+          },
+          "__example__": [
+            {
+              "id": "Morning",
+              "title": "🌅 Morning"
+            }
+          ]
+        },
+        "guest_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            }
+          },
+          "__example__": [
+            {
+              "id": "1",
+              "title": "1 Guest"
+            }
+          ]
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "booking_form",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "Complete Booking"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.exp_title}"
+              },
+              {
+                "type": "DatePicker",
+                "name": "tour_date",
+                "label": "Select Date",
+                "min-date": "${data.min_date}",
+                "required": true
+              },
+              {
+                "type": "Dropdown",
+                "name": "tour_slot",
+                "label": "Select Slot",
+                "required": true,
+                "data-source": "${data.slot_options}"
+              },
+              {
+                "type": "Dropdown",
+                "name": "num_guests",
+                "label": "Number of Guests",
+                "required": true,
+                "data-source": "${data.guest_options}"
+              },
+              {
+                "type": "TextInput",
+                "name": "guest_name",
+                "label": "Full Name",
+                "input-type": "text",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "name": "guest_phone",
+                "label": "Phone Number",
+                "input-type": "phone",
+                "required": true
+              },
+              {
+                "type": "Footer",
+                "label": "Confirm Booking",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "tour_date": "${form.tour_date}",
+                    "tour_slot": "${form.tour_slot}",
+                    "num_guests": "${form.num_guests}",
+                    "guest_name": "${form.guest_name}",
+                    "guest_phone": "${form.guest_phone}",
+                    "exp_id": "${data.exp_id}",
+                    "exp_title": "${data.exp_title}",
+                    "exp_price": "${data.exp_price}",
+                    "exp_image_url": "${data.exp_image_url}",
+                    "exp_duration": "${data.exp_duration}",
+                    "exp_vendor": "${data.exp_vendor}"
+                  }
+                }
+              }
+            ],
+            "init-values": {
+              "guest_name": "${data.guest_name_prefill}",
+              "guest_phone": "${data.guest_phone_prefill}"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "TOUR_PAYMENT_METHOD",
+      "title": "Payment Method",
+      "data": {
+        "exp_id": { "type": "string", "__example__": "EXP_123" },
+        "exp_title": { "type": "string", "__example__": "Jodhpur Safari" },
+        "exp_price": { "type": "number", "__example__": 3000 },
+        "exp_vendor": { "type": "string", "__example__": "Jee Tours" },
+        "tour_date": { "type": "string", "__example__": "2026-05-22" },
+        "tour_slot": { "type": "string", "__example__": "Morning" },
+        "num_guests": { "type": "string", "__example__": "2" },
+        "guest_name": { "type": "string", "__example__": "Rajesh Kumar" },
+        "guest_phone": { "type": "string", "__example__": "+919999999999" },
+        "payment_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          },
+          "__example__": [
+            {
+              "id": "online",
+              "title": "💳 Pay Online",
+              "description": "Secure link sent via WhatsApp"
+            }
+          ]
+        },
+        "booking_summary_line": { "type": "string", "__example__": "Jodhpur Safari • 2026-05-22 • 2 Guests (Total: ₹6000)" }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "payment_form",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "How would you like to pay?"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.booking_summary_line}"
+              },
+              {
+                "type": "RadioButtonsGroup",
+                "name": "payment_method",
+                "label": "Payment Method",
+                "required": true,
+                "data-source": "${data.payment_options}"
+              },
+              {
+                "type": "Footer",
+                "label": "Confirm Booking",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "payment_method": "${form.payment_method}",
+                    "tour_date": "${data.tour_date}",
+                    "tour_slot": "${data.tour_slot}",
+                    "num_guests": "${data.num_guests}",
+                    "guest_name": "${data.guest_name}",
+                    "guest_phone": "${data.guest_phone}",
+                    "exp_id": "${data.exp_id}",
+                    "exp_title": "${data.exp_title}",
+                    "exp_price": "${data.exp_price}",
+                    "exp_vendor": "${data.exp_vendor}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "SUCCESS",
+      "title": "Booking Confirmed",
+      "terminal": true,
+      "data": {
+        "booking_id": {
+          "type": "string",
+          "__example__": "TBOOK_123456"
+        },
+        "hotel_name": {
+          "type": "string",
+          "__example__": "Bishnoi Village Safari"
+        },
+        "check_in_date": {
+          "type": "string",
+          "__example__": "2026-05-22"
+        },
+        "check_out_date": {
+          "type": "string",
+          "__example__": "2026-05-22"
+        },
+        "total_amount_display": {
+          "type": "string",
+          "__example__": "₹3,000"
+        },
+        "payment_method_label": {
+          "type": "string",
+          "__example__": "Online Payment"
+        },
+        "payment_message": {
+          "type": "string",
+          "__example__": "Payment link sent to your WhatsApp!"
+        },
+        "payment_url": {
+          "type": "string",
+          "__example__": "https://rzp.io/l/abc123"
+        },
+        "guest_name": {
+          "type": "string",
+          "__example__": "Rajesh Kumar"
+        },
+        "extension_message_response": {
+          "type": "object",
+          "properties": {
+            "params": {
+              "type": "object",
+              "properties": {
+                "flow_token": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "__example__": {
+            "params": {
+              "flow_token": "TOKEN"
+            }
+          }
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "success_form",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "🎉 Tour Booked!"
+              },
+              {
+                "type": "TextSubheading",
+                "text": "Booking ID: ${data.booking_id}"
+              },
+              {
+                "type": "TextBody",
+                "text": "Tour: ${data.hotel_name}"
+              },
+              {
+                "type": "TextBody",
+                "text": "Date: ${data.check_in_date}"
+              },
+              {
+                "type": "TextBody",
+                "text": "Total: ${data.total_amount_display}"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.payment_message}"
+              },
+              {
+                "type": "Footer",
+                "label": "Done",
+                "on-click-action": {
+                  "name": "complete",
+                  "payload": {
+                    "flow_token": "${data.extension_message_response.params.flow_token}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

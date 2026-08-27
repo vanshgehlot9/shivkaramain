@@ -1,0 +1,251 @@
+{
+  "version": "7.3",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "CATALOG_SELECTION": [
+      "CART_CHECKOUT"
+    ],
+    "CART_CHECKOUT": [
+      "SUCCESS"
+    ],
+    "SUCCESS": []
+  },
+  "screens": [
+    {
+      "id": "CATALOG_SELECTION",
+      "title": "Select Delicacies",
+      "data": {
+        "category_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" }
+            }
+          },
+          "__example__": [
+            { "id": "starters", "title": "🍢 Starters" },
+            { "id": "main_course", "title": "🍛 Main Course" }
+          ]
+        },
+        "dishes_list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          },
+          "__example__": [
+            {
+              "id": "paneer_123",
+              "title": "Paneer Butter Masala (₹220)",
+              "description": "🟢 Veg • Rich cottage cheese in tomato butter cream gravy"
+            }
+          ]
+        },
+        "selected_items": {
+          "type": "array",
+          "items": { "type": "string" },
+          "__example__": []
+        },
+        "accumulated_selected_items": {
+          "type": "array",
+          "items": { "type": "string" },
+          "__example__": []
+        },
+        "active_category": {
+          "type": "string",
+          "__example__": ""
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "catalog_form",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "🍽️ Jee Ri Haveli Menu"
+              },
+              {
+                "type": "TextBody",
+                "text": "Filter by category or pick dishes from the list below, then tap Review Cart."
+              },
+              {
+                "type": "Dropdown",
+                "name": "category",
+                "label": "Filter by Category (optional)",
+                "required": false,
+                "data-source": "${data.category_options}",
+                "on-select-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "previous_category": "${data.active_category}",
+                    "category": "${form.category}",
+                    "selected_items": "${form.selected_items}",
+                    "accumulated_selected_items": "${data.accumulated_selected_items}",
+                    "action_type": "filter"
+                  }
+                }
+              },
+              {
+                "type": "TextSubheading",
+                "text": "Dishes Available:"
+              },
+              {
+                "type": "CheckboxGroup",
+                "name": "selected_items",
+                "label": "Choose Dishes",
+                "required": true,
+                "data-source": "${data.dishes_list}"
+              },
+              {
+                "type": "Footer",
+                "label": "Review Cart & Checkout",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "previous_category": "${data.active_category}",
+                    "selected_items": "${form.selected_items}",
+                    "accumulated_selected_items": "${data.accumulated_selected_items}",
+                    "action_type": "checkout"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "CART_CHECKOUT",
+      "title": "Confirm & Pay",
+      "data": {
+        "cart_total": {
+          "type": "string",
+          "__example__": "₹280"
+        },
+        "price_breakdown": {
+          "type": "string",
+          "__example__": "🛒 *Your Order:*\n• Paneer Tikka — ₹300\n\n*Total: ₹300*"
+        },
+        "selected_items_json": {
+          "type": "string",
+          "__example__": ""
+        },
+        "cart_total_raw": {
+          "type": "number",
+          "__example__": 0
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "checkout_form",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "🛒 Review Your Order"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.price_breakdown}"
+              },
+
+              {
+                "type": "TextSubheading",
+                "text": "💳 Billing Preference"
+              },
+              {
+                "type": "RadioButtonsGroup",
+                "name": "payment_method",
+                "label": "Select Mode",
+                "required": true,
+                "data-source": [
+                  {
+                    "id": "charge_to_room",
+                    "title": "🏨 Charge to Room Bill",
+                    "description": "Add to your room account, settle at checkout (Hotel Guests)"
+                  },
+                  {
+                    "id": "cash",
+                    "title": "💵 Pay by Cash",
+                    "description": "Pay cash at the counter / to the waiter"
+                  }
+                ]
+              },
+              {
+                "type": "TextInput",
+                "name": "room_number",
+                "label": "Room Number (Hotel Guests only)",
+                "input-type": "text",
+                "required": false,
+                "helper-text": "Enter your room number if you are a hotel guest"
+              },
+              {
+                "type": "Footer",
+                "label": "Submit to Kitchen Queue 🍽️",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "payment_method": "${form.payment_method}",
+                    "room_number": "${form.room_number}",
+                    "cart_total": "${data.cart_total}",
+                    "selected_items_json": "${data.selected_items_json}",
+                    "cart_total_raw": "${data.cart_total_raw}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "SUCCESS",
+      "title": "Order Placed!",
+      "terminal": true,
+      "data": {
+        "status_message": {
+          "type": "string",
+          "__example__": "Your order has been sent to our kitchen!"
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "success_form",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "🎉 Order Confirmed!"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.status_message}"
+              },
+              {
+                "type": "Footer",
+                "label": "Close",
+                "on-click-action": {
+                  "name": "complete",
+                  "payload": {}
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,374 @@
+{
+  "version": "3.0",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "MAIN_MENU": [
+      "DEPLOYMENT_FORM",
+      "INTERNSHIP_LIST",
+      "COURSE_LIST"
+    ],
+    "INTERNSHIP_LIST": [
+      "INTERNSHIP_FORM",
+      "SUCCESS"
+    ],
+    "COURSE_LIST": [
+      "COURSE_FORM",
+      "SUCCESS"
+    ],
+    "DEPLOYMENT_FORM": [
+      "SUCCESS"
+    ],
+    "INTERNSHIP_FORM": [
+      "SUCCESS"
+    ],
+    "COURSE_FORM": [
+      "SUCCESS"
+    ]
+  },
+  "screens": [
+    {
+      "id": "MAIN_MENU",
+      "title": "Shivkara Digital",
+      "terminal": false,
+      "data": {},
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "selection_form",
+            "children": [
+              {
+                "type": "RadioButtonsGroup",
+                "label": "Select a Service",
+                "name": "selection",
+                "data-source": [
+                  {"id": "deployment", "title": "Deployment & Lead Gen"},
+                  {"id": "internships", "title": "Apply for Internship"},
+                  {"id": "courses", "title": "Browse Courses"}
+                ],
+                "required": true
+              },
+              {
+                "type": "Footer",
+                "label": "Continue",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "selection": "${form.selection}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "DEPLOYMENT_FORM",
+      "title": "Deployment Inquiry",
+      "terminal": false,
+      "data": {},
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "deployment_form",
+            "children": [
+              {
+                "type": "TextInput",
+                "label": "Full Name",
+                "name": "name",
+                "input-type": "text",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "label": "Email Address",
+                "name": "email",
+                "input-type": "email",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "label": "Phone Number",
+                "name": "phone",
+                "input-type": "phone",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "label": "Company Name",
+                "name": "company",
+                "input-type": "text",
+                "required": true
+              },
+              {
+                "type": "Footer",
+                "label": "Submit Inquiry",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "name": "${form.name}",
+                    "email": "${form.email}",
+                    "phone": "${form.phone}",
+                    "company": "${form.company}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "INTERNSHIP_LIST",
+      "title": "Available Internships",
+      "terminal": false,
+      "data": {
+        "internships": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {"type": "string"},
+              "title": {"type": "string"},
+              "description": {"type": "string"}
+            }
+          }
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "internship_select_form",
+            "children": [
+              {
+                "type": "RadioButtonsGroup",
+                "label": "Select Internship",
+                "name": "internship_id",
+                "data-source": "${data.internships}",
+                "required": true
+              },
+              {
+                "type": "Footer",
+                "label": "Apply Now",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "internship_id": "${form.internship_id}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "INTERNSHIP_FORM",
+      "title": "Application Form",
+      "terminal": false,
+      "data": {
+        "internship_id": {"type": "string", "__default__": ""},
+        "internship_title": {"type": "string", "__default__": "Internship"}
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "Applying for ${data.internship_title}"
+          },
+          {
+            "type": "Form",
+            "name": "internship_form",
+            "children": [
+              {
+                "type": "TextInput",
+                "label": "Full Name",
+                "name": "name",
+                "input-type": "text",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "label": "Email Address",
+                "name": "email",
+                "input-type": "email",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "label": "Phone Number",
+                "name": "phone",
+                "input-type": "phone",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "label": "Resume Link (Google Drive / LinkedIn)",
+                "name": "resume_url",
+                "input-type": "url",
+                "required": true
+              },
+              {
+                "type": "Footer",
+                "label": "Submit Application",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "internship_id": "${data.internship_id}",
+                    "name": "${form.name}",
+                    "email": "${form.email}",
+                    "phone": "${form.phone}",
+                    "resume_url": "${form.resume_url}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "COURSE_LIST",
+      "title": "Available Courses",
+      "terminal": false,
+      "data": {
+        "courses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {"type": "string"},
+              "title": {"type": "string"},
+              "description": {"type": "string"}
+            }
+          }
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "course_select_form",
+            "children": [
+              {
+                "type": "RadioButtonsGroup",
+                "label": "Select Course",
+                "name": "course_id",
+                "data-source": "${data.courses}",
+                "required": true
+              },
+              {
+                "type": "Footer",
+                "label": "Book Now",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "course_id": "${form.course_id}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "COURSE_FORM",
+      "title": "Course Booking",
+      "terminal": false,
+      "data": {
+        "course_id": {"type": "string", "__default__": ""},
+        "course_title": {"type": "string", "__default__": "Course"}
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "Booking ${data.course_title}"
+          },
+          {
+            "type": "Form",
+            "name": "course_form",
+            "children": [
+              {
+                "type": "TextInput",
+                "label": "Full Name",
+                "name": "name",
+                "input-type": "text",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "label": "Email Address",
+                "name": "email",
+                "input-type": "email",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "label": "Phone Number",
+                "name": "phone",
+                "input-type": "phone",
+                "required": true
+              },
+              {
+                "type": "Footer",
+                "label": "Confirm Booking",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "course_id": "${data.course_id}",
+                    "name": "${form.name}",
+                    "email": "${form.email}",
+                    "phone": "${form.phone}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "SUCCESS",
+      "title": "Success",
+      "terminal": true,
+      "data": {
+        "status_message": {
+          "type": "string",
+          "__default__": "Thank you! Your request has been submitted successfully."
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "All set! ✅"
+          },
+          {
+            "type": "TextBody",
+            "text": "${data.status_message}"
+          },
+          {
+            "type": "Footer",
+            "label": "Close",
+            "on-click-action": {
+              "name": "complete",
+              "payload": {}
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

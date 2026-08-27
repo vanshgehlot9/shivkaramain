@@ -1,0 +1,143 @@
+{
+  "version": "7.3",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "SERVICE_REQUEST": [
+      "SUCCESS"
+    ],
+    "SUCCESS": []
+  },
+  "screens": [
+    {
+      "id": "SERVICE_REQUEST",
+      "title": "Room Service",
+      "data": {},
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "service_form",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "🛎️ Room Services & Amenities"
+              },
+              {
+                "type": "TextBody",
+                "text": "Select the items or services you need delivered to your room:"
+              },
+              {
+                "type": "CheckboxGroup",
+                "name": "amenities",
+                "label": "Select Amenities",
+                "required": false,
+                "data-source": [
+                  {
+                    "id": "towels",
+                    "title": "🟢 Fresh Towels",
+                    "description": "Set of clean bath & hand towels"
+                  },
+                  {
+                    "id": "water",
+                    "title": "💧 Drinking Water",
+                    "description": "Complimentary packaged drinking water"
+                  },
+                  {
+                    "id": "cleaning",
+                    "title": "🧹 Room Cleaning",
+                    "description": "Full housekeeping & sweeping service"
+                  },
+                  {
+                    "id": "laundry",
+                    "title": "🧺 Laundry Service",
+                    "description": "Staff will collect laundry bag from your room"
+                  },
+                  {
+                    "id": "pillow",
+                    "title": "🛏️ Extra Pillow",
+                    "description": "Comfortable extra feather pillows"
+                  },
+                  {
+                    "id": "iron",
+                    "title": "🔌 Iron & Board",
+                    "description": "Delivered to your room for pressing clothes"
+                  },
+                  {
+                    "id": "taxi",
+                    "title": "🚖 Book a Taxi",
+                    "description": "Request reception to arrange taxi booking"
+                  }
+                ]
+              },
+              {
+                "type": "TextInput",
+                "name": "wakeup_time",
+                "label": "Set Wake-up Call (e.g. 06:00 AM)",
+                "required": false,
+                "input-type": "text"
+              },
+              {
+                "type": "TextInput",
+                "name": "notes",
+                "label": "Special Notes / Custom Requests",
+                "required": false,
+                "input-type": "text"
+              },
+              {
+                "type": "Footer",
+                "label": "Submit Service Request",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "amenities": "${form.amenities}",
+                    "wakeup_time": "${form.wakeup_time}",
+                    "notes": "${form.notes}"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "SUCCESS",
+      "title": "Request Logged",
+      "terminal": true,
+      "data": {
+        "status_message": {
+          "type": "string",
+          "__example__": "Your service request has been logged successfully."
+        }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "success_form",
+            "children": [
+              {
+                "type": "TextHeading",
+                "text": "🎉 Request Received!"
+              },
+              {
+                "type": "TextBody",
+                "text": "${data.status_message}"
+              },
+              {
+                "type": "Footer",
+                "label": "Close Service Panel",
+                "on-click-action": {
+                  "name": "complete",
+                  "payload": {}
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
