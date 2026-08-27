@@ -17,6 +17,9 @@ interface CertificateData {
     internshipCategory?: string;
     completionDate: string;
     issuedAt: string;
+    mentorName?: string;
+    mentorTitle?: string;
+    mentorSignature?: string;
 }
 
 export default function CertificatePrintPage() {
