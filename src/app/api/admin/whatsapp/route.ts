@@ -5,7 +5,8 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         
         // Forward request to Python backend
-        const pythonResponse = await fetch('http://127.0.0.1:8000/api/admin/send-whatsapp', {
+        const backendUrl = process.env.BACKEND_API_URL || 'http://127.0.0.1:8000';
+        const pythonResponse = await fetch(`${backendUrl}/api/admin/send-whatsapp`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
