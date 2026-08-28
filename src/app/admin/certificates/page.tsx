@@ -275,7 +275,16 @@ export default function CertificatesPage() {
 
     const openWhatsAppModal = (cert: Certificate) => {
         setSelectedCertificate(cert);
-        setWaPhoneNumber('');
+        
+        // Auto-fill student's phone number if available
+        const student = students.find(s => s.id === cert.studentId);
+        if (student && student.phone) {
+            // Strip any non-numeric characters just in case, but keep the + if they added it
+            setWaPhoneNumber(student.phone);
+        } else {
+            setWaPhoneNumber('');
+        }
+        
         setShowWhatsAppModal(true);
     };
 
