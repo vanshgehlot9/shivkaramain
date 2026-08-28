@@ -43,6 +43,7 @@ interface Student {
     id: string;
     fullName: string;
     email: string;
+    phone?: string;
 }
 
 const MENTORS = [
