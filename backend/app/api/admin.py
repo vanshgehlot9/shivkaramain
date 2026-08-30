@@ -60,14 +60,14 @@ async def send_whatsapp_certificate(req: SendCertificateRequest):
             if req.certificate_image_url:
                 wa_svc.send_template_message(
                     to=formatted_mobile,
-                    template_name="certificate_delivery",
+                    template_name="certificate",
                     body_parameters=[req.certificate_title],
                     header_image_url=req.certificate_image_url,
                 )
             else:
                 wa_svc.send_template_message(
                     to=formatted_mobile,
-                    template_name="certificate_delivery",
+                    template_name="certificate",
                     body_parameters=[req.certificate_title],
                     header_document_url=req.certificate_url,
                     header_document_filename=f"{req.certificate_title}.pdf",
