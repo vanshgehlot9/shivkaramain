@@ -66,6 +66,15 @@ async def handle_incoming_whatsapp_event(request: Request):
 
         logger.info("Incoming message from %s: type=%s", wa_id, msg_type)
 
+        # ── Track last message time for 24hr window detection ───────────────
+        db = _get_db_safe()
+        if db:
+            from datetime import datetime, timezone
+            db.collection("whatsapp_conversations").document(wa_id).set({
+                "last_message_at": datetime.now(timezone.utc).isoformat(),
+                "wa_id": wa_id,
+            }, merge=True)
+
         # ── Interactive messages ────────────────────────────────────────────────
         reply_id = ""
         text_body = ""
