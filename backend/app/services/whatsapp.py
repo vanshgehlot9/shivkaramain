@@ -36,6 +36,77 @@ def send_text_message(to: str, body: str) -> None:
     }
     _post(payload)
 
+def send_template_message(
+    to: str,
+    template_name: str,
+    language_code: str = "en",
+    body_parameters: list[str] | None = None,
+    header_image_url: str | None = None,
+    header_document_url: str | None = None,
+    header_document_filename: str | None = None,
+) -> dict:
+    """
+    Send a pre-approved WhatsApp Message Template.
+
+    Use this for:
+      - Messages to users outside the 24-hour conversation window
+      - Proactive / outbound messages to new users
+      - Re-engagement messages
+
+    Args:
+        to: Recipient phone number (E.164 format without '+')
+        template_name: Name of the approved template in Meta Business Manager
+        language_code: Template language code (default: "en")
+        body_parameters: List of strings to fill {{1}}, {{2}}, etc. in the body
+        header_image_url: Public URL for an image header component
+        header_document_url: Public URL for a document header component
+        header_document_filename: Filename for the document header
+    """
+    components = []
+
+    # Header component (image or document)
+    if header_image_url:
+        components.append({
+            "type": "header",
+            "parameters": [
+                {"type": "image", "image": {"link": header_image_url}}
+            ]
+        })
+    elif header_document_url:
+        doc_param = {"type": "document", "document": {"link": header_document_url}}
+        if header_document_filename:
+            doc_param["document"]["filename"] = header_document_filename
+        components.append({
+            "type": "header",
+            "parameters": [doc_param]
+        })
+
+    # Body parameters
+    if body_parameters:
+        components.append({
+            "type": "body",
+            "parameters": [
+                {"type": "text", "text": p} for p in body_parameters
+            ]
+        })
+
+    payload = {
+        "messaging_product": "whatsapp",
+        "to": to,
+        "type": "template",
+        "template": {
+            "name": template_name,
+            "language": {"code": language_code},
+        }
+    }
+
+    if components:
+        payload["template"]["components"] = components
+
+    logger.info("Sending template '%s' to %s", template_name, to)
+    return _post(payload)
+
+
 def send_image_message(to: str, image_url: str, caption: str = "") -> dict:
     """Send an image via WhatsApp using a public URL."""
     payload = {
