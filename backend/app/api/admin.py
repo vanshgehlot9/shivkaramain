@@ -53,32 +53,24 @@ async def send_whatsapp_certificate(req: SendCertificateRequest):
             if len(formatted_mobile) == 10:
                 formatted_mobile = "91" + formatted_mobile
 
-        name = req.recipient_name or "there"
-
         # ── Attempt 1: Template message (works outside 24hr window) ──────────
-        try:
-            if req.certificate_image_url:
+        # NOTE: The 'certificate' template in Meta has an IMAGE header,
+        # so we can ONLY use it when we have a Cloudinary image URL.
+        # If there's no image, we skip straight to free-form messages.
+        if req.certificate_image_url:
+            try:
                 wa_svc.send_template_message(
                     to=formatted_mobile,
                     template_name="certificate",
                     body_parameters=[req.certificate_title],
                     header_image_url=req.certificate_image_url,
                 )
-            else:
-                wa_svc.send_template_message(
-                    to=formatted_mobile,
-                    template_name="certificate",
-                    body_parameters=[req.certificate_title],
-                    header_document_url=req.certificate_url,
-                    header_document_filename=f"{req.certificate_title}.pdf",
+                return {"success": True, "message": "Certificate sent via template.", "method": "template"}
+            except Exception as tmpl_err:
+                logger.warning(
+                    "Template send failed: %s — falling back to free-form",
+                    tmpl_err,
                 )
-            return {"success": True, "message": "Certificate sent via template.", "method": "template"}
-
-        except Exception as tmpl_err:
-            logger.warning(
-                "Template send failed (may not be approved yet): %s — falling back to free-form",
-                tmpl_err,
-            )
 
         # ── Attempt 2: Free-form messages (only works within 24hr window) ────
         text_body = (
